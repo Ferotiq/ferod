@@ -1,0 +1,27 @@
+{
+  "name": "fero-dc-dev",
+  "version": "1.0.0",
+  "description": "Development for fero-dc",
+  "main": "dist/index.js",
+  "repository": "https://github.com/ferotiq/fero-dc-dev",
+  "author": "Ferotiq <evanrayweigel@outlook.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "npx gulp build",
+    "test": "npm run build && concurrently --kill-others \"npx gulp watch\" \"nodemon test/test.js --watch dist/ test/\""
+  },
+  "dependencies": {
+    "babel-eslint": "^10.1.0",
+    "colors": "^1.4.0",
+    "discord.js": "^13.4.0",
+    "eslint-plugin-json": "^3.1.0"
+  },
+  "devDependencies": {
+    "concurrently": "^6.5.1",
+    "gulp": "^4.0.2",
+    "gulp-eslint": "^6.0.0",
+    "gulp-sass": "^5.0.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "sass": "^1.45.1"
+  }
+}
