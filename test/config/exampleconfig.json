@@ -1,0 +1,14 @@
+{
+  "token": "env",
+  "commandsPath": "path-to-commands-dir",
+  "eventsPath": "path-to-events-dir",
+  "commandLoadedMessage": true,
+  "eventLoadedMessage": true,
+  "builtInHelpCommand": true,
+  "deleteUnusedSlashCommands": true,
+  "editSlashCommands": true,
+  "permissionData": {},
+  "intents": [
+    "GUILDS"
+  ]
+}

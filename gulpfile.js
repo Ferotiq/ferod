@@ -26,7 +26,7 @@ function scss() {
 }
 
 function typescript() {
-  return src(["src/*.ts", "src/**/*.ts"], { ignore: "dashboard" })
+  return src("src/**/*.ts", { ignore: "dashboard/" })
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError())
