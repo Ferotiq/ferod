@@ -13,7 +13,8 @@ import {
   Role,
   User,
   Channel,
-  GuildMember
+  GuildMember,
+  Guild
 } from "discord.js";
 
 /// structures
@@ -28,7 +29,7 @@ import { ClientOptions } from "../interfaces/ClientOptions";
 /// file system
 import glob from "glob";
 import { promisify } from "util";
-import { existsSync, writeFileSync, mkdirSync } from "fs";
+import { existsSync, writeFileSync, mkdirSync, copyFileSync } from "fs";
 import { join } from "path";
 import { config } from "dotenv";
 
@@ -45,6 +46,7 @@ class Client extends DiscordClient {
   public override options: ClientOptions;
   public commands = new Collection<string, Command>();
   public prefix: string | undefined;
+  public categories: string[] = [];
   private glob = promisify(glob);
 
   public constructor(options: ClientOptions) {
@@ -62,8 +64,6 @@ class Client extends DiscordClient {
 
     this.options = options;
     this.prefix = options.prefix;
-
-    this.checkPaths();
   }
 
   /** @description Checks and adds commands/events folders. */
@@ -87,6 +87,33 @@ class Client extends DiscordClient {
 
   /** @description (Re)loads commands, events, and slash commands into the bot. */
   public async reload(token: string = this.options.token): Promise<string> {
+    this.checkPaths();
+
+    // help command
+    if (
+      (this.options.builtInHelpCommand === "js" ||
+        this.options.builtInHelpCommand === "ts") &&
+      !existsSync(
+        join(
+          this.options.commandsPath,
+          `help.${this.options.builtInHelpCommand}`
+        )
+      )
+    )
+      copyFileSync(
+        join(
+          __dirname,
+          "../../",
+          this.options.builtInHelpCommand === "ts" ? "src" : "dist",
+          "commands",
+          `help.${this.options.builtInHelpCommand}`
+        ),
+        join(
+          this.options.commandsPath,
+          `help.${this.options.builtInHelpCommand}`
+        )
+      );
+
     // add commands
     const commandFiles = await this.glob(
       `${this.options.commandsPath}/**/*{.ts,.js}`
@@ -99,14 +126,21 @@ class Client extends DiscordClient {
             (await import(filePath))) as Command
       )
     );
+
     commands.forEach(command => this.commands.set(command.name, command));
+
+    this.categories.push(...new Set(commands.map(v => v.category)));
 
     if (this.options.commandLoadedMessage)
       console.table(
         Object.fromEntries(
           this.commands.map(command => [
             command.name,
-            { ...command, build: command.build.toString() }
+            {
+              ...command,
+              aliases: command.aliases || "None",
+              build: command.build.toString().length
+            }
           ])
         ),
         ["description", "aliases", "build"]
@@ -193,74 +227,82 @@ class Client extends DiscordClient {
   public async getContext(
     interactionOrMessage: CommandInteraction | Message
   ): Promise<Context> {
+    if (
+      !(interactionOrMessage instanceof Message) &&
+      !(interactionOrMessage instanceof CommandInteraction)
+    )
+      throw Error(
+        "Could not make context because interactionOrMessage was neither an interaction nor a message"
+      );
+
     const context: Context = {
-      args: [],
-      command: null,
-      channel: null,
-      author: null,
-      mentions: null
+      command:
+        interactionOrMessage instanceof Message
+          ? interactionOrMessage.content
+              .substring(this.prefix?.length || 0)
+              .split(/ +/)[0]
+          : interactionOrMessage.commandName,
+      args:
+        (interactionOrMessage instanceof Message
+          ? interactionOrMessage.content
+              .substring(this.prefix?.length || 0)
+              .split(/ +/)
+              .slice(1)
+          : interactionOrMessage.options.data.map(
+              v =>
+                interactionOrMessage.options.get(v.name)?.value?.toString() ||
+                ""
+            )) || [],
+      message:
+        interactionOrMessage instanceof Message
+          ? interactionOrMessage
+          : undefined,
+      interaction:
+        interactionOrMessage instanceof CommandInteraction
+          ? interactionOrMessage
+          : undefined,
+      channel: interactionOrMessage.channel,
+      author:
+        interactionOrMessage instanceof Message
+          ? interactionOrMessage.author
+          : interactionOrMessage.user,
+      member:
+        interactionOrMessage instanceof Message
+          ? interactionOrMessage.member
+          : await interactionOrMessage.guild?.members.fetch(
+              interactionOrMessage.user.id
+            ),
+      guild: interactionOrMessage.guild,
+      mentions:
+        interactionOrMessage instanceof Message
+          ? interactionOrMessage.mentions
+          : this.convertOptionsToMentions(
+              interactionOrMessage,
+              interactionOrMessage.guild
+            )
     };
-
-    if (interactionOrMessage instanceof Message) {
-      context.message = interactionOrMessage;
-
-      const [cmd, args] = context.message.content
-        .substring(this.prefix?.length || 0)
-        .split(/ +/);
-
-      context.command = cmd;
-
-      context.args.push(...args);
-
-      context.author = context.message.author;
-
-      context.channel = context.message.channel;
-
-      context.guild = context.message.guild;
-
-      context.mentions = context.message.mentions;
-    } else if (interactionOrMessage instanceof CommandInteraction) {
-      context.interaction = interactionOrMessage;
-
-      const args =
-        context.interaction.options.data.map(
-          v => context.interaction?.options.get(v.name)?.value?.toString() || ""
-        ) || [];
-
-      context.args.push(...args);
-
-      context.command = context.interaction.commandName;
-
-      context.author = context.interaction.user;
-
-      context.channel = context.interaction.channel;
-
-      context.guild = context.interaction.guild;
-
-      context.mentions = this.convertOptionsToMentions(context);
-    }
 
     return context;
   }
 
   /** @description Converts interaction options to a Mentions object. */
-  private convertOptionsToMentions(context: Context): Mentions | undefined {
-    if (!context.guild || !context.interaction) return undefined;
+  private convertOptionsToMentions(
+    interaction: CommandInteraction,
+    guild: Guild | null
+  ): Mentions | undefined {
+    if (!guild || !interaction) return undefined;
 
     const mentions: Mentions = {
       channels: new Collection(),
       client: this,
       everyone: false,
-      guild: context.guild,
+      guild: guild,
       members: new Collection(),
       repliedUser: null,
       roles: new Collection(),
       users: new Collection(),
       crosspostedChannels: new Collection()
     };
-
-    const interaction = context.interaction;
-
     const types = ["ROLE", "USER", "CHANNEL", "MENTIONABLE"];
 
     const options = interaction.options.data

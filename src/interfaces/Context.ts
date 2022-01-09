@@ -12,13 +12,13 @@ import {
 import { Mentions } from "./Mentions";
 
 export interface Context {
-  command: string | null | undefined;
+  command: string;
   args: string[];
-  message?: Message | null | undefined;
-  interaction?: CommandInteraction | null | undefined;
-  channel: TextBasedChannel | null | undefined;
-  author: User | null | undefined;
-  member?: GuildMember | null | undefined;
-  guild?: Guild | null | undefined;
-  mentions: Mentions | MessageMentions | null | undefined;
+  message: Message | undefined;
+  interaction: CommandInteraction | undefined;
+  channel: TextBasedChannel | null;
+  author: User;
+  member: GuildMember | null | undefined;
+  guild: Guild | null;
+  mentions: Mentions | MessageMentions | undefined;
 }

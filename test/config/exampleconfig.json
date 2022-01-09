@@ -4,7 +4,7 @@
   "eventsPath": "path-to-events-dir",
   "commandLoadedMessage": true,
   "eventLoadedMessage": true,
-  "builtInHelpCommand": true,
+  "builtInHelpCommand": "ts",
   "deleteUnusedSlashCommands": true,
   "editSlashCommands": true,
   "permissionData": {},
