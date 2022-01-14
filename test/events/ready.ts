@@ -2,11 +2,9 @@
 
 import { Event } from "../../src";
 
-const event: Event<"ready"> = {
+export default {
   event: "ready",
   run: client => {
     console.log(`${client.user?.tag} is online!`);
   }
-};
-
-export default event;
+} as Event<"ready">;

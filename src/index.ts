@@ -7,7 +7,6 @@ import { Command } from "./structures/Command";
 
 /// interfaces
 import { ClientOptions } from "./interfaces/ClientOptions";
-import { CommandBuilder } from "./interfaces/CommandBuilder";
 import { CommandFunction } from "./interfaces/CommandFunction";
 import { CommandOptions } from "./interfaces/CommandOptions";
 import { Context } from "./interfaces/Context";
@@ -20,7 +19,6 @@ export {
   Client,
   Command,
   ClientOptions,
-  CommandBuilder,
   CommandFunction,
   CommandOptions,
   Context,

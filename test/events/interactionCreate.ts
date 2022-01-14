@@ -2,7 +2,7 @@
 
 import { Event } from "../../src";
 
-const event: Event<"interactionCreate"> = {
+export default {
   event: "interactionCreate",
   run: async (client, interaction) => {
     if (!interaction.isCommand()) return;
@@ -15,6 +15,4 @@ const event: Event<"interactionCreate"> = {
 
     if (command) command.run(context, client);
   }
-};
-
-export default event;
+} as Event<"interactionCreate">;

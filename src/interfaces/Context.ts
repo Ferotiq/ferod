@@ -9,9 +9,11 @@ import {
   TextBasedChannel,
   User
 } from "discord.js";
+import { Client } from "../structures/Client";
 import { Mentions } from "./Mentions";
 
 export interface Context {
+  client: Client;
   command: string;
   args: string[];
   message: Message | undefined;

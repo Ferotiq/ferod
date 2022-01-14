@@ -43,7 +43,7 @@ dotenvConfig();
 
 // Client class
 class Client extends DiscordClient {
-  public override options: ClientOptions;
+  public declare options: ClientOptions;
   public commands = new Collection<string, Command>();
   public prefix: string | undefined;
   public categories: string[] = [];
@@ -139,7 +139,7 @@ class Client extends DiscordClient {
             {
               ...command,
               aliases: command.aliases || "None",
-              build: command.build.toString().length
+              options: command.options
             }
           ])
         ),
@@ -180,7 +180,7 @@ class Client extends DiscordClient {
         const slashCommand = slashCommands.find(
           slash =>
             cmd.name === slash.name &&
-            (slash.guildId ? cmd.guildID === slash.guildId : true)
+            (slash.guildId ? cmd.guildIDs.includes(slash.guildId) : true)
         );
 
         if (slashCommand && this.options.editSlashCommands) {
@@ -236,12 +236,12 @@ class Client extends DiscordClient {
       );
 
     const context: Context = {
-      command:
-        interactionOrMessage instanceof Message
-          ? interactionOrMessage.content
-              .substring(this.prefix?.length || 0)
-              .split(/ +/)[0]
-          : interactionOrMessage.commandName,
+      client: this,
+      command: (interactionOrMessage instanceof Message
+        ? interactionOrMessage.content
+            .substring(this.prefix?.length || 0)
+            .split(/ +/)[0]
+        : interactionOrMessage.commandName) as string,
       args:
         (interactionOrMessage instanceof Message
           ? interactionOrMessage.content
@@ -311,6 +311,7 @@ class Client extends DiscordClient {
 
     options.forEach(option => {
       const [name, type] = option;
+      if (name === undefined || type === undefined) return;
       switch (type) {
         case types[0]:
           // role

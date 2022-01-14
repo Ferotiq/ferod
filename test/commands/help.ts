@@ -2,8 +2,8 @@
 
 // @ts-ignore
 import { EmbedFieldData, MessageEmbed } from "discord.js";
-import { Command } from "../../src/index";
-import { camelCase } from "lodash";
+import { Command } from "../../src/";
+import { isEmpty } from "lodash";
 
 export default new Command({
   name: "help",
@@ -11,17 +11,26 @@ export default new Command({
   // aliases: ["h"],
   // permissions: ["SEND_MESSAGES"],
   category: "Utility",
-  build: builder => {
-    builder.addStringOption(option =>
-      option
-        .setName("command")
-        .setDescription("The command to receive help on")
-        .setAutocomplete(false)
-        .setRequired(false)
-    );
+  // build: builder => {
+  //   builder.addStringOption(option =>
+  //     option
+  //       .setName("command")
+  //       .setDescription("The command to receive help on")
+  //       .setAutocomplete(false)
+  //       .setRequired(false)
+  //   );
 
-    return builder;
-  },
+  //   return builder;
+  // },
+  options: [
+    {
+      name: "command",
+      type: "STRING",
+      description: "The command to receive help on",
+      required: false
+    }
+  ],
+  guildIDs: ["879888849470361620"],
   run: async (context, client /*command: Command*/) => {
     if (!context.interaction) return;
 
@@ -71,29 +80,34 @@ export default new Command({
           // },
           {
             name: "Command Category",
-            value: camelCase(command.category),
+            value:
+              command.category[0]?.toUpperCase() +
+                command.category?.substring(1) || "None",
             inline: true
           }
         ]);
 
-      if (command.guildID)
+      if (!isEmpty(command.guildIDs))
         embed.addField(
-          "Command Guild",
-          client.guilds.cache.get(command.guildID)?.name || "None",
+          "Command Guild(s)",
+          client.guilds.cache
+            .filter(guild => command.guildIDs.includes(guild.id))
+            .map(v => v.name)
+            .join(",\n") || "None",
           true
         );
 
-      if (command.aliases)
+      if (!isEmpty(command.aliases))
         embed.addField(
           "Command Aliases (Deprecated)",
           command.aliases.join(", "),
           true
         );
 
-      if (command.permissions)
+      if (!isEmpty(command.permissions))
         embed.addField(
           "Command Permissions (Deprecated)",
-          command.permissions.map(v => v.toString()).join(", "),
+          command.permissions.map(v => v.toString()).join(",\n"),
           true
         );
     } else {

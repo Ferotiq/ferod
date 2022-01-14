@@ -3,7 +3,7 @@
 // @ts-ignore
 import { EmbedFieldData, MessageEmbed } from "discord.js";
 import { Command } from "fero-dc";
-import { camelCase } from "lodash";
+import { camelCase, isEmpty } from "lodash";
 
 export default new Command({
   name: "help",
@@ -11,17 +11,25 @@ export default new Command({
   // aliases: ["h"],
   // permissions: ["SEND_MESSAGES"],
   category: "Utility",
-  build: builder => {
-    builder.addStringOption(option =>
-      option
-        .setName("command")
-        .setDescription("The command to receive help on")
-        .setAutocomplete(false)
-        .setRequired(false)
-    );
+  // build: builder => {
+  //   builder.addStringOption(option =>
+  //     option
+  //       .setName("command")
+  //       .setDescription("The command to receive help on")
+  //       .setAutocomplete(false)
+  //       .setRequired(false)
+  //   );
 
-    return builder;
-  },
+  //   return builder;
+  // },
+  options: [
+    {
+      name: "command",
+      type: "STRING",
+      description: "The command to receive help on",
+      required: false
+    }
+  ],
   run: async (context, client /*command: Command*/) => {
     if (!context.interaction) return;
 
@@ -76,24 +84,27 @@ export default new Command({
           }
         ]);
 
-      if (command.guildID)
+      if (!isEmpty(command.guildIDs))
         embed.addField(
-          "Command Guild",
-          client.guilds.cache.get(command.guildID)?.name || "None",
+          "Command Guild(s)",
+          client.guilds.cache
+            .filter(guild => command.guildIDs.includes(guild.id))
+            .map(v => v.name)
+            .join(",\n"),
           true
         );
 
-      if (command.aliases)
+      if (!isEmpty(command.aliases))
         embed.addField(
           "Command Aliases (Deprecated)",
           command.aliases.join(", "),
           true
         );
 
-      if (command.permissions)
+      if (!isEmpty(command.permissions))
         embed.addField(
           "Command Permissions (Deprecated)",
-          command.permissions.map(v => v.toString()).join(", "),
+          command.permissions.map(v => v.toString()).join(",\n"),
           true
         );
     } else {

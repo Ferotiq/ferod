@@ -6,10 +6,10 @@ export default new Command({
   name: "ping",
   description: "A ping command",
   category: "Utility",
-  build: builder => builder,
-  run: async context => {
-    if (context.interaction) {
-      context.interaction.reply("Test");
-    }
+  guildIDs: ["879888849470361620"],
+  run: context => {
+    const { interaction, client } = context;
+
+    interaction?.reply(`Ping: \`${client.ws.ping}\`ms.`);
   }
 });

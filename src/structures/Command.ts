@@ -1,79 +1,108 @@
 /** @format */
 
-import { ApplicationCommand, ApplicationCommandData } from "discord.js";
-import { CommandBuilder } from "../interfaces/CommandBuilder";
+import {
+  ApplicationCommand,
+  ApplicationCommandData,
+  ApplicationCommandOption,
+  ApplicationCommandType,
+  Collection,
+  Snowflake
+} from "discord.js";
 import { CommandFunction } from "../interfaces/CommandFunction";
 import { CommandOptions } from "../interfaces/CommandOptions";
 import { Client } from "../structures/Client";
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 import { Permission } from "../interfaces/Permission";
+import { isEmpty } from "lodash";
 
 export class Command {
   public name: string;
   public description: string;
   /** @deprecated Deprecated due to message content commands phasing out. */
-  public aliases: string[] | undefined;
+  public aliases: string[];
   /** @deprecated Deprecated due to message content commands phasing out. */
-  public permissions: Permission[] | undefined;
+  public permissions: Permission[];
   public category: string;
-  public guildID: string | undefined;
-  public build: CommandBuilder;
+  public guildIDs: Snowflake[];
+  // public build: CommandBuilder;
+  public options: ApplicationCommandOption[];
+  public type: ApplicationCommandType;
   public run: CommandFunction;
 
   public constructor(options: CommandOptions) {
     this.name = options.name;
     this.description = options.description;
-    this.aliases = options.aliases;
-    this.permissions = options.permissions;
+    this.aliases = options.aliases || [];
+    this.permissions = options.permissions || [];
     this.category = options.category;
-    this.guildID = options.guildID;
-    this.build = options.build;
+    this.guildIDs = options.guildIDs || [];
+    // this.build = options.build;
+    this.options = options.options || [];
+    this.type = options.type || "CHAT_INPUT";
     this.run = options.run;
   }
 
   public async createApplicationCommand(
     client: Client,
     build?: boolean
-  ): Promise<ApplicationCommand | RESTPostAPIApplicationCommandsJSONBody> {
+  ): Promise<ApplicationCommand | ApplicationCommand[]> {
     const applicationCommand = await this.fetchApplicationCommand(client);
 
     if (applicationCommand !== undefined && !build) return applicationCommand;
-
-    const builder = new SlashCommandBuilder();
-
-    builder.setName(this.name);
-
-    builder.setDescription(this.description);
-
-    const newBuilder = await this.build(builder);
-
-    const command = newBuilder.toJSON();
-
-    if (build === true) return command;
-
-    const app = await client.application?.commands.create(
-      command,
-      this.guildID
-    );
+    const app = isEmpty(this.guildIDs)
+      ? await client.application?.commands.create({
+          name: this.name,
+          description: this.description,
+          type: this.type,
+          options: this.options
+        })
+      : await Promise.all(
+          this.guildIDs?.map(guildID =>
+            client.application?.commands.create(
+              {
+                name: this.name,
+                description: this.description,
+                type: this.type,
+                options: this.options
+              },
+              guildID
+            )
+          )
+        );
 
     if (app === undefined)
       throw Error(`Could not create application command for ${this.name}.`);
+    else if (Array.isArray(app) && app.includes(undefined))
+      throw Error(
+        `Could not create application command for some guilds for ${this.name}.`
+      );
 
-    return app;
+    return app as ApplicationCommand | ApplicationCommand[];
   }
 
   public async fetchApplicationCommand(
     client: Client
   ): Promise<ApplicationCommand<{}> | undefined> {
-    const applicationCommands = await client.fetchSlashCommands(this.guildID);
+    const applicationCommands = isEmpty(this.guildIDs)
+      ? await client.fetchSlashCommands()
+      : (
+          await Promise.all(
+            this.guildIDs?.map(guildID => client.fetchSlashCommands(guildID)) ||
+              []
+          )
+        ).reduce(
+          (prev, cur) =>
+            prev?.concat(cur || new Collection<string, ApplicationCommand>()),
+          new Collection<string, ApplicationCommand>()
+        );
 
     if (applicationCommands === undefined) return undefined;
 
     const command = applicationCommands.find(
       v =>
         v.name === this.name &&
-        (v.guildId !== null ? v.guildId === this.guildID : true)
+        (v.guildId !== null
+          ? this.guildIDs?.includes(v.guildId) || false
+          : true)
     );
 
     return command;
