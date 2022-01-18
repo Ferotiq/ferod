@@ -4,7 +4,7 @@
 import { EmbedFieldData, MessageEmbed } from "discord.js";
 import { Command } from "fero-dc";
 import { isEmpty } from "lodash";
-import { toPascalCase } from "../functions/toPascalCase";
+import { toPascalCase } from "fero-dc";
 
 export default new Command({
   name: "help",
