@@ -1,6 +1,6 @@
 {
   "name": "fero-dc",
-  "version": "3.0.0",
+  "version": "1.0.0",
   "type": "commonjs",
   "types": "./Typings/index.d.ts",
   "description": "Ultimate Classes and Structures to organize the client, commands, events, and more for your discord bot.",

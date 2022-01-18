@@ -1,2 +1,3 @@
-# fero-dc-dev
-Development for fero-dc
+# fero-dc
+
+README.md coming soon
