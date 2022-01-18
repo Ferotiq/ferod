@@ -14,6 +14,9 @@ import { Event } from "./interfaces/Event";
 import { EventFunction } from "./interfaces/EventFunction";
 import { Permission } from "./interfaces/Permission";
 
+/// functions
+import { toPascalCase } from "./functions/toPascalCase";
+
 // exports
 export {
   Client,
@@ -24,5 +27,6 @@ export {
   Context,
   Event,
   EventFunction,
-  Permission
+  Permission,
+  toPascalCase
 };
