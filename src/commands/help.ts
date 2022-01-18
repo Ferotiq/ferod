@@ -3,25 +3,13 @@
 // @ts-ignore
 import { EmbedFieldData, MessageEmbed } from "discord.js";
 import { Command } from "fero-dc";
-import { camelCase, isEmpty } from "lodash";
+import { isEmpty } from "lodash";
+import { toPascalCase } from "../functions/toPascalCase";
 
 export default new Command({
   name: "help",
   description: "Shows a help embed",
-  // aliases: ["h"],
-  // permissions: ["SEND_MESSAGES"],
   category: "Utility",
-  // build: builder => {
-  //   builder.addStringOption(option =>
-  //     option
-  //       .setName("command")
-  //       .setDescription("The command to receive help on")
-  //       .setAutocomplete(false)
-  //       .setRequired(false)
-  //   );
-
-  //   return builder;
-  // },
   options: [
     {
       name: "command",
@@ -30,10 +18,10 @@ export default new Command({
       required: false
     }
   ],
-  run: async (context, client /*command: Command*/) => {
+  run: async context => {
     if (!context.interaction) return;
 
-    const command = client.commands.get(
+    const command = context.client.commands.get(
       context.interaction.options.getString("command", false) || ""
     );
 
@@ -49,7 +37,7 @@ export default new Command({
           }) || ""
       })
       .setThumbnail(
-        client.user?.avatarURL({
+        context.client.user?.avatarURL({
           dynamic: true
         }) || ""
       )
@@ -71,25 +59,28 @@ export default new Command({
             name: "Command Description",
             value: command.description.trim(),
             inline: true
-          },
-          // {
-          //   name: "Command Usage",
-          //   value: "",
-          //   inline: false
-          // },
-          {
-            name: "Command Category",
-            value: camelCase(command.category),
-            inline: true
           }
         ]);
+
+      const usage = await command.getUsage(context.client);
+
+      const args = await command.getArguments(context.client);
+
+      if (usage && args) {
+        embed.addFields([
+          { name: "Command Usage", value: usage, inline: false },
+          { name: "Command Arguments", value: args, inline: false }
+        ]);
+      }
+
+      embed.addField("Command Category", toPascalCase(command.category), true);
 
       if (!isEmpty(command.guildIDs))
         embed.addField(
           "Command Guild(s)",
-          client.guilds.cache
+          context.client.guilds.cache
             .filter(guild => command.guildIDs.includes(guild.id))
-            .map(v => v.name)
+            .map(guild => guild.name)
             .join(",\n"),
           true
         );
@@ -104,18 +95,22 @@ export default new Command({
       if (!isEmpty(command.permissions))
         embed.addField(
           "Command Permissions (Deprecated)",
-          command.permissions.map(v => v.toString()).join(",\n"),
+          command.permissions.map(perm => perm.toString()).join(",\n"),
           true
         );
     } else {
-      const commands: EmbedFieldData[] = client.categories.map(v => ({
-        name: `${v} Commands`,
-        value: client
-          .getCommandsByCategory(v)
-          .map(cmd => cmd.name)
-          .join("\n"),
-        inline: true
-      }));
+      const commands: EmbedFieldData[] = context.client.categories.map(
+        category => ({
+          name: `${category}${
+            category.endsWith("Commands") ? "" : " Commands"
+          }`,
+          value: context.client
+            .getCommandsByCategory(category)
+            .map(cmd => cmd.name)
+            .join("\n"),
+          inline: true
+        })
+      );
 
       embed
         .setDescription("The following are all the commands that I offer!")

@@ -17,7 +17,6 @@ export interface CommandOptions {
   permissions?: Permission[];
   category: string;
   guildIDs?: Snowflake[];
-  // build: CommandBuilder;
   options?: ApplicationCommandOption[];
   type?: ApplicationCommandType;
   run: CommandFunction;

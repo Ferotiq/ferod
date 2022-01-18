@@ -184,10 +184,10 @@ class Client extends DiscordClient {
         );
 
         if (slashCommand && this.options.editSlashCommands) {
-          cmd.editApplicationCommand(this);
+          cmd.edit(this);
           uploadedSlashCommands++;
         } else if (!slashCommand) {
-          cmd.createApplicationCommand(this);
+          cmd.create(this);
           uploadedSlashCommands++;
         }
       });
