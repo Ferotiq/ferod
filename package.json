@@ -1,16 +1,15 @@
 {
-  "name": "fero-dc-dev",
-  "version": "1.0.0",
+  "name": "fero-dc",
+  "version": "3.0.0",
   "type": "commonjs",
   "types": "./Typings/index.d.ts",
-  "description": "Development for fero-dc",
+  "description": "Ultimate Classes and Structures to organize the client, commands, events, and more for your discord bot.",
   "main": "dist/index.js",
-  "repository": "https://github.com/ferotiq/fero-dc-dev",
+  "repository": "https://github.com/ferotiq/fero-dc",
   "author": "Ferotiq <evanrayweigel@outlook.com>",
   "license": "MIT",
   "scripts": {
-    "test": "nodemon ./test/test.js --enable-source-maps",
-    "test-ts": "nodemon",
+    "test": "nodemon",
     "build": "tsc"
   },
   "dependencies": {
