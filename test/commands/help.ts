@@ -4,7 +4,7 @@
 import { EmbedFieldData, MessageEmbed } from "discord.js";
 import { Command } from "../../src";
 import { isEmpty } from "lodash";
-import { toPascalCase } from "../../src/functions/toPascalCase";
+import { toPascalCase } from "../../src";
 
 export default new Command({
   name: "help",
@@ -18,7 +18,6 @@ export default new Command({
       required: false
     }
   ],
-  guildIDs: ["879888849470361620"],
   run: async context => {
     if (!context.interaction) return;
 
@@ -43,7 +42,9 @@ export default new Command({
         }) || ""
       )
       .setTimestamp(context.interaction.createdTimestamp)
-      .setFooter("Sent at:");
+      .setFooter({
+        text: "Sent at:"
+      });
 
     if (command) {
       embed

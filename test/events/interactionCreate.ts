@@ -13,6 +13,6 @@ export default {
 
     const command = client.commands.find(c => c.name === cmd);
 
-    if (command) command.run(context, client);
+    if (command) command.run(context);
   }
 } as Event<"interactionCreate">;

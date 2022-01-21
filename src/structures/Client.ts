@@ -138,12 +138,11 @@ class Client extends DiscordClient {
             command.name,
             {
               ...command,
-              aliases: command.aliases || "None",
-              options: command.options
+              aliases: command.aliases || "None"
             }
           ])
         ),
-        ["description", "aliases", "build"]
+        ["description", "aliases", "category", "options", "guildIDs", "type"]
       );
 
     // add events

@@ -42,7 +42,9 @@ export default new Command({
         }) || ""
       )
       .setTimestamp(context.interaction.createdTimestamp)
-      .setFooter("Sent at:");
+      .setFooter({
+        text: "Sent at:"
+      });
 
     if (command) {
       embed
