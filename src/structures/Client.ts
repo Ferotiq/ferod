@@ -175,7 +175,7 @@ class Client extends DiscordClient {
 
     if (slashCommands) {
       // edit slash commands
-      this.commands.forEach(cmd => {
+      this.commands.forEach(async cmd => {
         const slashCommand = slashCommands.find(
           slash =>
             cmd.name === slash.name &&
@@ -186,7 +186,15 @@ class Client extends DiscordClient {
           cmd.edit(this);
           uploadedSlashCommands++;
         } else if (!slashCommand) {
-          cmd.create(this);
+          const newSlashCommands = await cmd.create(this);
+
+          if (Array.isArray(newSlashCommands))
+            newSlashCommands.forEach(newSlashCommand =>
+              newSlashCommand.permissions.set({ permissions: cmd.permissions })
+            );
+          else
+            newSlashCommands.permissions.set({ permissions: cmd.permissions });
+
           uploadedSlashCommands++;
         }
       });

@@ -94,10 +94,10 @@ export default new Command({
           true
         );
 
-      if (!isEmpty(command.permissions))
+      if (!isEmpty(command.legacyPermissions))
         embed.addField(
           "Command Permissions (Deprecated)",
-          command.permissions.map(perm => perm.toString()).join(",\n"),
+          command.legacyPermissions.map(perm => perm.toString()).join(",\n"),
           true
         );
     } else {

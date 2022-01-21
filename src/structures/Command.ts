@@ -4,6 +4,7 @@ import {
   ApplicationCommand,
   ApplicationCommandData,
   ApplicationCommandOption,
+  ApplicationCommandPermissions,
   ApplicationCommandType,
   Collection,
   Snowflake
@@ -21,7 +22,8 @@ export class Command {
   /** @deprecated Deprecated due to message content commands phasing out. */
   public aliases: string[];
   /** @deprecated Deprecated due to message content commands phasing out. */
-  public permissions: Permission[];
+  public legacyPermissions: Permission[];
+  public permissions: ApplicationCommandPermissions[];
   public category: string;
   public guildIDs: Snowflake[];
   public options: ApplicationCommandOption[];
@@ -32,6 +34,7 @@ export class Command {
     this.name = options.name;
     this.description = options.description;
     this.aliases = options.aliases || [];
+    this.legacyPermissions = options.legacyPermissions || [];
     this.permissions = options.permissions || [];
     this.category = options.category;
     this.guildIDs = options.guildIDs || [];
