@@ -89,31 +89,6 @@ class Client extends DiscordClient {
   public async reload(token: string = this.options.token): Promise<string> {
     this.checkPaths();
 
-    // help command
-    if (
-      (this.options.builtInHelpCommand === "js" ||
-        this.options.builtInHelpCommand === "ts") &&
-      !existsSync(
-        join(
-          this.options.commandsPath,
-          `help.${this.options.builtInHelpCommand}`
-        )
-      )
-    )
-      copyFileSync(
-        join(
-          __dirname,
-          "../../",
-          this.options.builtInHelpCommand === "ts" ? "src" : "dist",
-          "commands",
-          `help.${this.options.builtInHelpCommand}`
-        ),
-        join(
-          this.options.commandsPath,
-          `help.${this.options.builtInHelpCommand}`
-        )
-      );
-
     // add commands
     const commandFiles = await this.glob(
       `${this.options.commandsPath}/**/*{.ts,.js}`
@@ -131,6 +106,26 @@ class Client extends DiscordClient {
 
     this.categories.push(...new Set(commands.map(v => v.category)));
 
+    // help command
+    if (
+      (this.options.builtInHelpCommand === "js" ||
+        this.options.builtInHelpCommand === "ts") &&
+      !commands.find(cmd => cmd.name === "help")
+    )
+      copyFileSync(
+        join(
+          __dirname,
+          "../../",
+          this.options.builtInHelpCommand === "ts" ? "src" : "dist",
+          "commands",
+          `help.${this.options.builtInHelpCommand}`
+        ),
+        join(
+          this.options.commandsPath,
+          `help.${this.options.builtInHelpCommand}`
+        )
+      );
+
     if (this.options.commandLoadedMessage)
       console.table(
         Object.fromEntries(
@@ -142,7 +137,7 @@ class Client extends DiscordClient {
             }
           ])
         ),
-        ["description", "aliases", "category", "options", "guildIDs", "type"]
+        ["description", "type", "options", "category", "guildIDs"]
       );
 
     // add events
