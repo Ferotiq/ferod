@@ -141,7 +141,7 @@ export class Command {
 
     return `\`/${this.name} ${args.map(
       arg => `<${arg.name}: ${toPascalCase(arg.type)}>`
-    )}\``;
+    ).join(" ")}\``;
   }
 
   public async getArguments(client: Client): Promise<string | undefined> {
