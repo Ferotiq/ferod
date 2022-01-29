@@ -5,6 +5,7 @@ import {
   ApplicationCommandData,
   ApplicationCommandOption,
   ApplicationCommandPermissions,
+  ApplicationCommandSubCommand,
   ApplicationCommandType,
   Collection,
   Snowflake
@@ -139,9 +140,71 @@ export class Command {
 
     if (!args) return undefined;
 
-    return `\`/${this.name} ${args.map(
-      arg => `<${arg.name}: ${toPascalCase(arg.type)}>`
-    ).join(" ")}\``;
+    const finishedArgs: string[] = [];
+
+    if (args.some(arg => arg.type === "SUB_COMMAND")) {
+      const subCommands = args.filter(
+        arg => arg.type === "SUB_COMMAND"
+      ) as ApplicationCommandSubCommand[];
+
+      finishedArgs.push(
+        ...subCommands.map(
+          subCommand =>
+            `\`${this.name} ${subCommand.name}${
+              subCommand.options && subCommand.options.length
+                ? " " +
+                  subCommand.options
+                    .map(
+                      option => `<${option.name}: ${toPascalCase(option.type)}>`
+                    )
+                    .join(" ")
+                : ""
+            }\``
+        )
+      );
+    }
+
+    if (args.some(arg => arg.type === "SUB_COMMAND_GROUP")) {
+      const subCommandGroups = args.filter(
+        arg => arg.type === "SUB_COMMAND_GROUP"
+      ) as ApplicationCommandOption[];
+
+      subCommandGroups.forEach(subCommandGroup => {
+        const name = subCommandGroup.name;
+
+        if (subCommandGroup.type !== "SUB_COMMAND_GROUP") return;
+
+        const subCommands = subCommandGroup.options || [];
+
+        finishedArgs.push(
+          ...subCommands.map(
+            subCommand =>
+              `\`${this.name} ${name} ${subCommand.name}${
+                subCommand.options && subCommand.options.length
+                  ? " " +
+                    subCommand.options
+                      .map(
+                        option =>
+                          `<${option.name}: ${toPascalCase(option.type)}>`
+                      )
+                      .join(" ")
+                  : ""
+              }\``
+          )
+        );
+      });
+    }
+
+    if (
+      !args.some(arg => ["SUB_COMMAND", "SUB_COMMAND_GROUP"].includes(arg.type))
+    )
+      finishedArgs.push(
+        `\`/${this.name} ${args
+          .map(arg => `<${arg.name}: ${toPascalCase(arg.type)}>`)
+          .join(" ")}\``
+      );
+
+    return finishedArgs.join("\n");
   }
 
   public async getArguments(client: Client): Promise<string | undefined> {
@@ -151,14 +214,66 @@ export class Command {
 
     if (!args) return undefined;
 
-    return args
-      .map(
+    const finishedArgs: string[] = [];
+
+    finishedArgs.push(
+      ...args.map(
         arg =>
           `\`${arg.name} (${toPascalCase(arg.type)}${
             // @ts-ignore
             arg.required ? "" : ", optional"
           })\`: ${arg.description}`
       )
-      .join("\n");
+    );
+
+    if (args.some(arg => arg.type === "SUB_COMMAND")) {
+      const subCommands = args.filter(
+        arg => arg.type === "SUB_COMMAND"
+      ) as ApplicationCommandSubCommand[];
+
+      subCommands.forEach(subCommand => {
+        if (!subCommand.options) return;
+
+        finishedArgs.push(
+          ...subCommand.options.map(
+            option =>
+              `\`${subCommand.name}.${option.name} (${toPascalCase(
+                option.type
+              )}${option.required ? "" : ", optional"})\`: ${
+                option.description
+              }`
+          )
+        );
+      });
+    }
+
+    if (args.some(arg => arg.type === "SUB_COMMAND_GROUP")) {
+      const subCommandGroups = args.filter(
+        arg => arg.type === "SUB_COMMAND_GROUP"
+      );
+
+      subCommandGroups.forEach(subCommandGroup => {
+        if (subCommandGroup.type !== "SUB_COMMAND_GROUP") return;
+
+        const subCommands = subCommandGroup.options || [];
+
+        subCommands.forEach(subCommand => {
+          if (!subCommand.options) return;
+
+          finishedArgs.push(
+            ...subCommand.options.map(
+              option =>
+                `\`${subCommand.name}.${option.name} (${toPascalCase(
+                  option.type
+                )}${option.required ? "" : ", optional"})\`: ${
+                  option.description
+                }`
+            )
+          );
+        });
+      });
+    }
+
+    return finishedArgs.join("\n");
   }
 }
