@@ -1,7 +1,8 @@
 /** @format */
 
-import { Context } from "./Context";
+import { CommandInteraction } from "discord.js";
+import { Client } from "../structures/Client";
 
 export interface CommandFunction {
-  (context: Context): any;
+  (client: Client, interaction: CommandInteraction): void;
 }

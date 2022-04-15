@@ -9,10 +9,8 @@ import { Command } from "./structures/Command";
 import { ClientOptions } from "./interfaces/ClientOptions";
 import { CommandFunction } from "./interfaces/CommandFunction";
 import { CommandOptions } from "./interfaces/CommandOptions";
-import { Context } from "./interfaces/Context";
 import { Event } from "./interfaces/Event";
 import { EventFunction } from "./interfaces/EventFunction";
-import { Permission } from "./interfaces/Permission";
 
 /// functions
 import { toPascalCase } from "./functions/toPascalCase";
@@ -24,9 +22,7 @@ export {
   ClientOptions,
   CommandFunction,
   CommandOptions,
-  Context,
   Event,
   EventFunction,
-  Permission,
   toPascalCase
 };

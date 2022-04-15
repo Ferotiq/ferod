@@ -1,25 +1,23 @@
 /** @format */
 
 import { CommandFunction } from "./CommandFunction";
-import { Permission } from "./Permission";
 import {
-  ApplicationCommandOption,
+  ApplicationCommandOptionData,
   ApplicationCommandPermissions,
   ApplicationCommandType,
   Snowflake
 } from "discord.js";
+import { PermissionConstructor } from "./PermissionConstructor";
 
 export interface CommandOptions {
   name: string;
   description: string;
-  /** @deprecated Deprecated due to message content commands phasing out. */
-  aliases?: string[];
-  /** @deprecated Deprecated due to message content commands phasing out. */
-  legacyPermissions?: Permission[];
   permissions?: ApplicationCommandPermissions[];
+  permissionConstructor?: PermissionConstructor;
   category: string;
-  guildIDs?: Snowflake[];
-  options?: ApplicationCommandOption[];
+  guilds?: Snowflake[];
+  global?: boolean;
+  options?: ApplicationCommandOptionData[];
   type?: ApplicationCommandType;
   run: CommandFunction;
 }

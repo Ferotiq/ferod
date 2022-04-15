@@ -1,21 +1,14 @@
 /** @format */
 
 import { ClientOptions as DiscordClientOptions } from "discord.js";
-import { Permission } from "./Permission";
-
-export type Token = "env" | string;
 
 export interface ClientOptions extends DiscordClientOptions {
-  token: Token;
-  prefix?: string;
+  token: string;
   commandsPath: string;
   eventsPath: string;
   commandLoadedMessage?: boolean;
   eventLoadedMessage?: boolean;
-  builtInHelpCommand?: "js" | "ts" | false;
+  builtInHelpCommand?: "js" | "ts" | "off";
   deleteUnusedSlashCommands?: boolean;
-  editSlashCommands?: boolean;
-  permissionData: {
-    [key: string]: Permission;
-  };
+  editSlashCommands?: "all" | "guild" | "global" | "off";
 }

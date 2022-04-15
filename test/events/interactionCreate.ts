@@ -5,14 +5,14 @@ import { Event } from "../../src";
 export default {
   event: "interactionCreate",
   run: async (client, interaction) => {
-    if (!interaction.isCommand()) return;
+    if (!interaction.isCommand()) {
+      return;
+    }
 
-    const context = await client.getContext(interaction);
+    const command = client.commands.get(interaction.commandName);
 
-    const { command: cmd } = context;
-
-    const command = client.commands.find(c => c.name === cmd);
-
-    if (command) command.run(context);
+    if (command) {
+      command.run(client, interaction);
+    }
   }
 } as Event<"interactionCreate">;

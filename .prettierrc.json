@@ -5,9 +5,8 @@
     "jsxSingleQuote": false,
     "semi": true,
     "bracketSpacing": true,
-    "arrowParens": "avoid",
+    "arrowParens": "always",
     "quoteProps": "as-needed",
-    "proseWrap": "always",
     "trailingComma": "none",
     "insertPragma": true
 }

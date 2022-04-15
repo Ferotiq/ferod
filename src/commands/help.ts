@@ -1,6 +1,5 @@
 /** @format */
 
-// @ts-ignore
 import { EmbedFieldData, MessageEmbed } from "discord.js";
 import { Command } from "fero-dc";
 import { isEmpty } from "lodash";
@@ -18,11 +17,9 @@ export default new Command({
       required: false
     }
   ],
-  run: async context => {
-    if (!context.interaction) return;
-
-    const command = context.client.commands.get(
-      context.interaction.options.getString("command", false) || ""
+  run: async (client, interaction) => {
+    const command = client.commands.get(
+      interaction.options.getString("command", false) || ""
     );
 
     const embed = new MessageEmbed()
@@ -30,18 +27,18 @@ export default new Command({
       .setColor("RANDOM")
       // .setURL("") /* uncomment for dashboard */
       .setAuthor({
-        name: context.author.username,
+        name: interaction.user.username,
         iconURL:
-          context.author.avatarURL({
+          interaction.user.avatarURL({
             dynamic: true
           }) || ""
       })
       .setThumbnail(
-        context.client.user?.avatarURL({
+        client.user?.avatarURL({
           dynamic: true
         }) || ""
       )
-      .setTimestamp(context.interaction.createdTimestamp)
+      .setTimestamp(interaction.createdTimestamp)
       .setFooter({
         text: "Sent at:"
       });
@@ -64,9 +61,9 @@ export default new Command({
           }
         ]);
 
-      const usage = await command.getUsage(context.client);
+      const usage = await command.getUsage(client);
 
-      const args = await command.getArguments(context.client);
+      const args = await command.getArguments(client);
 
       if (usage && args) {
         embed.addFields([
@@ -77,48 +74,31 @@ export default new Command({
 
       embed.addField("Command Category", toPascalCase(command.category), true);
 
-      if (!isEmpty(command.guildIDs))
+      if (!isEmpty(command.guilds)) {
         embed.addField(
           "Command Guild(s)",
-          context.client.guilds.cache
-            .filter(guild => command.guildIDs.includes(guild.id))
-            .map(guild => guild.name)
+          client.guilds.cache
+            .filter((guild) => command.guilds.includes(guild.id))
+            .map((guild) => guild.name)
             .join(",\n"),
           true
         );
-
-      if (!isEmpty(command.aliases))
-        embed.addField(
-          "Command Aliases (Deprecated)",
-          command.aliases.join(", "),
-          true
-        );
-
-      if (!isEmpty(command.legacyPermissions))
-        embed.addField(
-          "Command Permissions (Deprecated)",
-          command.legacyPermissions.map(perm => perm.toString()).join(",\n"),
-          true
-        );
+      }
     } else {
-      const commands: EmbedFieldData[] = context.client.categories.map(
-        category => ({
-          name: `${category}${
-            category.endsWith("Commands") ? "" : " Commands"
-          }`,
-          value: context.client
-            .getCommandsByCategory(category)
-            .map(cmd => cmd.name)
-            .join("\n"),
-          inline: true
-        })
-      );
+      const commands: EmbedFieldData[] = client.categories.map((category) => ({
+        name: `${category}${category.endsWith("Commands") ? "" : " Commands"}`,
+        value: client
+          .getCommandsByCategory(category)
+          .map((cmd) => cmd.name)
+          .join("\n"),
+        inline: true
+      }));
 
       embed
         .setDescription("The following are all the commands that I offer!")
         .addFields(commands);
     }
 
-    return context.interaction.reply({ embeds: [embed], ephemeral: true });
+    return interaction.reply({ embeds: [embed], ephemeral: true });
   }
 });
