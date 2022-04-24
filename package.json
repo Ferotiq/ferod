@@ -10,7 +10,7 @@
   "license": "MIT",
   "scripts": {
     "test": "nodemon",
-    "build": "tsc",
+    "build": "tsc && cd src/dashboard && yarn build",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "publish": "yarn run lint:fix && yarn run build && npm publish"
@@ -31,6 +31,7 @@
     "eslint-plugin-prettier": "4.0.0",
     "prettier": "2.6.2",
     "ts-node": "10.4.0",
-    "typescript": "4.5.4"
+    "typescript": "4.5.4",
+    "yarn": "^1.22.18"
   }
 }
