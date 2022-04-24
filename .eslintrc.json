@@ -8,7 +8,8 @@
   ],
   "env": {
     "es2022": true,
-    "node": true
+    "node": true,
+    "browser": true
   },
   "rules": {
     "prettier/prettier": "error",
@@ -26,5 +27,13 @@
       }
     ]
   },
-  "plugins": ["prettier"]
+  "plugins": ["prettier"],
+  "overrides": [
+    {
+      "files": ["*.tsx"],
+      "rules": {
+        "require-jsdoc": "off"
+      }
+    }
+  ]
 }
