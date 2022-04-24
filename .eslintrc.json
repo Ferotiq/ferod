@@ -16,6 +16,7 @@
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "error",
     "curly": ["error", "all"],
+    "quotes": ["error", "double"],
     "require-jsdoc": [
       "error",
       {

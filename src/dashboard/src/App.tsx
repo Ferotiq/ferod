@@ -1,13 +1,19 @@
 /** @format */
 
 // import { useState } from "react";
+import { Route, Routes } from "react-router-dom";
 import "./App.scss";
+
+// pages
+import Login from "./pages/Login";
+import Home from "./pages/Home";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header"></header>
-    </div>
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/home" element={<Home />} />
+    </Routes>
   );
 }
 
