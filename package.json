@@ -13,7 +13,7 @@
     "build": "tsc && cd src/dashboard && yarn build",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
-    "publish": "yarn run lint:fix && yarn run build && npm publish"
+    "publish": "yarn run lint:fix && yarn build && npm publish"
   },
   "dependencies": {
     "discord.js": "13.6.0",
