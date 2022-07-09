@@ -1,4 +1,4 @@
-/** @format */
+
 
 import { Event } from "../../src";
 

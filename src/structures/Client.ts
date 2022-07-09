@@ -1,5 +1,3 @@
-/** @format */
-
 // imports
 // discord.js
 import {

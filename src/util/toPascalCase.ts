@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * Converts a space or underscore separated string to PascalCase
  * @param str The string to convert

@@ -1,12 +1,9 @@
-/** @format */
-
 console.clear();
 
-import { Client } from "../src/index";
+import { Client, ClientOptions } from "../src";
 
 import config from "./config/config.json";
 
-// @ts-ignore
-const client: Client = new Client(config);
+const client: Client = new Client(config as ClientOptions);
 
 client.reload().then(console.log);

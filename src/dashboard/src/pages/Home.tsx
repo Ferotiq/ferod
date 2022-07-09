@@ -1,5 +1,3 @@
-/** @format */
-
 import NavBar from "../components/NavBar";
 import "./Home.scss";
 

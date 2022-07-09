@@ -1,5 +1,3 @@
-/** @format */
-
 import type {
   ClientOptions as DiscordClientOptions,
   ClientEvents,
@@ -51,8 +49,6 @@ export interface Event<E extends keyof ClientEvents> {
 export interface EventFunction<E extends keyof ClientEvents> {
   (client: Client, ...eventArgs: ClientEvents[E]): void;
 }
-
-/** @format */
 
 export interface PermissionConstructor {
   (client: Client, guilds?: Guild[]):

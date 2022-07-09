@@ -1,5 +1,3 @@
-/** @format */
-
 // exports
 /// structures
 export { Client } from "./structures/Client";

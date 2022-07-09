@@ -1,5 +1,3 @@
-/** @format */
-
 import { EmbedFieldData, MessageEmbed } from "discord.js";
 import { Command } from "fero-dc";
 import { isEmpty } from "lodash";

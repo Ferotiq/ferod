@@ -1,5 +1,3 @@
-/** @format */
-
 import "./NavBar.scss";
 import { Link } from "react-router-dom";
 
