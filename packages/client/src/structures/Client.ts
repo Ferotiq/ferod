@@ -137,10 +137,10 @@ class Client<T extends boolean = boolean> extends Discord.Client<T> {
     );
 
     for (const command of commands) {
-      this.commands.set(command.name, command);
+      this.commands.set(command.data.name, command);
     }
 
-    this.categories = [...new Set(this.commands.map((v) => v.category))];
+    this.categories = [...new Set(this.commands.map((v) => v.data.category))];
 
     // add events
     const eventFiles = await this.glob(
@@ -153,8 +153,8 @@ class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
     for (const event of events) {
       this.on(
-        event.options.event,
-        event.options.run.bind(null, this as Client<true>)
+        event.data.event,
+        event.data.run.bind(null, this as Client<true>)
       );
     }
 
@@ -165,9 +165,9 @@ class Client<T extends boolean = boolean> extends Discord.Client<T> {
       for (const command of this.commands.values()) {
         const applicationCommand = applicationCommands.find(
           (appCmd) =>
-            command.name === appCmd.name &&
+            command.data.name === appCmd.name &&
             appCmd.guildId !== null &&
-            command.guilds.includes(appCmd.guildId)
+            command.data.guilds.includes(appCmd.guildId)
         );
 
         if (applicationCommand === undefined) {
@@ -198,7 +198,9 @@ class Client<T extends boolean = boolean> extends Discord.Client<T> {
       for (const applicationCommand of applicationCommands.values()) {
         if (
           this.options.deleteUnusedApplicationCommands &&
-          !this.commands.find((cmd) => cmd.name === applicationCommand.name)
+          !this.commands.find(
+            (cmd) => cmd.data.name === applicationCommand.name
+          )
         ) {
           applicationCommand.delete();
         }
@@ -238,7 +240,7 @@ class Client<T extends boolean = boolean> extends Discord.Client<T> {
   public getCommandsByCategory(
     category: string
   ): Discord.Collection<string, Command> {
-    return this.commands.filter((cmd) => cmd.category === category);
+    return this.commands.filter((cmd) => cmd.data.category === category);
   }
 }
 

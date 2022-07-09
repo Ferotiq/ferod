@@ -6,39 +6,107 @@ import {
   ApplicationCommandSubGroup,
   ApplicationCommandType,
   BaseApplicationCommandOptionsData,
-  Collection,
-  Snowflake
+  Collection
 } from "discord.js";
 
 import { Client } from "../structures/Client";
 import { isEmpty } from "lodash";
 import { toPascalCase } from "../util/toPascalCase";
-import { CommandOptions, GenericCommandFunction } from "../types";
+import { CommandFunction, CommandOptions } from "../types";
 
 /**
  * A class to easily create commands that interop with Fero-DC
  */
-export class Command {
-  public name: string;
-  public description: string;
-  public category: string;
-  public guilds: Snowflake[];
-  public options: ApplicationCommandOptionData[];
-  public type: ApplicationCommandType;
-  public run: GenericCommandFunction;
+export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
+  private _data: Partial<CommandOptions<T>> = {};
 
   /**
-   * Creates a new command
-   * @param options A config that contains the options for the command
+   * The data of this command
    */
-  public constructor(options: CommandOptions) {
-    this.name = options.name;
-    this.description = options.description;
-    this.category = options.category;
-    this.guilds = options.guilds ?? [];
-    this.options = options.options || [];
-    this.type = options.type ?? "CHAT_INPUT";
-    this.run = options.run;
+  public get data(): Required<CommandOptions> {
+    if (
+      this._data.name === undefined ||
+      this._data.description === undefined ||
+      this._data.category === undefined ||
+      this._data.run === undefined
+    ) {
+      throw new Error("Missing required options");
+    }
+
+    const options = {
+      name: this._data.name,
+      description: this._data.description,
+      category: this._data.category,
+      guilds: this._data.guilds ?? [],
+      options: this._data.options ?? [],
+      type: this._data.type ?? "CHAT_INPUT",
+      run: this._data.run
+    };
+
+    return options as Required<CommandOptions>;
+  }
+
+  /**
+   * Set the name
+   */
+  public name(name: string): this {
+    this._data.name = name;
+
+    return this;
+  }
+
+  /**
+   * Set the description
+   */
+  public description(description: string): this {
+    this._data.description = description;
+
+    return this;
+  }
+
+  /**
+   * Sets the category
+   */
+  public category(category: string): this {
+    this._data.category = category;
+
+    return this;
+  }
+
+  /**
+   * Sets the guilds
+   */
+  public guilds(guilds: string[]): this {
+    this._data.guilds = guilds;
+
+    return this;
+  }
+
+  /**
+   * Sets the options
+   */
+  public options(options: ApplicationCommandOptionData[]): this {
+    this._data.options = options;
+
+    return this;
+  }
+
+  /**
+   * Sets the type
+   */
+  public type(type: T): this {
+    this._data.type = type;
+
+    return this;
+  }
+
+  /**
+   * Sets the run function
+   */
+  public run(run: CommandFunction<T>): this {
+    this._data.run = run;
+
+    return this;
   }
 
   /**
@@ -46,10 +114,10 @@ export class Command {
    */
   public get applicationCommandData(): ApplicationCommandData {
     return {
-      name: this.name,
-      description: this.description,
-      options: this.options,
-      type: this.type
+      name: this.data.name,
+      description: this.data.description,
+      options: this.data.options,
+      type: this.data.type
     };
   }
 
@@ -66,12 +134,12 @@ export class Command {
       return applicationCommand;
     }
 
-    const app = isEmpty(this.guilds)
+    const app = isEmpty(this.data.guilds)
       ? await client.application.commands
           .create(this.applicationCommandData)
           .catch(() => undefined)
       : await Promise.all(
-          this.guilds.map((guildID) =>
+          this.data.guilds.map((guildID) =>
             client.application.commands
               .create(this.applicationCommandData, guildID)
               .catch(() => undefined)
@@ -79,10 +147,12 @@ export class Command {
         );
 
     if (app === undefined) {
-      throw Error(`Could not create application command for ${this.name}.`);
+      throw Error(
+        `Could not create application command for ${this.data.name}.`
+      );
     } else if (Array.isArray(app) && app.includes(undefined)) {
       throw Error(
-        `Could not create application command for some guilds for ${this.name}.`
+        `Could not create application command for some guilds for ${this.data.name}.`
       );
     }
 
@@ -94,11 +164,11 @@ export class Command {
    * @param client The client to fetch the command from
    */
   public async fetch(client: Client): Promise<ApplicationCommand | undefined> {
-    const applicationCommands = isEmpty(this.guilds)
+    const applicationCommands = isEmpty(this.data.guilds)
       ? await client.fetchApplicationCommands()
       : (
           await Promise.all(
-            this.guilds?.map((guildID) =>
+            this.data.guilds.map((guildID) =>
               client.fetchApplicationCommands(guildID)
             ) || []
           )
@@ -114,8 +184,10 @@ export class Command {
 
     const command = applicationCommands.find(
       (v) =>
-        v.name === this.name &&
-        (v.guildId !== null ? this.guilds?.includes(v.guildId) || false : true)
+        v.name === this.data.name &&
+        (v.guildId !== null
+          ? this.data.guilds.includes(v.guildId) || false
+          : true)
     );
 
     return command;
@@ -172,7 +244,7 @@ export class Command {
       finishedArgs.push(
         ...subCommands.map(
           (subCommand) =>
-            `\`${this.name} ${subCommand.name}${
+            `\`${this.data.name} ${subCommand.name}${
               subCommand.options && subCommand.options.length
                 ? ` ${subCommand.options
                     .map(
@@ -199,7 +271,7 @@ export class Command {
         finishedArgs.push(
           ...subCommands.map(
             (subCommand) =>
-              `\`${this.name} ${name} ${subCommand.name}${
+              `\`${this.data.name} ${name} ${subCommand.name}${
                 subCommand.options && subCommand.options.length
                   ? ` ${subCommand.options
                       .map(
@@ -220,7 +292,7 @@ export class Command {
       )
     ) {
       finishedArgs.push(
-        `\`/${this.name} ${args
+        `\`/${this.data.name} ${args
           .map((arg) => `<${arg.name}: ${toPascalCase(arg.type)}>`)
           .join(" ")}\``
       );
