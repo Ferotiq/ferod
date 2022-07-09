@@ -11,9 +11,11 @@
   "scripts": {
     "test": "nodemon",
     "build": "tsc && cd src/dashboard && yarn build",
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix",
-    "publish": "yarn run lint:fix && yarn build && npm publish"
+    "pretty": "prettier --check \"src/**/*.{ts,tsx,scss}\"",
+    "pretty-fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "lint-fix": "eslint --fix \"src/**/*.{ts,tsx}\"",
+    "publish": "yarn run lint-fix && yarn build && npm publish"
   },
   "dependencies": {
     "discord.js": "13.6.0",
