@@ -5,12 +5,10 @@ import {
   ApplicationCommandSubCommand,
   ApplicationCommandSubGroup,
   ApplicationCommandType,
-  BaseApplicationCommandOptionsData,
-  Collection
+  BaseApplicationCommandOptionsData
 } from "discord.js";
 
 import { Client } from "../structures/Client";
-import { isEmpty } from "lodash";
 import { toPascalCase } from "../util/toPascalCase";
 import { CommandFunction, CommandOptions } from "../types";
 
@@ -37,7 +35,6 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
       name: this._data.name,
       description: this._data.description,
       category: this._data.category,
-      guilds: this._data.guilds ?? [],
       options: this._data.options ?? [],
       type: this._data.type ?? "CHAT_INPUT",
       run: this._data.run
@@ -69,15 +66,6 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
    */
   public category(category: string): this {
     this._data.category = category;
-
-    return this;
-  }
-
-  /**
-   * Sets the guilds
-   */
-  public guilds(guilds: string[]): this {
-    this._data.guilds = guilds;
 
     return this;
   }
@@ -134,17 +122,13 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
       return applicationCommand;
     }
 
-    const app = isEmpty(this.data.guilds)
-      ? await client.application.commands
-          .create(this.applicationCommandData)
-          .catch(() => undefined)
-      : await Promise.all(
-          this.data.guilds.map((guildID) =>
-            client.application.commands
-              .create(this.applicationCommandData, guildID)
-              .catch(() => undefined)
-          )
-        );
+    const app = await (client.options.dev
+      ? client.application.commands.create(
+          this.applicationCommandData,
+          client.options.devGuildID
+        )
+      : client.application.commands.create(this.applicationCommandData)
+    ).catch(() => undefined);
 
     if (app === undefined) {
       throw Error(
@@ -164,30 +148,16 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
    * @param client The client to fetch the command from
    */
   public async fetch(client: Client): Promise<ApplicationCommand | undefined> {
-    const applicationCommands = isEmpty(this.data.guilds)
-      ? await client.fetchApplicationCommands()
-      : (
-          await Promise.all(
-            this.data.guilds.map((guildID) =>
-              client.fetchApplicationCommands(guildID)
-            ) || []
-          )
-        ).reduce(
-          (prev, cur) =>
-            prev?.concat(cur ?? new Collection<string, ApplicationCommand>()),
-          new Collection<string, ApplicationCommand>()
-        );
+    const applicationCommands = client.options.dev
+      ? await client.fetchApplicationCommands(client.options.devGuildID)
+      : await client.fetchApplicationCommands();
 
     if (applicationCommands === undefined) {
       return undefined;
     }
 
     const command = applicationCommands.find(
-      (v) =>
-        v.name === this.data.name &&
-        (v.guildId !== null
-          ? this.data.guilds.includes(v.guildId) || false
-          : true)
+      (appCmd) => appCmd.name === this.data.name
     );
 
     return command;

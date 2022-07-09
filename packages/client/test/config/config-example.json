@@ -1,4 +1,6 @@
 {
+  "dev": true,
+  "devGuildID": "your server id",
   "intents": ["GUILDS"],
   "commandsPath": "./commands",
   "eventsPath": "./events",

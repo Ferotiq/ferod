@@ -3,6 +3,7 @@ import type { Client } from "./structures/Client";
 
 export interface ClientOptions extends Discord.ClientOptions {
   dev: boolean;
+  devGuildID: Discord.Snowflake;
   commandsPath: string;
   eventsPath: string;
   commandLoadedMessage?: boolean;
@@ -29,7 +30,6 @@ export interface CommandOptions<
   name: string;
   description: string;
   category: string;
-  guilds?: Discord.Snowflake[];
   options?: Discord.ApplicationCommandOptionData[];
   type?: T;
   run: CommandFunction<T>;

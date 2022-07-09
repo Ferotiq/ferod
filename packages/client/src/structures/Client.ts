@@ -111,7 +111,7 @@ class Client<T extends boolean = boolean> extends Discord.Client<T> {
         Object.fromEntries(
           [...this.commands.entries()].map((v) => [v[0], v[1].data])
         ),
-        ["description", "type", "options", "category", "guilds"]
+        ["description", "type", "options", "category"]
       );
     }
 
@@ -159,20 +159,21 @@ class Client<T extends boolean = boolean> extends Discord.Client<T> {
       );
     }
 
-    const applicationCommands = await this.fetchApplicationCommands();
+    const applicationCommands = this.options.dev
+      ? await this.fetchApplicationCommands(this.options.devGuildID)
+      : await this.fetchApplicationCommands();
 
     if (applicationCommands) {
       // create/edit application commands
       for (const command of this.commands.values()) {
         const applicationCommand = applicationCommands.find(
-          (appCmd) =>
-            command.data.name === appCmd.name &&
-            appCmd.guildId !== null &&
-            command.data.guilds.includes(appCmd.guildId)
+          (appCmd) => appCmd.name === command.data.name
         );
 
         if (applicationCommand === undefined) {
-          command.create(this as Client<true>);
+          await command.create(this as Client<true>);
+
+          console.log(`Created application command ${command.data.name}`);
 
           continue;
         }
@@ -181,29 +182,68 @@ class Client<T extends boolean = boolean> extends Discord.Client<T> {
           continue;
         }
 
-        if (
-          !isEqual(command.applicationCommandData, {
-            name: applicationCommand.name,
-            description: applicationCommand.description,
-            options: applicationCommand.options,
-            type: applicationCommand.type
-          })
-        ) {
+        const mapper = (
+          option: Discord.ApplicationCommandOptionData
+        ): Discord.ApplicationCommandOptionData => {
+          type Keys = keyof typeof option;
+
+          type Values = typeof option[Keys];
+
+          type Entries = [Keys, Values];
+
+          for (const [key, value] of Object.entries(option) as Entries[]) {
+            if (
+              value === undefined ||
+              (Array.isArray(value) && value.length === 0)
+            ) {
+              delete option[key];
+            }
+          }
+
+          return option;
+        };
+
+        const cmdObject = {
+          name: applicationCommand.name,
+          description: applicationCommand.description,
+          type: applicationCommand.type,
+          options: applicationCommand.options.map(mapper)
+        };
+
+        const type = command.data.type ?? "CHAT_INPUT";
+
+        const commandObject = {
+          name: command.data.name,
+          description:
+            type === "CHAT_INPUT"
+              ? command.data.description ?? "No description provided"
+              : "",
+          type,
+          options: (command.data.options ?? []).map(mapper)
+        };
+
+        if (isEqual(cmdObject, commandObject)) {
           continue;
         }
 
-        command.edit(this);
+        await applicationCommand.edit({
+          ...commandObject,
+          options: command.data
+            .options as Discord.ApplicationCommandOptionData[]
+        });
+
+        console.log(`Edited application command ${command.data.name}`);
       }
 
       // delete application commands
       for (const applicationCommand of applicationCommands.values()) {
         if (
           this.options.deleteUnusedApplicationCommands &&
-          !this.commands.find(
-            (cmd) => cmd.data.name === applicationCommand.name
-          )
+          !this.commands.has(applicationCommand.name)
         ) {
-          applicationCommand.delete();
+          await applicationCommand.delete();
+
+          console.log(`Deleted application command ${applicationCommand.name}`);
         }
       }
     }
