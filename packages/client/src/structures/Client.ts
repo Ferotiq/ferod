@@ -38,7 +38,7 @@ import { isEqual } from "lodash";
  * client.start();
  * ```
  */
-class Client<T extends boolean = boolean> extends Discord.Client<T> {
+export class Client<T extends boolean = boolean> extends Discord.Client<T> {
   public declare options: ClientOptions;
   public commands = new Discord.Collection<string, Command>();
   public categories: string[] = [];
@@ -284,6 +284,3 @@ class Client<T extends boolean = boolean> extends Discord.Client<T> {
     return this.commands.filter((cmd) => cmd.data.category === category);
   }
 }
-
-// exports
-export { Client };
