@@ -12,7 +12,6 @@ export interface ClientOptions extends DiscordClientOptions {
   eventsPath: string;
   commandLoadedMessage?: boolean;
   eventLoadedMessage?: boolean;
-  builtInHelpCommand?: "js" | "ts" | "off";
   deleteUnusedSlashCommands?: boolean;
   editSlashCommands?: "all" | "guild" | "global" | "off";
 }
