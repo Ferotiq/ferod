@@ -12,8 +12,7 @@ import {
 import { Command } from "./Command";
 
 // types
-import { Event } from "../types";
-import { ClientOptions } from "../types";
+import type { Event, ClientOptions } from "../types";
 
 // file system
 import glob from "glob";
