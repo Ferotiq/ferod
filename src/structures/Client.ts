@@ -18,7 +18,7 @@ import { ClientOptions } from "../types";
 // file system
 import glob from "glob";
 import { promisify } from "util";
-import { existsSync, mkdirSync, copyFileSync } from "fs";
+import { existsSync, mkdirSync } from "fs";
 import { join } from "path";
 
 /**
@@ -52,14 +52,14 @@ class Client extends DiscordClient {
   /**
    * Creates a new client
    * @param options The options for the client
-   * @param callingPath The path that the client is being constructed from (necessary for loading commands/events)
+   * @param dirname The path that the client is being constructed from (necessary for loading commands/events)
    */
-  public constructor(options: ClientOptions, callingPath?: string) {
+  public constructor(options: ClientOptions, dirname: string) {
     super(options);
 
-    if (callingPath !== undefined) {
-      options.commandsPath = join(callingPath, options.commandsPath);
-      options.eventsPath = join(callingPath, options.eventsPath);
+    if (dirname !== undefined) {
+      options.commandsPath = join(dirname, options.commandsPath);
+      options.eventsPath = join(dirname, options.eventsPath);
     }
 
     this.options = options;
@@ -117,26 +117,26 @@ class Client extends DiscordClient {
 
     this.categories = [...new Set(this.commands.map((v) => v.category))];
 
-    // help command
-    if (
-      (this.options.builtInHelpCommand === "js" ||
-        this.options.builtInHelpCommand === "ts") &&
-      !commands.find((cmd) => cmd.name === "help")
-    ) {
-      copyFileSync(
-        join(
-          __dirname,
-          "../../",
-          this.options.builtInHelpCommand === "ts" ? "src" : "dist",
-          "commands",
-          `help.${this.options.builtInHelpCommand}`
-        ),
-        join(
-          this.options.commandsPath,
-          `help.${this.options.builtInHelpCommand}`
-        )
-      );
-    }
+    // // help command
+    // if (
+    //   (this.options.builtInHelpCommand === "js" ||
+    //     this.options.builtInHelpCommand === "ts") &&
+    //   !commands.find((cmd) => cmd.name === "help")
+    // ) {
+    //   copyFileSync(
+    //     join(
+    //       __dirname,
+    //       "../../",
+    //       this.options.builtInHelpCommand === "ts" ? "src" : "dist",
+    //       "commands",
+    //       `help.${this.options.builtInHelpCommand}`
+    //     ),
+    //     join(
+    //       this.options.commandsPath,
+    //       `help.${this.options.builtInHelpCommand}`
+    //     )
+    //   );
+    // }
 
     if (this.options.commandLoadedMessage) {
       console.table(Object.fromEntries(this.commands), [
