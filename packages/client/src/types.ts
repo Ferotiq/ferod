@@ -42,3 +42,8 @@ export type GenericEvent = Event<keyof Discord.ClientEvents>;
 export interface EventFunction<E extends keyof Discord.ClientEvents> {
   (client: Client<true>, ...eventArgs: Discord.ClientEvents[E]): void;
 }
+
+export interface EventOptions<E extends keyof Discord.ClientEvents> {
+  event: E;
+  run: EventFunction<E>;
+}

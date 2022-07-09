@@ -152,7 +152,10 @@ class Client<T extends boolean = boolean> extends Discord.Client<T> {
     );
 
     for (const event of events) {
-      this.on(event.event, event.run.bind(null, this as Client<true>));
+      this.on(
+        event.options.event,
+        event.options.run.bind(null, this as Client<true>)
+      );
     }
 
     const applicationCommands = await this.fetchApplicationCommands();

@@ -1,10 +1,8 @@
-
-
 import { Event } from "../../src";
 
-export default {
-  event: "interactionCreate",
-  run: async (client, interaction) => {
+export default new Event<"interactionCreate">()
+  .event("interactionCreate")
+  .run(async (client, interaction) => {
     if (!interaction.isCommand()) {
       return;
     }
@@ -14,5 +12,4 @@ export default {
     if (command) {
       command.run(client, interaction);
     }
-  }
-} as Event<"interactionCreate">;
+  });
