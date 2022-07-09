@@ -16,7 +16,7 @@ import { CommandFunction } from "../interfaces/CommandFunction";
 import { CommandOptions } from "../interfaces/CommandOptions";
 import { Client } from "../structures/Client";
 import { isEmpty } from "lodash";
-import { toPascalCase } from "../functions/toPascalCase";
+import { toPascalCase } from "../util/toPascalCase";
 import { PermissionConstructor } from "../interfaces/PermissionConstructor";
 
 /** A class to easily create commands that interop with Fero-DC */

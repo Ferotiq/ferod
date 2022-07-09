@@ -13,4 +13,4 @@ export { Event } from "./interfaces/Event";
 export { EventFunction } from "./interfaces/EventFunction";
 
 /// functions
-export { toPascalCase } from "./functions/toPascalCase";
+export { toPascalCase } from "./util/toPascalCase";
