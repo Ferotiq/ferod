@@ -1,0 +1,19 @@
+{
+  "name": "fero-dc-cli",
+  "version": "3.0.5",
+  "description": "CLI for Fero-DC",
+  "main": "dist/index.js",
+  "author": "Evan <evanrayweigel@outlook.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "run": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "fero-dc": "*",
+    "inquirer": "8.2.3"
+  },
+  "devDependencies": {
+    "@types/inquirer": "8.2.1"
+  }
+}

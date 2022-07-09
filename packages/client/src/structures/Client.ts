@@ -1,12 +1,6 @@
 // imports
 // discord.js
-import {
-  Client as DiscordClient,
-  Collection,
-  ApplicationCommand,
-  FetchApplicationCommandOptions,
-  ClientEvents
-} from "discord.js";
+import * as Discord from "discord.js";
 
 // structures
 import { Command } from "./Command";
@@ -42,9 +36,9 @@ import { resolve } from "path";
  * client.start();
  * ```
  */
-class Client extends DiscordClient {
+class Client extends Discord.Client {
   public declare options: ClientOptions;
-  public commands = new Collection<string, Command>();
+  public commands = new Discord.Collection<string, Command>();
   public categories: string[] = [];
   private glob = promisify(glob);
 
@@ -154,7 +148,7 @@ class Client extends DiscordClient {
 
     const events = await Promise.all(
       eventFiles.map((fileName) =>
-        this.import<Event<keyof ClientEvents>>(fileName)
+        this.import<Event<keyof Discord.ClientEvents>>(fileName)
       )
     );
 
@@ -223,8 +217,10 @@ class Client extends DiscordClient {
    */
   public async fetchSlashCommands(
     guildID?: string
-  ): Promise<Collection<string, ApplicationCommand> | undefined> {
-    const options: FetchApplicationCommandOptions = {
+  ): Promise<
+    Discord.Collection<string, Discord.ApplicationCommand> | undefined
+  > {
+    const options: Discord.FetchApplicationCommandOptions = {
       cache: true,
       force: true
     };
@@ -242,7 +238,9 @@ class Client extends DiscordClient {
    * Gets all the commands that are in the specified category
    * @param category The category to get commands from
    */
-  public getCommandsByCategory(category: string): Collection<string, Command> {
+  public getCommandsByCategory(
+    category: string
+  ): Discord.Collection<string, Command> {
     return this.commands.filter((cmd) => cmd.category === category);
   }
 }

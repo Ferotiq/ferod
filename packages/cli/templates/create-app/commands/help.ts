@@ -1,7 +1,6 @@
-import { EmbedFieldData, MessageEmbed } from "discord.js";
-import { Command } from "fero-dc";
+import * as Discord from "discord.js";
+import { Command, toPascalCase } from "fero-dc";
 import { isEmpty } from "lodash";
-import { toPascalCase } from "fero-dc";
 
 export default new Command({
   name: "help",
@@ -20,7 +19,7 @@ export default new Command({
       interaction.options.getString("command", false) || ""
     );
 
-    const embed = new MessageEmbed()
+    const embed = new Discord.MessageEmbed()
       .setTitle("Help")
       .setColor("RANDOM")
       // .setURL("") /* uncomment for dashboard */
@@ -83,14 +82,18 @@ export default new Command({
         );
       }
     } else {
-      const commands: EmbedFieldData[] = client.categories.map((category) => ({
-        name: `${category}${category.endsWith("Commands") ? "" : " Commands"}`,
-        value: client
-          .getCommandsByCategory(category)
-          .map((cmd) => cmd.name)
-          .join("\n"),
-        inline: true
-      }));
+      const commands: Discord.EmbedFieldData[] = client.categories.map(
+        (category) => ({
+          name: `${category}${
+            category.endsWith("Commands") ? "" : " Commands"
+          }`,
+          value: client
+            .getCommandsByCategory(category)
+            .map((cmd) => cmd.name)
+            .join("\n"),
+          inline: true
+        })
+      );
 
       embed
         .setDescription("The following are all the commands that I offer!")
