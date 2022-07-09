@@ -13,9 +13,9 @@ import {
 // structures
 import { Command } from "./Command";
 
-// interfaces
-import { Event } from "../interfaces/Event";
-import { ClientOptions } from "../interfaces/ClientOptions";
+// types
+import { Event } from "../types";
+import { ClientOptions } from "../types";
 
 // file system
 import glob from "glob";

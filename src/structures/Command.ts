@@ -12,12 +12,12 @@ import {
   Collection,
   Snowflake
 } from "discord.js";
-import { CommandFunction } from "../interfaces/CommandFunction";
-import { CommandOptions } from "../interfaces/CommandOptions";
+import { CommandFunction } from "../types";
+import { CommandOptions } from "../types";
 import { Client } from "../structures/Client";
 import { isEmpty } from "lodash";
 import { toPascalCase } from "../util/toPascalCase";
-import { PermissionConstructor } from "../interfaces/PermissionConstructor";
+import { PermissionConstructor } from "../types";
 
 /** A class to easily create commands that interop with Fero-DC */
 export class Command {
