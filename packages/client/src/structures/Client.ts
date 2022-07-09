@@ -1,15 +1,7 @@
-// imports
-// discord.js
 import * as Discord from "discord.js";
-
-// structures
 import { Command } from "./Command";
 import { Event } from "./Event";
-
-// types
 import type { ClientOptions } from "../types";
-
-// file system
 import glob from "glob";
 import { promisify } from "util";
 import { existsSync, mkdirSync } from "fs";
