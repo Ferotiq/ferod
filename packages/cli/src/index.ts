@@ -7,7 +7,7 @@ type Command = "new" | "help";
 type NewSubcommand = "app" | "command" | "event";
 
 /**
- * @description The CLI entry point.
+ * The CLI entry point.
  */
 async function main(): Promise<void> {
   const args = process.argv.slice(2);

@@ -2,30 +2,38 @@ import type * as Discord from "discord.js";
 import type { Client } from "./structures/Client";
 
 export interface ClientOptions extends Discord.ClientOptions {
-  token: string;
+  dev: boolean;
   commandsPath: string;
   eventsPath: string;
   commandLoadedMessage?: boolean;
-  eventLoadedMessage?: boolean;
-  deleteUnusedSlashCommands?: boolean;
-  editSlashCommands?: "all" | "guild" | "global" | "off";
+  deleteUnusedApplicationCommands?: boolean;
+  editApplicationCommands?: "all" | "guild" | "global" | "off";
 }
 
-export interface CommandFunction {
-  (client: Client, interaction: Discord.CommandInteraction): void;
+type Interaction<T extends Discord.ApplicationCommandType> =
+  T extends "CHAT_INPUT"
+    ? Discord.CommandInteraction
+    : T extends "MESSAGE"
+    ? Discord.MessageContextMenuInteraction
+    : Discord.UserContextMenuInteraction;
+
+export interface CommandFunction<T extends Discord.ApplicationCommandType> {
+  (client: Client<true>, interaction: Interaction<T>): void;
 }
 
-export interface CommandOptions {
+export type GenericCommandFunction =
+  CommandFunction<Discord.ApplicationCommandType>;
+
+export interface CommandOptions<
+  T extends Discord.ApplicationCommandType = "CHAT_INPUT"
+> {
   name: string;
   description: string;
-  permissions?: Discord.ApplicationCommandPermissions[];
-  permissionConstructor?: PermissionConstructor;
   category: string;
   guilds?: Discord.Snowflake[];
-  global?: boolean;
   options?: Discord.ApplicationCommandOptionData[];
-  type?: Discord.ApplicationCommandType;
-  run: CommandFunction;
+  type?: T;
+  run: CommandFunction<T>;
 }
 
 export interface Event<E extends keyof Discord.ClientEvents> {
@@ -33,12 +41,8 @@ export interface Event<E extends keyof Discord.ClientEvents> {
   run: EventFunction<E>;
 }
 
-export interface EventFunction<E extends keyof Discord.ClientEvents> {
-  (client: Client, ...eventArgs: Discord.ClientEvents[E]): void;
-}
+export type GenericEvent = Event<keyof Discord.ClientEvents>;
 
-export interface PermissionConstructor {
-  (client: Client, guilds?: Discord.Guild[]):
-    | Discord.ApplicationCommandPermissions[]
-    | Promise<Discord.ApplicationCommandPermissions[]>;
+export interface EventFunction<E extends keyof Discord.ClientEvents> {
+  (client: Client<true>, ...eventArgs: Discord.ClientEvents[E]): void;
 }

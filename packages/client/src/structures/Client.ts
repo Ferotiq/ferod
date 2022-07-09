@@ -6,13 +6,14 @@ import * as Discord from "discord.js";
 import { Command } from "./Command";
 
 // types
-import type { Event, ClientOptions } from "../types";
+import type { ClientOptions, GenericEvent } from "../types";
 
 // file system
 import glob from "glob";
 import { promisify } from "util";
 import { existsSync, mkdirSync } from "fs";
 import { resolve } from "path";
+import { isEqual } from "lodash";
 
 /**
  * A simple yet powerful client that extends Discord.JS's client and automates many features for you
@@ -36,7 +37,7 @@ import { resolve } from "path";
  * client.start();
  * ```
  */
-class Client extends Discord.Client {
+class Client<T extends boolean = boolean> extends Discord.Client<T> {
   public declare options: ClientOptions;
   public commands = new Discord.Collection<string, Command>();
   public categories: string[] = [];
@@ -50,12 +51,12 @@ class Client extends Discord.Client {
   public constructor(options: ClientOptions, dirname: string) {
     super(options);
 
-    if (dirname !== undefined) {
-      options.commandsPath = resolve(dirname, options.commandsPath);
-      options.eventsPath = resolve(dirname, options.eventsPath);
-    }
-
     this.options = options;
+
+    if (dirname !== undefined) {
+      this.options.commandsPath = resolve(dirname, options.commandsPath);
+      this.options.eventsPath = resolve(dirname, options.eventsPath);
+    }
   }
 
   /**
@@ -82,54 +83,27 @@ class Client extends Discord.Client {
   /**
    * Imports a file and returns the generic type
    * @param path The path to import
+   * @param expectedClass The class to check against
    */
-  private async import<T>(path: string): Promise<T> {
-    return (await import(path)).default || (await import(path));
+  private async import<T>(path: string, expectedClass?: any): Promise<T> {
+    const file = await import(path);
+    const obj: T = file.default ?? file;
+
+    if (expectedClass !== undefined && !(obj instanceof expectedClass)) {
+      throw new Error(`${path} does not return ${expectedClass.name}`);
+    }
+
+    return obj;
   }
 
   /**
-   * (Re)loads commands, events, and slash commands into the bot.
+   * Starts the client
+   * @param token The token to use for the client
    */
-  public async reload(): Promise<string> {
-    this.checkPaths();
+  public async start(token: string): Promise<void> {
+    await this.login(token);
 
-    // add commands
-    const commandFiles = await this.glob(
-      `${this.options.commandsPath}/**/*{.ts,.js}`
-    );
-
-    const commands = await Promise.all(
-      commandFiles.map((fileName) => this.import<Command>(fileName))
-    );
-
-    commands.forEach(async (command) => {
-      this.commands.set(command.name, command);
-
-      await command.constructPermissions(this);
-    });
-
-    this.categories = [...new Set(this.commands.map((v) => v.category))];
-
-    // // help command
-    // if (
-    //   (this.options.builtInHelpCommand === "js" ||
-    //     this.options.builtInHelpCommand === "ts") &&
-    //   !commands.find((cmd) => cmd.name === "help")
-    // ) {
-    //   copyFileSync(
-    //     join(
-    //       __dirname,
-    //       "../../",
-    //       this.options.builtInHelpCommand === "ts" ? "src" : "dist",
-    //       "commands",
-    //       `help.${this.options.builtInHelpCommand}`
-    //     ),
-    //     join(
-    //       this.options.commandsPath,
-    //       `help.${this.options.builtInHelpCommand}`
-    //     )
-    //   );
-    // }
+    const events = await this.load();
 
     if (this.options.commandLoadedMessage) {
       console.table(Object.fromEntries(this.commands), [
@@ -141,81 +115,100 @@ class Client extends Discord.Client {
       ]);
     }
 
-    // add events
-    const eventFiles = await this.glob(
-      `${this.options.eventsPath}/**/*{.ts,.js}`
+    console.log(
+      `Loaded ${this.commands.size} commands and ${events.length} events.`
     );
-
-    const events = await Promise.all(
-      eventFiles.map((fileName) =>
-        this.import<Event<keyof Discord.ClientEvents>>(fileName)
-      )
-    );
-
-    events.forEach((event) => this.on(event.event, event.run.bind(null, this)));
-
-    if (this.options.eventLoadedMessage) {
-      console.table(
-        Object.fromEntries(events.map((event) => [event.event, event])),
-        ["run"]
-      );
-    }
-
-    await this.login(this.options.token);
-
-    const slashCommands = await this.fetchSlashCommands();
-
-    let uploadedSlashCommands = 0,
-      deletedSlashCommands = 0;
-
-    if (slashCommands) {
-      // edit slash commands
-      this.commands.forEach(async (cmd) => {
-        const slashCommand = slashCommands.find(
-          (slash) =>
-            cmd.name === slash.name &&
-            (slash.guildId ? cmd.guilds.includes(slash.guildId) : cmd.global)
-        );
-
-        if (slashCommand && this.options.editSlashCommands) {
-          cmd.edit(this);
-
-          uploadedSlashCommands++;
-        } else if (!slashCommand) {
-          const newSlashCommands = await cmd.create(this);
-
-          if (Array.isArray(newSlashCommands)) {
-            newSlashCommands.forEach((newSlashCommand) =>
-              newSlashCommand.permissions.set({ permissions: cmd.permissions })
-            );
-          } else {
-            newSlashCommands.permissions.set({ permissions: cmd.permissions });
-          }
-
-          uploadedSlashCommands++;
-        }
-      });
-
-      // delete slash commands
-      slashCommands.forEach((slashCommand) => {
-        if (
-          this.options.deleteUnusedSlashCommands &&
-          !this.commands.find((cmd) => cmd.name === slashCommand.name)
-        ) {
-          slashCommand.delete();
-          deletedSlashCommands++;
-        }
-      });
-    }
-
-    return `Reloaded ${commandFiles.length} commands;\nReloaded ${eventFiles.length} events;\nUpdated/Uploaded ${uploadedSlashCommands} slash commands;\nDeleted ${deletedSlashCommands} slash commands;`;
   }
 
   /**
-   * Fetch all the slash commands from the bot
+   * Loads commands, events, and application commands into the bot.
+   */
+  public async load(): Promise<GenericEvent[]> {
+    this.checkPaths();
+
+    // add commands
+    const commandFiles = await this.glob(
+      `${this.options.commandsPath}/**/*.{ts,js}`
+    );
+
+    const commands = await Promise.all(
+      commandFiles.map((fileName) => this.import<Command>(fileName, Command))
+    );
+
+    for (const command of commands) {
+      this.commands.set(command.name, command);
+    }
+
+    this.categories = [...new Set(this.commands.map((v) => v.category))];
+
+    // add events
+    const eventFiles = await this.glob(
+      `${this.options.eventsPath}/**/*.{ts,js}`
+    );
+
+    const events = await Promise.all(
+      eventFiles.map((fileName) => this.import<GenericEvent>(fileName))
+    );
+
+    for (const event of events) {
+      this.on(event.event, event.run.bind(null, this as Client<true>));
+    }
+
+    const applicationCommands = await this.fetchApplicationCommands();
+
+    if (applicationCommands) {
+      // create/edit application commands
+      for (const command of this.commands.values()) {
+        const applicationCommand = applicationCommands.find(
+          (appCmd) =>
+            command.name === appCmd.name &&
+            appCmd.guildId !== null &&
+            command.guilds.includes(appCmd.guildId)
+        );
+
+        if (applicationCommand === undefined) {
+          command.create(this as Client<true>);
+
+          continue;
+        }
+
+        if (!this.options.editApplicationCommands) {
+          continue;
+        }
+
+        if (
+          !isEqual(command.applicationCommandData, {
+            name: applicationCommand.name,
+            description: applicationCommand.description,
+            options: applicationCommand.options,
+            type: applicationCommand.type
+          })
+        ) {
+          continue;
+        }
+
+        command.edit(this);
+      }
+
+      // delete application commands
+      for (const applicationCommand of applicationCommands.values()) {
+        if (
+          this.options.deleteUnusedApplicationCommands &&
+          !this.commands.find((cmd) => cmd.name === applicationCommand.name)
+        ) {
+          applicationCommand.delete();
+        }
+      }
+    }
+
+    return events;
+  }
+
+  /**
+   * Fetch all the application commands from the bot
    * @param guildID The guild to fetch from
    */
-  public async fetchSlashCommands(
+  public async fetchApplicationCommands(
     guildID?: string
   ): Promise<
     Discord.Collection<string, Discord.ApplicationCommand> | undefined

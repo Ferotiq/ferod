@@ -4,7 +4,6 @@
   "commandsPath": "./commands",
   "eventsPath": "./events",
   "commandLoadedMessage": true,
-  "eventLoadedMessage": true,
   "deleteUnusedSlashCommands": true,
   "editSlashCommands": true,
   "permissionData": {}

@@ -10,7 +10,7 @@ interface Answers {
 }
 
 /**
- * @description Create a new Fero-DC app.
+ * Create a new Fero-DC app.
  */
 export async function createFeroDCCommand(): Promise<void> {
   const answers: Answers = await inquirer.prompt([

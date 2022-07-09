@@ -31,7 +31,7 @@ export default new Command({
           }) || ""
       })
       .setThumbnail(
-        client.user?.avatarURL({
+        client.user.avatarURL({
           dynamic: true
         }) || ""
       )

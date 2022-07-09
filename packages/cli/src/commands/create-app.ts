@@ -14,7 +14,7 @@ interface Answers {
 }
 
 /**
- * @description Create a new Fero-DC app.
+ * Create a new Fero-DC app.
  */
 export async function createFeroDCApp(): Promise<void> {
   const answers: Answers = await inquirer.prompt([
@@ -94,7 +94,7 @@ export async function createFeroDCApp(): Promise<void> {
 type PackageManager = "npm" | "yarn" | "pnpm";
 
 /**
- * @description Gets the user's package manager
+ * Gets the user's package manager
  */
 function getUserPackageManager(): PackageManager {
   // This environment variable is set by npm and yarn but pnpm seems less consistent
@@ -115,7 +115,7 @@ function getUserPackageManager(): PackageManager {
 }
 
 /**
- * @description Scaffold a new Fero-DC app
+ * Scaffold a new Fero-DC app
  */
 async function scaffoldProject(
   options: Answers & {

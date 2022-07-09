@@ -1,10 +1,9 @@
 import {
   ApplicationCommand,
   ApplicationCommandData,
-  ApplicationCommandOption,
   ApplicationCommandOptionData,
-  ApplicationCommandPermissions,
   ApplicationCommandSubCommand,
+  ApplicationCommandSubGroup,
   ApplicationCommandType,
   BaseApplicationCommandOptionsData,
   Collection,
@@ -14,24 +13,19 @@ import {
 import { Client } from "../structures/Client";
 import { isEmpty } from "lodash";
 import { toPascalCase } from "../util/toPascalCase";
-import {
-  CommandFunction,
-  CommandOptions,
-  PermissionConstructor
-} from "../types";
+import { CommandOptions, GenericCommandFunction } from "../types";
 
-/** A class to easily create commands that interop with Fero-DC */
+/**
+ * A class to easily create commands that interop with Fero-DC
+ */
 export class Command {
   public name: string;
   public description: string;
-  public permissions: ApplicationCommandPermissions[];
-  public permissionConstructor?: PermissionConstructor;
   public category: string;
   public guilds: Snowflake[];
-  public global: boolean;
   public options: ApplicationCommandOptionData[];
   public type: ApplicationCommandType;
-  public run: CommandFunction;
+  public run: GenericCommandFunction;
 
   /**
    * Creates a new command
@@ -40,43 +34,47 @@ export class Command {
   public constructor(options: CommandOptions) {
     this.name = options.name;
     this.description = options.description;
-    this.permissions = options.permissions || [];
-    this.permissionConstructor = options.permissionConstructor;
     this.category = options.category;
-    this.guilds = options.guilds || [];
-    this.global = options.global || false;
+    this.guilds = options.guilds ?? [];
     this.options = options.options || [];
-    this.type = options.type || "CHAT_INPUT";
+    this.type = options.type ?? "CHAT_INPUT";
     this.run = options.run;
   }
 
   /**
-   * Creates a slash command on Discord from the options of this command
+   * The application command data from this command
+   */
+  public get applicationCommandData(): ApplicationCommandData {
+    return {
+      name: this.name,
+      description: this.description,
+      options: this.options,
+      type: this.type
+    };
+  }
+
+  /**
+   * Creates an application command on Discord from the options of this command
    * @param client The client to create the command on
-   * @param build Whether to rebuild the command or not
    */
   public async create(
-    client: Client,
-    build?: boolean
+    client: Client<true>
   ): Promise<ApplicationCommand | ApplicationCommand[]> {
     const applicationCommand = await this.fetch(client);
 
-    if (applicationCommand !== undefined && !build) {
+    if (applicationCommand !== undefined) {
       return applicationCommand;
     }
 
-    const commandObj: ApplicationCommandData = {
-      name: this.name,
-      description: this.description,
-      type: this.type,
-      options: this.options
-    };
-
     const app = isEmpty(this.guilds)
-      ? await client.application?.commands.create(commandObj)
+      ? await client.application.commands
+          .create(this.applicationCommandData)
+          .catch(() => undefined)
       : await Promise.all(
-          this.guilds?.map((guildID) =>
-            client.application?.commands.create(commandObj, guildID)
+          this.guilds.map((guildID) =>
+            client.application.commands
+              .create(this.applicationCommandData, guildID)
+              .catch(() => undefined)
           )
         );
 
@@ -97,15 +95,16 @@ export class Command {
    */
   public async fetch(client: Client): Promise<ApplicationCommand | undefined> {
     const applicationCommands = isEmpty(this.guilds)
-      ? await client.fetchSlashCommands()
+      ? await client.fetchApplicationCommands()
       : (
           await Promise.all(
-            this.guilds?.map((guildID) => client.fetchSlashCommands(guildID)) ||
-              []
+            this.guilds?.map((guildID) =>
+              client.fetchApplicationCommands(guildID)
+            ) || []
           )
         ).reduce(
           (prev, cur) =>
-            prev?.concat(cur || new Collection<string, ApplicationCommand>()),
+            prev?.concat(cur ?? new Collection<string, ApplicationCommand>()),
           new Collection<string, ApplicationCommand>()
         );
 
@@ -123,22 +122,17 @@ export class Command {
   }
 
   /**
-   * Edit this slash command on Discord with the options of this command
+   * Edit this application command on Discord with the options of this command
    * @param client The client to edit the command on
    */
   public async edit(client: Client): Promise<ApplicationCommand> {
-    let slashCommand = await this.fetch(client);
+    let applicationCommand = await this.fetch(client);
 
-    const toEdit: ApplicationCommandData = (await this.create(
-      client,
-      true
-    )) as ApplicationCommandData;
-
-    if (!slashCommand) {
-      slashCommand = (await this.create(client, false)) as ApplicationCommand;
+    if (!applicationCommand) {
+      applicationCommand = (await this.create(client)) as ApplicationCommand;
     }
 
-    return slashCommand.edit(toEdit);
+    return applicationCommand.edit(this.applicationCommandData);
   }
 
   /**
@@ -194,15 +188,11 @@ export class Command {
 
     if (args.some((arg) => arg.type === "SUB_COMMAND_GROUP")) {
       const subCommandGroups = args.filter(
-        (arg) => arg.type === "SUB_COMMAND_GROUP"
-      ) as ApplicationCommandOption[];
+        (group) => group.type === "SUB_COMMAND_GROUP"
+      ) as ApplicationCommandSubGroup[];
 
-      subCommandGroups.forEach((subCommandGroup) => {
+      for (const subCommandGroup of subCommandGroups) {
         const name = subCommandGroup.name;
-
-        if (subCommandGroup.type !== "SUB_COMMAND_GROUP") {
-          return;
-        }
 
         const subCommands = subCommandGroup.options || [];
 
@@ -221,7 +211,7 @@ export class Command {
               }\``
           )
         );
-      });
+      }
     }
 
     if (
@@ -270,9 +260,9 @@ export class Command {
         (arg) => arg.type === "SUB_COMMAND"
       ) as ApplicationCommandSubCommand[];
 
-      subCommands.forEach((subCommand) => {
+      for (const subCommand of subCommands) {
         if (!subCommand.options) {
-          return;
+          continue;
         }
 
         finishedArgs.push(
@@ -285,24 +275,20 @@ export class Command {
               }`
           )
         );
-      });
+      }
     }
 
     if (args.some((arg) => arg.type === "SUB_COMMAND_GROUP")) {
       const subCommandGroups = args.filter(
         (arg) => arg.type === "SUB_COMMAND_GROUP"
-      );
+      ) as ApplicationCommandSubGroup[];
 
-      subCommandGroups.forEach((subCommandGroup) => {
-        if (subCommandGroup.type !== "SUB_COMMAND_GROUP") {
-          return;
-        }
-
+      for (const subCommandGroup of subCommandGroups) {
         const subCommands = subCommandGroup.options || [];
 
-        subCommands.forEach((subCommand) => {
+        for (const subCommand of subCommands) {
           if (!subCommand.options) {
-            return;
+            continue;
           }
 
           finishedArgs.push(
@@ -315,30 +301,10 @@ export class Command {
                 }`
             )
           );
-        });
-      });
+        }
+      }
     }
 
     return finishedArgs.join("\n");
-  }
-
-  /**
-   * Construct the permissions using the permissionConstructor provided
-   * @param client The client to fetch guilds from
-   */
-  public async constructPermissions(client: Client): Promise<void> {
-    const guilds = client.guilds.cache.map((v) => v);
-
-    if (this.permissionConstructor === undefined) {
-      return;
-    }
-
-    const permissions = await this.permissionConstructor(client, guilds);
-
-    if (permissions.length === 0) {
-      return;
-    }
-
-    this.permissions.push(...permissions);
   }
 }
