@@ -1,5 +1,4 @@
 {
-  "token": "env",
   "intents": ["GUILDS"],
   "commandsPath": "./commands",
   "eventsPath": "./events",

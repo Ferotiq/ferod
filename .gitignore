@@ -82,8 +82,8 @@ typings/
 .nuxt
 dist
 
-# test
-test/config/config.json
+# config
+config.json
 
 # Gatsby files
 .cache/

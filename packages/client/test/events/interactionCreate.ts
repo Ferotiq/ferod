@@ -11,5 +11,7 @@ export default new Event<"interactionCreate">()
 
     if (command) {
       command.data.run(client, interaction);
+    } else {
+      interaction.reply(`Command \`${interaction.commandName}\` not found`);
     }
   });

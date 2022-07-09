@@ -4,12 +4,12 @@ import { Client } from "../src";
 
 import { config } from "dotenv";
 
-config();
+config({ path: "./test/.env" });
 
 import * as fs from "fs";
 
 const conf = JSON.parse(
-  fs.readFileSync("./test/config.json").toString() || "null"
+  fs.readFileSync("./test/config/config.json").toString() || "null"
 );
 
 if (!conf) {

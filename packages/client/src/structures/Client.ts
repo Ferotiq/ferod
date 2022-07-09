@@ -107,18 +107,19 @@ class Client<T extends boolean = boolean> extends Discord.Client<T> {
     const events = await this.load();
 
     if (this.options.commandLoadedMessage) {
-      console.table(Object.fromEntries(this.commands), [
-        "description",
-        "type",
-        "options",
-        "category",
-        "guilds"
-      ]);
+      console.table(
+        Object.fromEntries(
+          [...this.commands.entries()].map((v) => [v[0], v[1].data])
+        ),
+        ["description", "type", "options", "category", "guilds"]
+      );
     }
 
     console.log(
       `Loaded ${this.commands.size} commands and ${events.length} events.`
     );
+
+    this.emit("ready", this as Client<true>);
   }
 
   /**
