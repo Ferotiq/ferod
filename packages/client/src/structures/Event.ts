@@ -4,7 +4,9 @@ import { EventFunction, EventOptions } from "../types";
 /**
  * A class to easily create events that interop with Fero-DC
  */
-export class Event<E extends keyof Discord.ClientEvents> {
+export class Event<
+  E extends keyof Discord.ClientEvents = keyof Discord.ClientEvents
+> {
   private _data: Partial<EventOptions<E>> = {};
 
   /**
@@ -12,7 +14,7 @@ export class Event<E extends keyof Discord.ClientEvents> {
    */
   public get data(): EventOptions<E> {
     if (this._data.event === undefined || this._data.run === undefined) {
-      throw new Error("Event is not complete");
+      throw new Error("Event is missing required options");
     }
 
     return this._data as EventOptions<E>;

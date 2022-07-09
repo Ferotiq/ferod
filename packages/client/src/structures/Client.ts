@@ -4,9 +4,10 @@ import * as Discord from "discord.js";
 
 // structures
 import { Command } from "./Command";
+import { Event } from "./Event";
 
 // types
-import type { ClientOptions, GenericEvent } from "../types";
+import type { ClientOptions } from "../types";
 
 // file system
 import glob from "glob";
@@ -14,7 +15,6 @@ import { promisify } from "util";
 import { existsSync, mkdirSync } from "fs";
 import { resolve } from "path";
 import { isEqual } from "lodash";
-import { Event } from "./Event";
 
 /**
  * A simple yet powerful client that extends Discord.JS's client and automates many features for you
@@ -124,7 +124,7 @@ class Client<T extends boolean = boolean> extends Discord.Client<T> {
   /**
    * Loads commands, events, and application commands into the bot.
    */
-  public async load(): Promise<GenericEvent[]> {
+  public async load(): Promise<Event[]> {
     this.checkPaths();
 
     // add commands
@@ -148,7 +148,7 @@ class Client<T extends boolean = boolean> extends Discord.Client<T> {
     );
 
     const events = await Promise.all(
-      eventFiles.map((fileName) => this.import<GenericEvent>(fileName, Event))
+      eventFiles.map((fileName) => this.import<Event>(fileName, Event))
     );
 
     for (const event of events) {
