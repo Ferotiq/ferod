@@ -23,7 +23,7 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
   /**
    * The data of this command
    */
-  public get data(): Required<CommandOptions> {
+  public get data(): Required<CommandOptions<T>> {
     if (
       this._data.name === undefined ||
       this._data.description === undefined ||
@@ -43,7 +43,7 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
       run: this._data.run
     };
 
-    return options as Required<CommandOptions>;
+    return options as Required<CommandOptions<T>>;
   }
 
   /**

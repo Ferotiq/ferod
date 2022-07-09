@@ -10,6 +10,6 @@ export default new Event<"interactionCreate">()
     const command = client.commands.get(interaction.commandName);
 
     if (command) {
-      command.run(client, interaction);
+      command.data.run(client, interaction);
     }
   });
