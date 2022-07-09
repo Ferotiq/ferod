@@ -19,7 +19,7 @@ import { ClientOptions } from "../types";
 import glob from "glob";
 import { promisify } from "util";
 import { existsSync, mkdirSync } from "fs";
-import { join } from "path";
+import { resolve } from "path";
 
 /**
  * A simple yet powerful client that extends Discord.JS's client and automates many features for you
@@ -58,8 +58,8 @@ class Client extends DiscordClient {
     super(options);
 
     if (dirname !== undefined) {
-      options.commandsPath = join(dirname, options.commandsPath);
-      options.eventsPath = join(dirname, options.eventsPath);
+      options.commandsPath = resolve(dirname, options.commandsPath);
+      options.eventsPath = resolve(dirname, options.eventsPath);
     }
 
     this.options = options;
