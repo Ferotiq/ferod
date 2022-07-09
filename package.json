@@ -10,7 +10,7 @@
   "license": "MIT",
   "scripts": {
     "test": "nodemon",
-    "build": "tsc && cd src/dashboard && yarn build",
+    "build": "tsc",
     "pretty": "prettier --check \"src/**/*.{ts,tsx,scss}\"",
     "pretty-fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
