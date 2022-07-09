@@ -212,10 +212,10 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
    * @param client The client to delete the command on
    */
   public async delete(client: Client): Promise<ApplicationCommand | undefined> {
-    const slashCommand = await this.fetch(client);
+    const applicationCommand = await this.fetch(client);
 
-    if (slashCommand) {
-      return slashCommand.delete();
+    if (applicationCommand) {
+      return applicationCommand.delete();
     }
 
     return undefined;
@@ -226,9 +226,9 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
    * @param client The client to fetch the command from
    */
   public async getUsage(client: Client): Promise<string | undefined> {
-    const slashCommand = await this.fetch(client);
+    const applicationCommand = await this.fetch(client);
 
-    const args = slashCommand?.options;
+    const args = applicationCommand?.options;
 
     if (!args) {
       return undefined;
@@ -306,9 +306,9 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
    * @param client The client to fetch the command from
    */
   public async getArguments(client: Client): Promise<string | undefined> {
-    const slashCommand = await this.fetch(client);
+    const applicationCommand = await this.fetch(client);
 
-    const args = slashCommand?.options;
+    const args = applicationCommand?.options;
 
     if (!args) {
       return undefined;

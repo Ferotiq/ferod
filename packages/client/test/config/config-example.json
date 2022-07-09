@@ -3,7 +3,7 @@
   "commandsPath": "./commands",
   "eventsPath": "./events",
   "commandLoadedMessage": true,
-  "deleteUnusedSlashCommands": true,
-  "editSlashCommands": true,
+  "deleteUnusedApplicationCommands": true,
+  "editApplicationCommands": true,
   "permissionData": {}
 }
