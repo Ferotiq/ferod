@@ -1,28 +1,16 @@
 /** @format */
 
-// imports
+// exports
 /// structures
-import { Client } from "./structures/Client";
-import { Command } from "./structures/Command";
+export { Client } from "./structures/Client";
+export { Command } from "./structures/Command";
 
 /// interfaces
-import { ClientOptions } from "./interfaces/ClientOptions";
-import { CommandFunction } from "./interfaces/CommandFunction";
-import { CommandOptions } from "./interfaces/CommandOptions";
-import { Event } from "./interfaces/Event";
-import { EventFunction } from "./interfaces/EventFunction";
+export { ClientOptions } from "./interfaces/ClientOptions";
+export { CommandFunction } from "./interfaces/CommandFunction";
+export { CommandOptions } from "./interfaces/CommandOptions";
+export { Event } from "./interfaces/Event";
+export { EventFunction } from "./interfaces/EventFunction";
 
 /// functions
-import { toPascalCase } from "./functions/toPascalCase";
-
-// exports
-export {
-  Client,
-  Command,
-  ClientOptions,
-  CommandFunction,
-  CommandOptions,
-  Event,
-  EventFunction,
-  toPascalCase
-};
+export { toPascalCase } from "./functions/toPascalCase";
