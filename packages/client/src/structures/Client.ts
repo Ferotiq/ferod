@@ -14,6 +14,7 @@ import { promisify } from "util";
 import { existsSync, mkdirSync } from "fs";
 import { resolve } from "path";
 import { isEqual } from "lodash";
+import { Event } from "./Event";
 
 /**
  * A simple yet powerful client that extends Discord.JS's client and automates many features for you
@@ -147,7 +148,7 @@ class Client<T extends boolean = boolean> extends Discord.Client<T> {
     );
 
     const events = await Promise.all(
-      eventFiles.map((fileName) => this.import<GenericEvent>(fileName))
+      eventFiles.map((fileName) => this.import<GenericEvent>(fileName, Event))
     );
 
     for (const event of events) {

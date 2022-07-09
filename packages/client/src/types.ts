@@ -1,5 +1,6 @@
 import type * as Discord from "discord.js";
 import type { Client } from "./structures/Client";
+import type { Event } from "./structures/Event";
 
 export interface ClientOptions extends Discord.ClientOptions {
   dev: boolean;
@@ -34,11 +35,6 @@ export interface CommandOptions<
   options?: Discord.ApplicationCommandOptionData[];
   type?: T;
   run: CommandFunction<T>;
-}
-
-export interface Event<E extends keyof Discord.ClientEvents> {
-  event: E;
-  run: EventFunction<E>;
 }
 
 export type GenericEvent = Event<keyof Discord.ClientEvents>;
