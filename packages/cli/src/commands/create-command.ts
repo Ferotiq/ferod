@@ -1,5 +1,6 @@
 import inquirer from "inquirer";
 import type { ApplicationCommandType } from "discord.js";
+// import { Options } from "../types";
 
 interface Answers {
   fileName: string;

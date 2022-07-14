@@ -1,5 +1,6 @@
 import inquirer from "inquirer";
 import type { ClientEvents } from "discord.js";
+// import { Options } from "../types";
 
 // TODO: find a better way to do this
 const events = [
