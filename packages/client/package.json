@@ -12,8 +12,7 @@
     "pretty": "prettier --check \"src/**/*.{ts,tsx,scss}\"",
     "pretty-fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
-    "lint-fix": "eslint --fix \"src/**/*.{ts,tsx}\"",
-    "publish": "yarn run lint-fix && yarn build && npm publish"
+    "lint-fix": "eslint --fix \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "glob": "8.0.3",
