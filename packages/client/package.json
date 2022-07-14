@@ -16,6 +16,7 @@
     "publish": "yarn run lint-fix && yarn build && npm publish"
   },
   "dependencies": {
+    "discord.js": "13.8.1",
     "glob": "8.0.3",
     "lodash": "4.17.21"
   },

@@ -1,5 +1,5 @@
 import type * as Discord from "discord.js";
-import type { Client } from "./structures/Client";
+import type { Client } from "./structures/client";
 
 export interface ClientOptions extends Discord.ClientOptions {
   dev: boolean;

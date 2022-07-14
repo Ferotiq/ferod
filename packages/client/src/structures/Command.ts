@@ -8,7 +8,7 @@ import {
   BaseApplicationCommandOptionsData
 } from "discord.js";
 
-import { Client } from "../structures/Client";
+import { Client } from "./client";
 import { toPascalCase } from "../util/toPascalCase";
 import { CommandFunction, CommandOptions } from "../types";
 

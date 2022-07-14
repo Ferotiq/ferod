@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
-import { Command } from "./Command";
-import { Event } from "./Event";
+import { Command } from "./command";
+import { Event } from "./event";
 import type { ClientOptions } from "../types";
 import glob from "glob";
 import { promisify } from "util";
