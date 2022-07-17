@@ -39,7 +39,7 @@ export async function createFeroDCCommand(): Promise<void> {
       name: "type",
       type: "list",
       message: "What type of command do you want to create?",
-      choices: ["CHAT_INPUT", "MESSAGE", "USER"]
+      choices: ["ChatInput", "Message", "User"]
     }
   ]);
 

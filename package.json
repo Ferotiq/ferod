@@ -24,6 +24,6 @@
     "ts-node": "10.8.2"
   },
   "dependencies": {
-    "discord.js": "13.8.1"
+    "discord.js": "14.0.1"
   }
 }

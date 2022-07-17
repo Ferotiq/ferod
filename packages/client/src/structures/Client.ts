@@ -101,7 +101,13 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     if (this.options.commandLoadedMessage) {
       console.table(
         Object.fromEntries(
-          [...this.commands.entries()].map((v) => [v[0], v[1].data])
+          [...this.commands.entries()].map((v) => [
+            v[0],
+            {
+              ...v[1].data,
+              type: Discord.ApplicationCommandType[v[1].data.type]
+            }
+          ])
         ),
         ["description", "type", "options", "category"]
       );
@@ -202,12 +208,13 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
           options: applicationCommand.options.map(mapper)
         };
 
-        const type = command.data.type ?? "CHAT_INPUT";
+        const type =
+          command.data.type ?? Discord.ApplicationCommandType.ChatInput;
 
         const commandObject = {
           name: command.data.name,
           description:
-            type === "CHAT_INPUT"
+            type === Discord.ApplicationCommandType.ChatInput
               ? command.data.description ?? "No description provided"
               : "",
           type,

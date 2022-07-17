@@ -1,40 +1,32 @@
 import * as Discord from "discord.js";
 import { Command, toPascalCase } from "fero-dc";
-import { isEmpty } from "lodash";
 
-export default new Command({
-  name: "help",
-  description: "Shows a help embed",
-  category: "Utility",
-  options: [
+export default new Command()
+  .name("help")
+  .description("Shows a help embed")
+  .category("Utility")
+  .options([
     {
       name: "command",
-      type: "STRING",
-      description: "The command to receive help on",
+      type: Discord.ApplicationCommandOptionType.String,
+      description: "The command to receive help for",
       required: false
     }
-  ],
-  run: async (client, interaction) => {
+  ])
+  .run(async (client, interaction) => {
     const command = client.commands.get(
       interaction.options.getString("command", false) || ""
     );
 
-    const embed = new Discord.MessageEmbed()
+    const embed = new Discord.EmbedBuilder()
       .setTitle("Help")
-      .setColor("RANDOM")
+      .setColor("Random")
       // .setURL("") /* uncomment for dashboard */
       .setAuthor({
         name: interaction.user.username,
-        iconURL:
-          interaction.user.avatarURL({
-            dynamic: true
-          }) || ""
+        iconURL: interaction.user.avatarURL() || ""
       })
-      .setThumbnail(
-        client.user.avatarURL({
-          dynamic: true
-        }) || ""
-      )
+      .setThumbnail(client.user.avatarURL() || "")
       .setTimestamp(interaction.createdTimestamp)
       .setFooter({
         text: "Sent at:"
@@ -48,12 +40,12 @@ export default new Command({
         .addFields([
           {
             name: "Command Name",
-            value: command.name,
+            value: command.data.name,
             inline: true
           },
           {
             name: "Command Description",
-            value: command.description.trim(),
+            value: command.data.description.trim(),
             inline: true
           }
         ]);
@@ -69,20 +61,13 @@ export default new Command({
         ]);
       }
 
-      embed.addField("Command Category", toPascalCase(command.category), true);
-
-      if (!isEmpty(command.guilds)) {
-        embed.addField(
-          "Command Guild(s)",
-          client.guilds.cache
-            .filter((guild) => command.guilds.includes(guild.id))
-            .map((guild) => guild.name)
-            .join(",\n"),
-          true
-        );
-      }
+      embed.addFields({
+        name: "Command Category",
+        value: toPascalCase(command.data.category),
+        inline: true
+      });
     } else {
-      const commands: Discord.EmbedFieldData[] = client.categories.map(
+      const commands: Discord.EmbedField[] = client.categories.map(
         (category) => ({
           name: `${category}${
             category.endsWith("Commands") ? "" : " Commands"
@@ -101,5 +86,4 @@ export default new Command({
     }
 
     return interaction.reply({ embeds: [embed], ephemeral: true });
-  }
-});
+  });

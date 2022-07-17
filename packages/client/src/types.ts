@@ -12,11 +12,11 @@ export interface ClientOptions extends Discord.ClientOptions {
 }
 
 type Interaction<T extends Discord.ApplicationCommandType> =
-  T extends "CHAT_INPUT"
-    ? Discord.CommandInteraction
-    : T extends "MESSAGE"
-    ? Discord.MessageContextMenuInteraction
-    : Discord.UserContextMenuInteraction;
+  T extends Discord.ApplicationCommandType.ChatInput
+    ? Discord.ChatInputCommandInteraction
+    : T extends Discord.ApplicationCommandType.Message
+    ? Discord.MessageContextMenuCommandInteraction
+    : Discord.UserContextMenuCommandInteraction;
 
 export interface CommandFunction<
   T extends Discord.ApplicationCommandType = Discord.ApplicationCommandType
@@ -25,7 +25,7 @@ export interface CommandFunction<
 }
 
 export interface CommandOptions<
-  T extends Discord.ApplicationCommandType = "CHAT_INPUT"
+  T extends Discord.ApplicationCommandType = Discord.ApplicationCommandType.ChatInput
 > {
   name: string;
   description: string;

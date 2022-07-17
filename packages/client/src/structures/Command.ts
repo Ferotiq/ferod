@@ -2,6 +2,7 @@ import {
   ApplicationCommand,
   ApplicationCommandData,
   ApplicationCommandOptionData,
+  ApplicationCommandOptionType,
   ApplicationCommandSubCommand,
   ApplicationCommandSubGroup,
   ApplicationCommandType,
@@ -15,7 +16,9 @@ import { CommandFunction, CommandOptions } from "../types";
 /**
  * A class to easily create commands that interop with Fero-DC
  */
-export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
+export class Command<
+  T extends ApplicationCommandType = ApplicationCommandType.ChatInput
+> {
   private _data: Partial<CommandOptions<T>> = {};
 
   /**
@@ -36,7 +39,7 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
       description: this._data.description,
       category: this._data.category,
       options: this._data.options ?? [],
-      type: this._data.type ?? "CHAT_INPUT",
+      type: this._data.type ?? ApplicationCommandType.ChatInput,
       run: this._data.run
     };
 
@@ -206,9 +209,11 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
 
     const finishedArgs: string[] = [];
 
-    if (args.some((arg) => arg.type === "SUB_COMMAND")) {
+    if (
+      args.some((arg) => arg.type === ApplicationCommandOptionType.Subcommand)
+    ) {
       const subCommands = args.filter(
-        (arg) => arg.type === "SUB_COMMAND"
+        (arg) => arg.type === ApplicationCommandOptionType.Subcommand
       ) as ApplicationCommandSubCommand[];
 
       finishedArgs.push(
@@ -219,7 +224,9 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
                 ? ` ${subCommand.options
                     .map(
                       (option) =>
-                        `<${option.name}: ${toPascalCase(option.type)}>`
+                        `<${option.name}: ${toPascalCase(
+                          ApplicationCommandOptionType[option.type]
+                        )}>`
                     )
                     .join(" ")}`
                 : ""
@@ -228,9 +235,13 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
       );
     }
 
-    if (args.some((arg) => arg.type === "SUB_COMMAND_GROUP")) {
+    if (
+      args.some(
+        (arg) => arg.type === ApplicationCommandOptionType.SubcommandGroup
+      )
+    ) {
       const subCommandGroups = args.filter(
-        (group) => group.type === "SUB_COMMAND_GROUP"
+        (group) => group.type === ApplicationCommandOptionType.SubcommandGroup
       ) as ApplicationCommandSubGroup[];
 
       for (const subCommandGroup of subCommandGroups) {
@@ -246,7 +257,9 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
                   ? ` ${subCommand.options
                       .map(
                         (option) =>
-                          `<${option.name}: ${toPascalCase(option.type)}>`
+                          `<${option.name}: ${toPascalCase(
+                            ApplicationCommandOptionType[option.type]
+                          )}>`
                       )
                       .join(" ")}`
                   : ""
@@ -258,12 +271,19 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
 
     if (
       !args.some((arg) =>
-        ["SUB_COMMAND", "SUB_COMMAND_GROUP"].includes(arg.type)
+        ["SUB_COMMAND", "SUB_COMMAND_GROUP"].includes(
+          ApplicationCommandOptionType[arg.type]
+        )
       )
     ) {
       finishedArgs.push(
         `\`/${this.data.name} ${args
-          .map((arg) => `<${arg.name}: ${toPascalCase(arg.type)}>`)
+          .map(
+            (arg) =>
+              `<${arg.name}: ${toPascalCase(
+                ApplicationCommandOptionType[arg.type]
+              )}>`
+          )
           .join(" ")}\``
       );
     }
@@ -289,7 +309,9 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
     finishedArgs.push(
       ...args.map(
         (arg) =>
-          `\`${arg.name} (${toPascalCase(arg.type)}${
+          `\`${arg.name} (${toPascalCase(
+            ApplicationCommandOptionType[arg.type]
+          )}${
             (arg as BaseApplicationCommandOptionsData).required
               ? ""
               : ", optional"
@@ -297,9 +319,11 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
       )
     );
 
-    if (args.some((arg) => arg.type === "SUB_COMMAND")) {
+    if (
+      args.some((arg) => arg.type === ApplicationCommandOptionType.Subcommand)
+    ) {
       const subCommands = args.filter(
-        (arg) => arg.type === "SUB_COMMAND"
+        (arg) => arg.type === ApplicationCommandOptionType.Subcommand
       ) as ApplicationCommandSubCommand[];
 
       for (const subCommand of subCommands) {
@@ -311,7 +335,7 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
           ...subCommand.options.map(
             (option) =>
               `\`${subCommand.name}.${option.name} (${toPascalCase(
-                option.type
+                ApplicationCommandOptionType[option.type]
               )}${option.required ? "" : ", optional"})\`: ${
                 option.description
               }`
@@ -320,9 +344,13 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
       }
     }
 
-    if (args.some((arg) => arg.type === "SUB_COMMAND_GROUP")) {
+    if (
+      args.some(
+        (arg) => arg.type === ApplicationCommandOptionType.SubcommandGroup
+      )
+    ) {
       const subCommandGroups = args.filter(
-        (arg) => arg.type === "SUB_COMMAND_GROUP"
+        (arg) => arg.type === ApplicationCommandOptionType.SubcommandGroup
       ) as ApplicationCommandSubGroup[];
 
       for (const subCommandGroup of subCommandGroups) {
@@ -337,7 +365,7 @@ export class Command<T extends ApplicationCommandType = "CHAT_INPUT"> {
             ...subCommand.options.map(
               (option) =>
                 `\`${subCommand.name}.${option.name} (${toPascalCase(
-                  option.type
+                  ApplicationCommandOptionType[option.type]
                 )}${option.required ? "" : ", optional"})\`: ${
                   option.description
                 }`

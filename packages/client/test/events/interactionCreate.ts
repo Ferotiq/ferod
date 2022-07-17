@@ -3,7 +3,7 @@ import { Event } from "../../src";
 export default new Event<"interactionCreate">()
   .event("interactionCreate")
   .run(async (client, interaction) => {
-    if (!interaction.isCommand()) {
+    if (!interaction.isChatInputCommand()) {
       return;
     }
 
