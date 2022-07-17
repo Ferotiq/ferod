@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
-import { Command } from "./command";
-import { Event } from "./event";
+import { CommandBuilder } from "./command";
+import { EventBuilder } from "./event";
 import type { ClientOptions } from "../types";
 import glob from "glob";
 import { promisify } from "util";
@@ -32,7 +32,7 @@ import { isEqual } from "lodash";
  */
 export class Client<T extends boolean = boolean> extends Discord.Client<T> {
   public declare options: ClientOptions;
-  public commands = new Discord.Collection<string, Command>();
+  public commands = new Discord.Collection<string, CommandBuilder>();
   public categories: string[] = [];
   private glob = promisify(glob);
 
@@ -123,7 +123,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
   /**
    * Loads commands, events, and application commands into the bot.
    */
-  public async load(): Promise<Event[]> {
+  public async load(): Promise<EventBuilder[]> {
     this.checkPaths();
 
     // add commands
@@ -132,7 +132,9 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     );
 
     const commands = await Promise.all(
-      commandFiles.map((fileName) => this.import<Command>(fileName, Command))
+      commandFiles.map((fileName) =>
+        this.import<CommandBuilder>(fileName, CommandBuilder)
+      )
     );
 
     for (const command of commands) {
@@ -147,7 +149,9 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     );
 
     const events = await Promise.all(
-      eventFiles.map((fileName) => this.import<Event>(fileName, Event))
+      eventFiles.map((fileName) =>
+        this.import<EventBuilder>(fileName, EventBuilder)
+      )
     );
 
     for (const event of events) {
@@ -279,7 +283,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
    */
   public getCommandsByCategory(
     category: string
-  ): Discord.Collection<string, Command> {
+  ): Discord.Collection<string, CommandBuilder> {
     return this.commands.filter((cmd) => cmd.data.category === category);
   }
 }

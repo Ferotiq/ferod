@@ -1,7 +1,7 @@
 import * as Discord from "discord.js";
-import { Command, toPascalCase } from "fero-dc";
+import { CommandBuilder, toPascalCase } from "fero-dc";
 
-export default new Command()
+export default new CommandBuilder()
   .name("help")
   .description("Shows a help embed")
   .category("Utility")

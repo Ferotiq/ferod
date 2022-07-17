@@ -16,7 +16,7 @@ import { CommandFunction, CommandOptions } from "../types";
 /**
  * A class to easily create commands that interop with Fero-DC
  */
-export class Command<
+export class CommandBuilder<
   T extends ApplicationCommandType = ApplicationCommandType.ChatInput
 > {
   private _data: Partial<CommandOptions<T>> = {};

@@ -4,7 +4,7 @@ import { EventFunction, EventOptions } from "../types";
 /**
  * A class to easily create events that interop with Fero-DC
  */
-export class Event<
+export class EventBuilder<
   E extends keyof Discord.ClientEvents = keyof Discord.ClientEvents
 > {
   private _data: Partial<EventOptions<E>> = {};

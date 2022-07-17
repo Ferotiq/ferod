@@ -1,6 +1,6 @@
-import { Event } from "../../src";
+import { EventBuilder } from "../../src";
 
-export default new Event<"interactionCreate">()
+export default new EventBuilder<"interactionCreate">()
   .event("interactionCreate")
   .run(async (client, interaction) => {
     if (!interaction.isChatInputCommand()) {

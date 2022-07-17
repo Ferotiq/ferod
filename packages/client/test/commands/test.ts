@@ -1,6 +1,6 @@
-import { Command } from "../../src";
+import { CommandBuilder } from "../../src";
 
-export default new Command()
+export default new CommandBuilder()
   .name("test")
   .description("Test Command")
   .category("Test")
