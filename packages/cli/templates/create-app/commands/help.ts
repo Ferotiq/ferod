@@ -5,14 +5,12 @@ export default new CommandBuilder()
   .name("help")
   .description("Shows a help embed")
   .category("Utility")
-  .options([
-    {
-      name: "command",
-      type: Discord.ApplicationCommandOptionType.String,
-      description: "The command to receive help for",
-      required: false
-    }
-  ])
+  .options({
+    name: "command",
+    type: Discord.ApplicationCommandOptionType.String,
+    description: "The command to receive help for",
+    required: false
+  })
   .run(async (client, interaction) => {
     const command = client.commands.get(
       interaction.options.getString("command", false) || ""

@@ -76,8 +76,12 @@ export class CommandBuilder<
   /**
    * Sets the options
    */
-  public options(options: ApplicationCommandOptionData[]): this {
-    this._data.options = options;
+  public options(
+    ...options:
+      | ApplicationCommandOptionData[]
+      | ApplicationCommandOptionData[][]
+  ): this {
+    this._data.options = options.flat();
 
     return this;
   }
