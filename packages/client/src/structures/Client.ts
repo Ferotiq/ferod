@@ -162,7 +162,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     }
 
     const applicationCommands = this.options.dev
-      ? await this.fetchApplicationCommands(this.options.devGuildID)
+      ? await this.fetchApplicationCommands(this.options.devGuildId)
       : await this.fetchApplicationCommands();
 
     if (applicationCommands) {
@@ -256,21 +256,18 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
   /**
    * Fetch all the application commands from the bot
-   * @param guildID The guild to fetch from
+   * @param guildId The guild to fetch from
    */
   public async fetchApplicationCommands(
-    guildID?: string
+    guildId?: string
   ): Promise<
     Discord.Collection<string, Discord.ApplicationCommand> | undefined
   > {
     const options: Discord.FetchApplicationCommandOptions = {
       cache: true,
-      force: true
+      force: true,
+      guildId
     };
-
-    if (guildID) {
-      options.guildId = guildID;
-    }
 
     const commands = await this.application?.commands.fetch(options);
 

@@ -132,7 +132,7 @@ export class CommandBuilder<
     const app = await (client.options.dev
       ? client.application.commands.create(
           this.applicationCommandData,
-          client.options.devGuildID
+          client.options.devGuildId
         )
       : client.application.commands.create(this.applicationCommandData)
     ).catch(() => undefined);
@@ -156,7 +156,7 @@ export class CommandBuilder<
    */
   public async fetch(client: Client): Promise<ApplicationCommand | undefined> {
     const applicationCommands = client.options.dev
-      ? await client.fetchApplicationCommands(client.options.devGuildID)
+      ? await client.fetchApplicationCommands(client.options.devGuildId)
       : await client.fetchApplicationCommands();
 
     if (applicationCommands === undefined) {

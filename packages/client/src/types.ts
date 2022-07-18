@@ -3,7 +3,7 @@ import type { Client } from "./structures/client";
 
 export interface ClientOptions extends Discord.ClientOptions {
   dev: boolean;
-  devGuildID: Discord.Snowflake;
+  devGuildId: Discord.Snowflake;
   commandsPath: string;
   eventsPath: string;
   commandLoadedMessage?: boolean;
