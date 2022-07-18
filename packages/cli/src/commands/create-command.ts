@@ -1,5 +1,5 @@
 import inquirer from "inquirer";
-import type { ApplicationCommandType } from "discord.js";
+import type * as Discord from "discord.js";
 // import { Options } from "../types";
 
 interface Answers {
@@ -7,7 +7,7 @@ interface Answers {
   name: string;
   description: string;
   category: string;
-  type: ApplicationCommandType;
+  type: Discord.ApplicationCommandType;
 }
 
 /**

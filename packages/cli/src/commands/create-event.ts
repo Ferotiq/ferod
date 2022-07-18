@@ -1,5 +1,5 @@
 import inquirer from "inquirer";
-import type { ClientEvents } from "discord.js";
+import type * as Discord from "discord.js";
 // import { Options } from "../types";
 
 // TODO: find a better way to do this
@@ -83,7 +83,7 @@ const events = [
 
 interface Answers {
   fileName: string;
-  event: keyof ClientEvents;
+  event: keyof Discord.ClientEvents;
 }
 
 /**
