@@ -1,11 +1,11 @@
 import * as Discord from "discord.js";
-import glob from "glob";
 import _ from "lodash";
 import type { ClientOptions } from "../types";
 import { CommandBuilder } from "./command";
 import { EventBuilder } from "./event";
 import { promisify } from "util";
-import { existsSync, mkdirSync } from "fs";
+import glob from "glob";
+import * as fs from "fs";
 import { resolve } from "path";
 
 /**
@@ -57,16 +57,18 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
    */
   private checkPaths() {
     // commands
-    if (!existsSync(this.options.commandsPath)) {
-      mkdirSync(this.options.commandsPath, { recursive: true });
+    if (!fs.existsSync(this.options.commandsPath)) {
+      fs.mkdirSync(this.options.commandsPath, { recursive: true });
+
       console.warn(
         "The commands directory has been created using the path provided."
       );
     }
 
     // events
-    if (!existsSync(this.options.eventsPath)) {
-      mkdirSync(this.options.eventsPath, { recursive: true });
+    if (!fs.existsSync(this.options.eventsPath)) {
+      fs.mkdirSync(this.options.eventsPath, { recursive: true });
+
       console.warn(
         "The events directory has been created using the path provided."
       );
