@@ -6,7 +6,7 @@ import glob from "glob";
 import { promisify } from "util";
 import { existsSync, mkdirSync } from "fs";
 import { resolve } from "path";
-import { isEqual } from "lodash";
+import _ from "lodash";
 
 /**
  * A simple yet powerful client that extends Discord.JS's client and automates many features for you
@@ -184,32 +184,14 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
           continue;
         }
 
-        const mapper = (
-          option: Discord.ApplicationCommandOptionData
-        ): Discord.ApplicationCommandOptionData => {
-          type Keys = keyof typeof option;
-
-          type Values = typeof option[Keys];
-
-          type Entries = [Keys, Values];
-
-          for (const [key, value] of Object.entries(option) as Entries[]) {
-            if (
-              value === undefined ||
-              (Array.isArray(value) && value.length === 0)
-            ) {
-              delete option[key];
-            }
-          }
-
-          return option;
-        };
+        const stripOption = (option: Discord.ApplicationCommandOptionData) =>
+          _(option).omitBy(_.isUndefined).omitBy(_.isEmpty).value();
 
         const cmdObject = {
           name: applicationCommand.name,
           description: applicationCommand.description,
           type: applicationCommand.type,
-          options: applicationCommand.options.map(mapper)
+          options: applicationCommand.options.map(stripOption)
         };
 
         const type =
@@ -222,10 +204,10 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
               ? command.data.description ?? "No description provided"
               : "",
           type,
-          options: (command.data.options ?? []).map(mapper)
+          options: (command.data.options ?? []).map(stripOption)
         };
 
-        if (isEqual(cmdObject, commandObject)) {
+        if (_.isEqual(cmdObject, commandObject)) {
           continue;
         }
 
