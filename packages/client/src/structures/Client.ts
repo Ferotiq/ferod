@@ -109,7 +109,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
             }
           ])
         ),
-        ["description", "type", "options", "category"]
+        ["description", "type", "category", "options"]
       );
     }
 
