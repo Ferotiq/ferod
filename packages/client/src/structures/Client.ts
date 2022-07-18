@@ -250,15 +250,11 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
   ): Promise<
     Discord.Collection<string, Discord.ApplicationCommand> | undefined
   > {
-    const options: Discord.FetchApplicationCommandOptions = {
+    return this.application?.commands.fetch({
       cache: true,
       force: true,
       guildId
-    };
-
-    const commands = await this.application?.commands.fetch(options);
-
-    return commands;
+    });
   }
 
   /**
