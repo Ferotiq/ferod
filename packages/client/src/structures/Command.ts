@@ -10,7 +10,7 @@ import {
 } from "discord.js";
 
 import { Client } from "./client";
-import { toPascalCase } from "../util/toPascalCase";
+import { toPascalCase } from "../util";
 import { CommandFunction, CommandOptions } from "../types";
 
 /**
