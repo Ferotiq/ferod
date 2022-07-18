@@ -8,7 +8,7 @@ export interface ClientOptions extends Discord.ClientOptions {
   eventsPath: string;
   commandLoadedMessage?: boolean;
   deleteUnusedApplicationCommands?: boolean;
-  editApplicationCommands?: "all" | "guild" | "global" | "off";
+  editApplicationCommands?: boolean;
 }
 
 type Interaction<T extends Discord.ApplicationCommandType> =
