@@ -185,7 +185,10 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
         }
 
         const stripOption = (option: Discord.ApplicationCommandOptionData) =>
-          _(option).omitBy(_.isUndefined).omitBy(_.isEmpty).value();
+          _(option)
+            .omitBy(_.isNil)
+            .omitBy((v) => Array.isArray(v) && _.isEmpty(v))
+            .value();
 
         const cmdObject = {
           name: applicationCommand.name,
@@ -197,12 +200,14 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
         const type =
           command.data.type ?? Discord.ApplicationCommandType.ChatInput;
 
+        const description =
+          type === Discord.ApplicationCommandType.ChatInput
+            ? command.data.description ?? "No description provided"
+            : "";
+
         const commandObject = {
           name: command.data.name,
-          description:
-            type === Discord.ApplicationCommandType.ChatInput
-              ? command.data.description ?? "No description provided"
-              : "",
+          description,
           type,
           options: (command.data.options ?? []).map(stripOption)
         };
