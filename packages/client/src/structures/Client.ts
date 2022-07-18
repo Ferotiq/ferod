@@ -1,12 +1,12 @@
 import * as Discord from "discord.js";
+import glob from "glob";
+import _ from "lodash";
+import type { ClientOptions } from "../types";
 import { CommandBuilder } from "./command";
 import { EventBuilder } from "./event";
-import type { ClientOptions } from "../types";
-import glob from "glob";
 import { promisify } from "util";
 import { existsSync, mkdirSync } from "fs";
 import { resolve } from "path";
-import _ from "lodash";
 
 /**
  * A simple yet powerful client that extends Discord.JS's client and automates many features for you
