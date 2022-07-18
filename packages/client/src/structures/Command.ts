@@ -1,13 +1,4 @@
-import {
-  ApplicationCommand,
-  ApplicationCommandData,
-  ApplicationCommandOptionData,
-  ApplicationCommandOptionType,
-  ApplicationCommandSubCommand,
-  ApplicationCommandSubGroup,
-  ApplicationCommandType,
-  BaseApplicationCommandOptionsData
-} from "discord.js";
+import * as Discord from "discord.js";
 
 import { Client } from "./client";
 import { toPascalCase } from "../util";
@@ -17,7 +8,7 @@ import { CommandFunction, CommandOptions } from "../types";
  * A class to easily create commands that interop with Fero-DC
  */
 export class CommandBuilder<
-  T extends ApplicationCommandType = ApplicationCommandType.ChatInput
+  T extends Discord.ApplicationCommandType = Discord.ApplicationCommandType.ChatInput
 > {
   private _data: Partial<CommandOptions<T>> = {};
 
@@ -39,7 +30,7 @@ export class CommandBuilder<
       description: this._data.description,
       category: this._data.category,
       options: this._data.options ?? [],
-      type: this._data.type ?? ApplicationCommandType.ChatInput,
+      type: this._data.type ?? Discord.ApplicationCommandType.ChatInput,
       run: this._data.run
     };
 
@@ -78,8 +69,8 @@ export class CommandBuilder<
    */
   public options(
     ...options:
-      | ApplicationCommandOptionData[]
-      | ApplicationCommandOptionData[][]
+      | Discord.ApplicationCommandOptionData[]
+      | Discord.ApplicationCommandOptionData[][]
   ): this {
     this._data.options = options.flat();
 
@@ -107,7 +98,7 @@ export class CommandBuilder<
   /**
    * The application command data from this command
    */
-  public get applicationCommandData(): ApplicationCommandData {
+  public get applicationCommandData(): Discord.ApplicationCommandData {
     return {
       name: this.data.name,
       description: this.data.description,
@@ -122,7 +113,7 @@ export class CommandBuilder<
    */
   public async create(
     client: Client<true>
-  ): Promise<ApplicationCommand | ApplicationCommand[]> {
+  ): Promise<Discord.ApplicationCommand | Discord.ApplicationCommand[]> {
     const applicationCommand = await this.fetch(client);
 
     if (applicationCommand !== undefined) {
@@ -147,14 +138,16 @@ export class CommandBuilder<
       );
     }
 
-    return app as ApplicationCommand | ApplicationCommand[];
+    return app as Discord.ApplicationCommand | Discord.ApplicationCommand[];
   }
 
   /**
    * Fetches the command from Discord
    * @param client The client to fetch the command from
    */
-  public async fetch(client: Client): Promise<ApplicationCommand | undefined> {
+  public async fetch(
+    client: Client
+  ): Promise<Discord.ApplicationCommand | undefined> {
     const applicationCommands = client.options.dev
       ? await client.fetchApplicationCommands(client.options.devGuildId)
       : await client.fetchApplicationCommands();
@@ -174,11 +167,13 @@ export class CommandBuilder<
    * Edit this application command on Discord with the options of this command
    * @param client The client to edit the command on
    */
-  public async edit(client: Client): Promise<ApplicationCommand> {
+  public async edit(client: Client): Promise<Discord.ApplicationCommand> {
     let applicationCommand = await this.fetch(client);
 
     if (!applicationCommand) {
-      applicationCommand = (await this.create(client)) as ApplicationCommand;
+      applicationCommand = (await this.create(
+        client
+      )) as Discord.ApplicationCommand;
     }
 
     return applicationCommand.edit(this.applicationCommandData);
@@ -188,7 +183,9 @@ export class CommandBuilder<
    * Deletes this command from Discord
    * @param client The client to delete the command on
    */
-  public async delete(client: Client): Promise<ApplicationCommand | undefined> {
+  public async delete(
+    client: Client
+  ): Promise<Discord.ApplicationCommand | undefined> {
     const applicationCommand = await this.fetch(client);
 
     if (applicationCommand) {
@@ -214,11 +211,13 @@ export class CommandBuilder<
     const finishedArgs: string[] = [];
 
     if (
-      args.some((arg) => arg.type === ApplicationCommandOptionType.Subcommand)
+      args.some(
+        (arg) => arg.type === Discord.ApplicationCommandOptionType.Subcommand
+      )
     ) {
       const subCommands = args.filter(
-        (arg) => arg.type === ApplicationCommandOptionType.Subcommand
-      ) as ApplicationCommandSubCommand[];
+        (arg) => arg.type === Discord.ApplicationCommandOptionType.Subcommand
+      ) as Discord.ApplicationCommandSubCommand[];
 
       finishedArgs.push(
         ...subCommands.map(
@@ -229,7 +228,7 @@ export class CommandBuilder<
                     .map(
                       (option) =>
                         `<${option.name}: ${toPascalCase(
-                          ApplicationCommandOptionType[option.type]
+                          Discord.ApplicationCommandOptionType[option.type]
                         )}>`
                     )
                     .join(" ")}`
@@ -241,12 +240,14 @@ export class CommandBuilder<
 
     if (
       args.some(
-        (arg) => arg.type === ApplicationCommandOptionType.SubcommandGroup
+        (arg) =>
+          arg.type === Discord.ApplicationCommandOptionType.SubcommandGroup
       )
     ) {
       const subCommandGroups = args.filter(
-        (group) => group.type === ApplicationCommandOptionType.SubcommandGroup
-      ) as ApplicationCommandSubGroup[];
+        (group) =>
+          group.type === Discord.ApplicationCommandOptionType.SubcommandGroup
+      ) as Discord.ApplicationCommandSubGroup[];
 
       for (const subCommandGroup of subCommandGroups) {
         const name = subCommandGroup.name;
@@ -262,7 +263,7 @@ export class CommandBuilder<
                       .map(
                         (option) =>
                           `<${option.name}: ${toPascalCase(
-                            ApplicationCommandOptionType[option.type]
+                            Discord.ApplicationCommandOptionType[option.type]
                           )}>`
                       )
                       .join(" ")}`
@@ -276,7 +277,7 @@ export class CommandBuilder<
     if (
       !args.some((arg) =>
         ["SUB_COMMAND", "SUB_COMMAND_GROUP"].includes(
-          ApplicationCommandOptionType[arg.type]
+          Discord.ApplicationCommandOptionType[arg.type]
         )
       )
     ) {
@@ -285,7 +286,7 @@ export class CommandBuilder<
           .map(
             (arg) =>
               `<${arg.name}: ${toPascalCase(
-                ApplicationCommandOptionType[arg.type]
+                Discord.ApplicationCommandOptionType[arg.type]
               )}>`
           )
           .join(" ")}\``
@@ -314,9 +315,9 @@ export class CommandBuilder<
       ...args.map(
         (arg) =>
           `\`${arg.name} (${toPascalCase(
-            ApplicationCommandOptionType[arg.type]
+            Discord.ApplicationCommandOptionType[arg.type]
           )}${
-            (arg as BaseApplicationCommandOptionsData).required
+            (arg as Discord.BaseApplicationCommandOptionsData).required
               ? ""
               : ", optional"
           })\`: ${arg.description}`
@@ -324,11 +325,13 @@ export class CommandBuilder<
     );
 
     if (
-      args.some((arg) => arg.type === ApplicationCommandOptionType.Subcommand)
+      args.some(
+        (arg) => arg.type === Discord.ApplicationCommandOptionType.Subcommand
+      )
     ) {
       const subCommands = args.filter(
-        (arg) => arg.type === ApplicationCommandOptionType.Subcommand
-      ) as ApplicationCommandSubCommand[];
+        (arg) => arg.type === Discord.ApplicationCommandOptionType.Subcommand
+      ) as Discord.ApplicationCommandSubCommand[];
 
       for (const subCommand of subCommands) {
         if (!subCommand.options) {
@@ -339,7 +342,7 @@ export class CommandBuilder<
           ...subCommand.options.map(
             (option) =>
               `\`${subCommand.name}.${option.name} (${toPascalCase(
-                ApplicationCommandOptionType[option.type]
+                Discord.ApplicationCommandOptionType[option.type]
               )}${option.required ? "" : ", optional"})\`: ${
                 option.description
               }`
@@ -350,12 +353,14 @@ export class CommandBuilder<
 
     if (
       args.some(
-        (arg) => arg.type === ApplicationCommandOptionType.SubcommandGroup
+        (arg) =>
+          arg.type === Discord.ApplicationCommandOptionType.SubcommandGroup
       )
     ) {
       const subCommandGroups = args.filter(
-        (arg) => arg.type === ApplicationCommandOptionType.SubcommandGroup
-      ) as ApplicationCommandSubGroup[];
+        (arg) =>
+          arg.type === Discord.ApplicationCommandOptionType.SubcommandGroup
+      ) as Discord.ApplicationCommandSubGroup[];
 
       for (const subCommandGroup of subCommandGroups) {
         const subCommands = subCommandGroup.options || [];
@@ -369,7 +374,7 @@ export class CommandBuilder<
             ...subCommand.options.map(
               (option) =>
                 `\`${subCommand.name}.${option.name} (${toPascalCase(
-                  ApplicationCommandOptionType[option.type]
+                  Discord.ApplicationCommandOptionType[option.type]
                 )}${option.required ? "" : ", optional"})\`: ${
                   option.description
                 }`
