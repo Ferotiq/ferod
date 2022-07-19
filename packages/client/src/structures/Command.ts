@@ -136,7 +136,7 @@ export class CommandBuilder<
       );
     }
 
-    return app as Discord.ApplicationCommand | Discord.ApplicationCommand[];
+    return app;
   }
 
   /**

@@ -224,8 +224,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
         await applicationCommand.edit({
           ...toEdit,
-          options: command.data
-            .options as Discord.ApplicationCommandOptionData[]
+          options: command.data.options
         });
 
         console.log(`Edited application command ${command.data.name}`);
