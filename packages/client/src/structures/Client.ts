@@ -232,11 +232,21 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
       }
 
       // delete application commands
-      for (const applicationCommand of applicationCommands.values()) {
-        if (
-          this.options.deleteUnusedApplicationCommands &&
-          !this.commands.has(applicationCommand.name)
-        ) {
+      if (this.options.deleteUnusedApplicationCommands) {
+        const otherApplicationCommands =
+          (this.options.dev
+            ? await this.fetchApplicationCommands()
+            : await this.fetchApplicationCommands(this.options.devGuildId)) ??
+          new Discord.Collection();
+
+        const toDelete: Discord.ApplicationCommand[] = [
+          ...applicationCommands
+            .concat(otherApplicationCommands)
+            .filter((appCmd) => !this.commands.has(appCmd.name))
+            .values()
+        ];
+
+        for (const applicationCommand of toDelete) {
           await applicationCommand.delete();
 
           console.log(`Deleted application command ${applicationCommand.name}`);
