@@ -102,18 +102,22 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     const events = await this.load();
 
     if (this.options.commandLoadedMessage) {
-      console.table(
-        Object.fromEntries(
-          this.commands.map((command, name) => [
-            name,
-            {
-              ...command,
-              type: Discord.ApplicationCommandType[command.data.type]
-            }
-          ])
-        ),
-        ["description", "type", "category", "options"]
-      );
+      const commandEntries = this.commands.map((command, name) => [
+        name,
+        {
+          ...command.data,
+          type: Discord.ApplicationCommandType[command.data.type]
+        }
+      ]);
+
+      const commandObject = Object.fromEntries(commandEntries);
+
+      console.table(commandObject, [
+        "description",
+        "type",
+        "category",
+        "options"
+      ]);
     }
 
     console.log(
