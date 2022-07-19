@@ -1,5 +1,5 @@
 import * as Discord from "discord.js";
-import _ from "lodash";
+import { isEqual } from "lodash";
 import type { ClientOptions } from "../types";
 import { CommandBuilder } from "./command";
 import { EventBuilder } from "./event";
@@ -7,6 +7,7 @@ import { promisify } from "util";
 import glob from "glob";
 import * as fs from "fs";
 import { resolve } from "path";
+import { quickClean } from "../util";
 
 /**
  * A simple yet powerful client that extends Discord.JS's client and automates many features for you
@@ -186,19 +187,6 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
           continue;
         }
 
-        const stripOption = (option: Discord.ApplicationCommandOptionData) =>
-          _(option)
-            .omitBy(_.isNil)
-            .omitBy((v) => Array.isArray(v) && _.isEmpty(v))
-            .value();
-
-        const cmdObject = {
-          name: applicationCommand.name,
-          description: applicationCommand.description,
-          type: applicationCommand.type,
-          options: applicationCommand.options.map(stripOption)
-        };
-
         const type =
           command.data.type ?? Discord.ApplicationCommandType.ChatInput;
 
@@ -207,19 +195,29 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
             ? command.data.description ?? "No description provided"
             : "";
 
-        const commandObject = {
+        const toEdit = quickClean({
           name: command.data.name,
           description,
           type,
-          options: (command.data.options ?? []).map(stripOption)
-        };
+          options: command.data.options ?? []
+        });
 
-        if (_.isEqual(cmdObject, commandObject)) {
+        if (
+          isEqual(
+            toEdit,
+            quickClean({
+              name: applicationCommand.name,
+              description: applicationCommand.description,
+              type: applicationCommand.type,
+              options: applicationCommand.options
+            })
+          )
+        ) {
           continue;
         }
 
         await applicationCommand.edit({
-          ...commandObject,
+          ...toEdit,
           options: command.data
             .options as Discord.ApplicationCommandOptionData[]
         });
