@@ -10,7 +10,7 @@ import { resolve } from "path";
 import { quickClean } from "../util";
 
 /**
- * A simple yet powerful client that extends Discord.JS's client and automates many features for you
+ * A simple yet powerful Discord.JS client that automates many features for you
  * @example
  * ```ts
  * import { Client } from "fero-dc";
