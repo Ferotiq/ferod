@@ -45,11 +45,16 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
   public constructor(options: ClientOptions, dirname: string) {
     super(options);
 
-    this.options = options;
+    this.options = {
+      ...options,
+      commandsPath: resolve(dirname, options.commandsPath),
+      eventsPath: resolve(dirname, options.eventsPath)
+    };
 
-    if (dirname !== undefined) {
-      this.options.commandsPath = resolve(dirname, options.commandsPath);
-      this.options.eventsPath = resolve(dirname, options.eventsPath);
+    if (options.dev && !options.devGuildId) {
+      throw new Error(
+        "You must provide a dev guild id if you are in dev mode."
+      );
     }
   }
 
