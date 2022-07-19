@@ -104,11 +104,11 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     if (this.options.commandLoadedMessage) {
       console.table(
         Object.fromEntries(
-          [...this.commands.entries()].map((v) => [
-            v[0],
+          this.commands.map((command, name) => [
+            name,
             {
-              ...v[1].data,
-              type: Discord.ApplicationCommandType[v[1].data.type]
+              ...command,
+              type: Discord.ApplicationCommandType[command.data.type]
             }
           ])
         ),
@@ -144,7 +144,9 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
       this.commands.set(command.data.name, command);
     }
 
-    this.categories = [...new Set(this.commands.map((v) => v.data.category))];
+    this.categories = [
+      ...new Set(this.commands.map((command) => command.data.category))
+    ];
 
     // add events
     const eventFiles = await this.glob(
