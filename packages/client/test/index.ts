@@ -9,7 +9,7 @@ config({ path: "./test/.env" });
 import * as fs from "fs";
 
 const conf = JSON.parse(
-  fs.readFileSync("./test/config/config.json").toString() || "null"
+  fs.readFileSync("./test/config/config.json").toString()
 );
 
 if (!conf) {

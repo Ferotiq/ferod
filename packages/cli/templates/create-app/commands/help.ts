@@ -13,7 +13,7 @@ export default new CommandBuilder()
   })
   .run(async (client, interaction) => {
     const command = client.commands.get(
-      interaction.options.getString("command", false) || ""
+      interaction.options.getString("command", false) ?? ""
     );
 
     const embed = new Discord.EmbedBuilder()
@@ -22,9 +22,9 @@ export default new CommandBuilder()
       // .setURL("") /* uncomment for dashboard */
       .setAuthor({
         name: interaction.user.username,
-        iconURL: interaction.user.avatarURL() || ""
+        iconURL: interaction.user.avatarURL() ?? ""
       })
-      .setThumbnail(client.user.avatarURL() || "")
+      .setThumbnail(client.user.avatarURL() ?? "")
       .setTimestamp(interaction.createdTimestamp)
       .setFooter({
         text: "Sent at:"

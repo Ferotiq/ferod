@@ -250,7 +250,7 @@ export class CommandBuilder<
       for (const subCommandGroup of subCommandGroups) {
         const name = subCommandGroup.name;
 
-        const subCommands = subCommandGroup.options || [];
+        const subCommands = subCommandGroup.options ?? [];
 
         finishedArgs.push(
           ...subCommands.map(
@@ -355,7 +355,7 @@ export class CommandBuilder<
       ) as Discord.ApplicationCommandSubGroup[];
 
       for (const subCommandGroup of subCommandGroups) {
-        const subCommands = subCommandGroup.options || [];
+        const subCommands = subCommandGroup.options ?? [];
 
         for (const subCommand of subCommands) {
           if (!subCommand.options) {
