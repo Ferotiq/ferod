@@ -7,7 +7,7 @@ import { promisify } from "util";
 import glob from "glob";
 import * as fs from "fs";
 import { resolve } from "path";
-import { quickClean } from "../util";
+import { quickClean } from "../util/misc";
 
 /**
  * A simple yet powerful Discord.JS client that automates many features for you
