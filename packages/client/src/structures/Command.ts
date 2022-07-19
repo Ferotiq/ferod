@@ -1,7 +1,5 @@
 import * as Discord from "discord.js";
-
 import { Client } from "./client";
-import { toPascalCase } from "../util";
 import { CommandFunction, CommandOptions } from "../types";
 
 /**
@@ -227,9 +225,9 @@ export class CommandBuilder<
                 ? ` ${subCommand.options
                     .map(
                       (option) =>
-                        `<${option.name}: ${toPascalCase(
+                        `<${option.name}: ${
                           Discord.ApplicationCommandOptionType[option.type]
-                        )}>`
+                        }>`
                     )
                     .join(" ")}`
                 : ""
@@ -262,9 +260,9 @@ export class CommandBuilder<
                   ? ` ${subCommand.options
                       .map(
                         (option) =>
-                          `<${option.name}: ${toPascalCase(
+                          `<${option.name}: ${
                             Discord.ApplicationCommandOptionType[option.type]
-                          )}>`
+                          }>`
                       )
                       .join(" ")}`
                   : ""
@@ -285,9 +283,7 @@ export class CommandBuilder<
         `\`/${this.data.name} ${args
           .map(
             (arg) =>
-              `<${arg.name}: ${toPascalCase(
-                Discord.ApplicationCommandOptionType[arg.type]
-              )}>`
+              `<${arg.name}: ${Discord.ApplicationCommandOptionType[arg.type]}>`
           )
           .join(" ")}\``
       );
@@ -314,9 +310,7 @@ export class CommandBuilder<
     finishedArgs.push(
       ...args.map(
         (arg) =>
-          `\`${arg.name} (${toPascalCase(
-            Discord.ApplicationCommandOptionType[arg.type]
-          )}${
+          `\`${arg.name} (${Discord.ApplicationCommandOptionType[arg.type]}${
             (arg as Discord.BaseApplicationCommandOptionsData).required
               ? ""
               : ", optional"
@@ -341,11 +335,9 @@ export class CommandBuilder<
         finishedArgs.push(
           ...subCommand.options.map(
             (option) =>
-              `\`${subCommand.name}.${option.name} (${toPascalCase(
+              `\`${subCommand.name}.${option.name} (${
                 Discord.ApplicationCommandOptionType[option.type]
-              )}${option.required ? "" : ", optional"})\`: ${
-                option.description
-              }`
+              }${option.required ? "" : ", optional"})\`: ${option.description}`
           )
         );
       }
@@ -373,9 +365,9 @@ export class CommandBuilder<
           finishedArgs.push(
             ...subCommand.options.map(
               (option) =>
-                `\`${subCommand.name}.${option.name} (${toPascalCase(
+                `\`${subCommand.name}.${option.name} (${
                   Discord.ApplicationCommandOptionType[option.type]
-                )}${option.required ? "" : ", optional"})\`: ${
+                }${option.required ? "" : ", optional"})\`: ${
                   option.description
                 }`
             )
