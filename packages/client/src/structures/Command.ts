@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
 import { Client } from "./client";
-import { CommandFunction, CommandOptions } from "../types";
+import { CommandFunction, CommandOptions, Option } from "../types";
 
 /**
  * A class to easily create commands that interop with Fero-DC
@@ -195,136 +195,158 @@ export class CommandBuilder<
 
   /**
    * Outputs a string representation of how to use this command
-   * @param client The client to fetch the command from
    */
-  public async getUsage(client: Client): Promise<string | undefined> {
-    const applicationCommand = await this.fetch(client);
+  public getUsage(): string {
+    const optionTree = this.getOptionsTree();
 
-    const args = applicationCommand?.options;
+    const lines: string[] = optionTree.map(
+      (options) =>
+        `\`/${this.data.name} ${options
+          .map((option) => {
+            if (
+              [
+                Discord.ApplicationCommandOptionType.SubcommandGroup,
+                Discord.ApplicationCommandOptionType.Subcommand
+              ].includes(option.type)
+            ) {
+              return option.name;
+            }
 
-    if (!args) {
-      return undefined;
-    }
+            const name = option.optional ? `[${option.name}]` : option.name;
 
-    const finishedArgs: string[] = [];
-
-    if (
-      args.some(
-        (arg) => arg.type === Discord.ApplicationCommandOptionType.Subcommand
-      )
-    ) {
-      const subCommands = args.filter(
-        (arg) => arg.type === Discord.ApplicationCommandOptionType.Subcommand
-      ) as Discord.ApplicationCommandSubCommand[];
-
-      finishedArgs.push(
-        ...subCommands.map(
-          (subCommand) =>
-            `\`${this.data.name} ${subCommand.name}${
-              subCommand.options && subCommand.options.length
-                ? ` ${subCommand.options
-                    .map(
-                      (option) =>
-                        `<${option.name}: ${
-                          Discord.ApplicationCommandOptionType[option.type]
-                        }>`
-                    )
-                    .join(" ")}`
-                : ""
-            }\``
-        )
-      );
-    }
-
-    if (
-      args.some(
-        (arg) =>
-          arg.type === Discord.ApplicationCommandOptionType.SubcommandGroup
-      )
-    ) {
-      const subCommandGroups = args.filter(
-        (group) =>
-          group.type === Discord.ApplicationCommandOptionType.SubcommandGroup
-      ) as Discord.ApplicationCommandSubGroup[];
-
-      for (const subCommandGroup of subCommandGroups) {
-        const name = subCommandGroup.name;
-
-        const subCommands = subCommandGroup.options ?? [];
-
-        finishedArgs.push(
-          ...subCommands.map(
-            (subCommand) =>
-              `\`${this.data.name} ${name} ${subCommand.name}${
-                subCommand.options && subCommand.options.length
-                  ? ` ${subCommand.options
-                      .map(
-                        (option) =>
-                          `<${option.name}: ${
-                            Discord.ApplicationCommandOptionType[option.type]
-                          }>`
-                      )
-                      .join(" ")}`
-                  : ""
-              }\``
-          )
-        );
-      }
-    }
-
-    if (
-      !args.some((arg) =>
-        ["SUB_COMMAND", "SUB_COMMAND_GROUP"].includes(
-          Discord.ApplicationCommandOptionType[arg.type]
-        )
-      )
-    ) {
-      finishedArgs.push(
-        `\`/${this.data.name} ${args
-          .map(
-            (arg) =>
-              `<${arg.name}: ${Discord.ApplicationCommandOptionType[arg.type]}>`
-          )
+            return `<${name}>`;
+          })
           .join(" ")}\``
-      );
-    }
+    );
 
-    return finishedArgs.join("\n");
+    return lines.join("\n");
   }
 
   /**
    * Outputs a string representation of the arguments this command has
-   * @param client The client to fetch the command from
    */
-  public async getArguments(client: Client): Promise<string | undefined> {
-    const applicationCommand = await this.fetch(client);
+  public getArguments(): string {
+    const lines: string[] = [];
 
-    const args = applicationCommand?.options;
+    for (const options of this.getOptionsTree()) {
+      for (const option of options) {
+        if (
+          option.type === Discord.ApplicationCommandOptionType.SubcommandGroup
+        ) {
+          const line = `\`${option.name}\`: ${option.description}`;
 
-    if (!args) {
-      return undefined;
+          if (!lines.includes(line)) {
+            lines.push(line);
+          }
+        } else if (
+          option.type === Discord.ApplicationCommandOptionType.Subcommand
+        ) {
+          const subCommandGroup = options[0];
+
+          const line =
+            subCommandGroup &&
+            subCommandGroup.type ===
+              Discord.ApplicationCommandOptionType.SubcommandGroup
+              ? `\`${subCommandGroup.name} ${option.name}\`: ${option.description}`
+              : `\`${option.name}\`: ${option.description}`;
+
+          lines.push(line);
+        } else {
+          const subCommandGroup = options[0];
+          const subCommand = options[1];
+
+          let line = "`";
+
+          if (
+            subCommandGroup &&
+            subCommandGroup.type ===
+              Discord.ApplicationCommandOptionType.SubcommandGroup
+          ) {
+            line += `${subCommandGroup.name} `;
+          }
+
+          if (
+            subCommand &&
+            subCommand.type === Discord.ApplicationCommandOptionType.Subcommand
+          ) {
+            line += `${subCommand.name} `;
+          }
+
+          const name = option.optional ? `[${option.name}]` : option.name;
+
+          line += `${name} (${
+            Discord.ApplicationCommandOptionType[option.type]
+          })\`: ${option.description}`;
+
+          lines.push(line);
+        }
+      }
     }
 
-    const finishedArgs: string[] = [];
+    return lines.join("\n");
+  }
 
-    finishedArgs.push(
-      ...args.map(
-        (arg) =>
-          `\`${arg.name} (${Discord.ApplicationCommandOptionType[arg.type]}${
-            (arg as Discord.BaseApplicationCommandOptionsData).required
-              ? ""
-              : ", optional"
-          })\`: ${arg.description}`
-      )
-    );
+  /**
+   * Convert this command's options to a tree
+   */
+  public getOptionsTree(): Option[][] {
+    const options = this.data.options;
+
+    const tree: Option[][] = [];
 
     if (
-      args.some(
-        (arg) => arg.type === Discord.ApplicationCommandOptionType.Subcommand
+      options.some(
+        (option) =>
+          option.type === Discord.ApplicationCommandOptionType.SubcommandGroup
       )
     ) {
-      const subCommands = args.filter(
-        (arg) => arg.type === Discord.ApplicationCommandOptionType.Subcommand
+      const subCommandGroups = options.filter(
+        (option) =>
+          option.type === Discord.ApplicationCommandOptionType.SubcommandGroup
+      ) as Discord.ApplicationCommandSubGroup[];
+
+      for (const subCommandGroup of subCommandGroups) {
+        const subCommands = (subCommandGroup.options ??
+          []) as Discord.ApplicationCommandSubCommand[];
+
+        for (const subCommand of subCommands) {
+          if (!subCommand.options) {
+            continue;
+          }
+
+          tree.push([
+            {
+              name: subCommandGroup.name,
+              description: subCommandGroup.description,
+              type: subCommandGroup.type,
+              optional: true
+            },
+            {
+              name: subCommand.name,
+              description: subCommand.description,
+              type: subCommand.type,
+              optional: true
+            },
+            ...subCommand.options.map(
+              ({ name, description, type, required }) => ({
+                name,
+                description,
+                type,
+                optional: !required
+              })
+            )
+          ]);
+        }
+      }
+    } else if (
+      options.some(
+        (option) =>
+          option.type === Discord.ApplicationCommandOptionType.Subcommand
+      )
+    ) {
+      const subCommands = options.filter(
+        (option) =>
+          option.type === Discord.ApplicationCommandOptionType.Subcommand
       ) as Discord.ApplicationCommandSubCommand[];
 
       for (const subCommand of subCommands) {
@@ -332,50 +354,42 @@ export class CommandBuilder<
           continue;
         }
 
-        finishedArgs.push(
+        tree.push([
+          {
+            name: subCommand.name,
+            description: subCommand.description,
+            type: subCommand.type,
+            optional: true
+          },
           ...subCommand.options.map(
-            (option) =>
-              `\`${subCommand.name}.${option.name} (${
-                Discord.ApplicationCommandOptionType[option.type]
-              }${option.required ? "" : ", optional"})\`: ${option.description}`
+            ({ name, description, type, required }) => ({
+              name,
+              description,
+              type,
+              optional: !required
+            })
           )
-        );
+        ]);
       }
-    }
-
-    if (
-      args.some(
-        (arg) =>
-          arg.type === Discord.ApplicationCommandOptionType.SubcommandGroup
-      )
-    ) {
-      const subCommandGroups = args.filter(
-        (arg) =>
-          arg.type === Discord.ApplicationCommandOptionType.SubcommandGroup
-      ) as Discord.ApplicationCommandSubGroup[];
-
-      for (const subCommandGroup of subCommandGroups) {
-        const subCommands = subCommandGroup.options ?? [];
-
-        for (const subCommand of subCommands) {
-          if (!subCommand.options) {
-            continue;
+    } else {
+      tree.push(
+        ...(
+          options as (
+            | Discord.ApplicationCommandNonOptions
+            | Discord.ApplicationCommandChannelOption
+            | Discord.ApplicationCommandChoicesOption
+          )[]
+        ).map(({ name, description, type, required }) => [
+          {
+            name,
+            description,
+            type,
+            optional: !required
           }
-
-          finishedArgs.push(
-            ...subCommand.options.map(
-              (option) =>
-                `\`${subCommand.name}.${option.name} (${
-                  Discord.ApplicationCommandOptionType[option.type]
-                }${option.required ? "" : ", optional"})\`: ${
-                  option.description
-                }`
-            )
-          );
-        }
-      }
+        ])
+      );
     }
 
-    return finishedArgs.join("\n");
+    return tree;
   }
 }

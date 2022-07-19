@@ -35,6 +35,13 @@ export interface CommandOptions<
   run: CommandFunction<T>;
 }
 
+export interface Option {
+  name: string;
+  description: string;
+  type: Discord.ApplicationCommandOptionType;
+  optional: boolean;
+}
+
 export interface EventFunction<E extends keyof Discord.ClientEvents> {
   (client: Client<true>, ...eventArgs: Discord.ClientEvents[E]): void;
 }
