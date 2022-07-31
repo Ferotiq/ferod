@@ -1,7 +1,6 @@
 {
   "name": "@fero-dc/root",
   "private": true,
-  "version": "0.0.0",
   "repository": "https://github.com/ferotiq/fero-dc",
   "author": "Evan <evanrayweigel@outlook.com>",
   "license": "MIT",
@@ -9,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn workspaces run build"
+    "build": "yarn workspaces foreach -v run build"
   },
   "devDependencies": {
     "@types/node": "18.0.3",
@@ -19,9 +18,7 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-json": "3.1.0",
     "eslint-plugin-prettier": "4.0.0",
-    "prettier": "2.6.2",
-    "ts-node": "10.8.2",
-    "typescript": "4.5.4"
+    "prettier": "2.6.2"
   },
   "packageManager": "yarn@3.2.2"
 }
