@@ -13,7 +13,8 @@ import { EventListener } from "./event-listener";
  * A simple yet powerful Discord.JS client that automates many features for you
  */
 export class Client<T extends boolean = boolean> extends Discord.Client<T> {
-  public declare options: ClientOptions;
+  // With how Discord.JS now defines Client.prototype.options, we cannot override it.
+  public clientOptions: ClientOptions;
   public commands = new Discord.Collection<string, Command>();
   public categories: string[] = [];
   private glob = promisify(glob);
@@ -26,10 +27,10 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
   public constructor(options: ClientOptions, dirname: string) {
     super(options);
 
-    this.options = {
+    this.clientOptions = {
       ...options,
       commandsPath: resolve(dirname, options.commandsPath),
-      eventsPath: resolve(dirname, options.eventsPath)
+      eventListenersPath: resolve(dirname, options.eventListenersPath)
     };
 
     if (options.dev && !options.devGuildId) {
@@ -44,8 +45,8 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
    */
   private checkPaths() {
     // commands
-    if (!fs.existsSync(this.options.commandsPath)) {
-      fs.mkdirSync(this.options.commandsPath, { recursive: true });
+    if (!fs.existsSync(this.clientOptions.commandsPath)) {
+      fs.mkdirSync(this.clientOptions.commandsPath, { recursive: true });
 
       console.warn(
         "The commands directory has been created using the path provided."
@@ -53,11 +54,11 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     }
 
     // events
-    if (!fs.existsSync(this.options.eventsPath)) {
-      fs.mkdirSync(this.options.eventsPath, { recursive: true });
+    if (!fs.existsSync(this.clientOptions.eventListenersPath)) {
+      fs.mkdirSync(this.clientOptions.eventListenersPath, { recursive: true });
 
       console.warn(
-        "The events directory has been created using the path provided."
+        "The event listeners directory has been created using the path provided."
       );
     }
   }
@@ -87,7 +88,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
     const events = await this.load();
 
-    if (this.options.commandLoadedMessage) {
+    if (this.clientOptions.commandLoadedMessage) {
       const commandEntries = this.commands.map((command, name) => [
         name,
         {
@@ -121,7 +122,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
     // add commands
     const commandFiles = await this.glob(
-      `${this.options.commandsPath}/**/*.{ts,js}`
+      `${this.clientOptions.commandsPath}/**/*.{ts,js}`
     );
 
     const commands = await Promise.all(
@@ -138,7 +139,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
     // add events
     const eventFiles = await this.glob(
-      `${this.options.eventsPath}/**/*.{ts,js}`
+      `${this.clientOptions.eventListenersPath}/**/*.{ts,js}`
     );
 
     const events = await Promise.all(
@@ -154,8 +155,8 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
       );
     }
 
-    const applicationCommands = this.options.dev
-      ? await this.fetchApplicationCommands(this.options.devGuildId)
+    const applicationCommands = this.clientOptions.dev
+      ? await this.fetchApplicationCommands(this.clientOptions.devGuildId)
       : await this.fetchApplicationCommands();
 
     if (applicationCommands) {
@@ -173,7 +174,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
           continue;
         }
 
-        if (!this.options.editApplicationCommands) {
+        if (!this.clientOptions.editApplicationCommands) {
           continue;
         }
 
@@ -215,12 +216,13 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
       }
 
       // delete application commands
-      if (this.options.deleteUnusedApplicationCommands) {
+      if (this.clientOptions.deleteUnusedApplicationCommands) {
         const otherApplicationCommands =
-          (this.options.dev
+          (this.clientOptions.dev
             ? await this.fetchApplicationCommands()
-            : await this.fetchApplicationCommands(this.options.devGuildId)) ??
-          new Discord.Collection();
+            : await this.fetchApplicationCommands(
+                this.clientOptions.devGuildId
+              )) ?? new Discord.Collection();
 
         const toDelete: Discord.ApplicationCommand[] = [
           ...applicationCommands

@@ -14,8 +14,10 @@ export class Command<
    * Creates a new command
    * @param options The options for the command
    */
-  public constructor(options: CommandOptions<T>) {
-    this._data = options;
+  public constructor(options?: CommandOptions<T>) {
+    if (options !== undefined) {
+      this._data = options;
+    }
   }
 
   /**
@@ -146,10 +148,10 @@ export class Command<
       return applicationCommand;
     }
 
-    const app = await (client.options.dev
+    const app = await (client.clientOptions.dev
       ? client.application.commands.create(
           this.applicationCommandData,
-          client.options.devGuildId
+          client.clientOptions.devGuildId
         )
       : client.application.commands.create(this.applicationCommandData)
     ).catch(() => undefined);
@@ -174,8 +176,8 @@ export class Command<
   public async fetch(
     client: Client
   ): Promise<Discord.ApplicationCommand | undefined> {
-    const applicationCommands = client.options.dev
-      ? await client.fetchApplicationCommands(client.options.devGuildId)
+    const applicationCommands = client.clientOptions.dev
+      ? await client.fetchApplicationCommands(client.clientOptions.devGuildId)
       : await client.fetchApplicationCommands();
 
     if (applicationCommands === undefined) {

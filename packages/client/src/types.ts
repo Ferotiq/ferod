@@ -5,7 +5,7 @@ export interface ClientOptions extends Discord.ClientOptions {
   dev: boolean;
   devGuildId: Discord.Snowflake;
   commandsPath: string;
-  eventsPath: string;
+  eventListenersPath: string;
   commandLoadedMessage?: boolean;
   deleteUnusedApplicationCommands?: boolean;
   editApplicationCommands?: boolean;

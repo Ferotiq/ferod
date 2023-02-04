@@ -13,8 +13,10 @@ export class EventListener<
    * Creates a new event listener
    * @param options The options for the event listener
    */
-  public constructor(options: EventListenerOptions<E>) {
-    this._data = options;
+  public constructor(options?: EventListenerOptions<E>) {
+    if (options !== undefined) {
+      this._data = options;
+    }
   }
 
   /**
