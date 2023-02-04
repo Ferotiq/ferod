@@ -1,4 +1,4 @@
 export { Client } from "./structures/client";
-export { CommandBuilder } from "./structures/command";
-export { EventBuilder } from "./structures/event";
+export { Command } from "./structures/command";
+export { EventListener } from "./structures/event-listener";
 export * from "./types";

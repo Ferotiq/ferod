@@ -1,39 +1,20 @@
 import * as Discord from "discord.js";
-import { isEqual } from "lodash";
-import type { ClientOptions } from "../types";
-import { CommandBuilder } from "./command";
-import { EventBuilder } from "./event";
-import { promisify } from "util";
-import glob from "glob";
 import * as fs from "fs";
+import glob from "glob";
+import _ from "lodash";
 import { resolve } from "path";
+import { promisify } from "util";
+import type { ClientOptions } from "../types";
 import { quickClean } from "../util/misc";
+import { Command } from "./command";
+import { EventListener } from "./event-listener";
 
 /**
  * A simple yet powerful Discord.JS client that automates many features for you
- * @example
- * ```ts
- * import { Client } from "fero-dc";
- * import { config } from "dotenv";
- * import conf from "./config.json";
- * import { join } from "path";
- *
- * // load .env
- * config();
- *
- * // setting token
- * const options = { ...conf, token: process.env.TOKEN };
- *
- * // create a new client
- * const client = new Client(options, __dirname);
- *
- * // start the client
- * client.start();
- * ```
  */
 export class Client<T extends boolean = boolean> extends Discord.Client<T> {
   public declare options: ClientOptions;
-  public commands = new Discord.Collection<string, CommandBuilder>();
+  public commands = new Discord.Collection<string, Command>();
   public categories: string[] = [];
   private glob = promisify(glob);
 
@@ -91,7 +72,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     const obj: T = file.default ?? file;
 
     if (expectedClass !== undefined && !(obj instanceof expectedClass)) {
-      throw new Error(`${path} does not return ${expectedClass.name}`);
+      throw new Error(`${path} does not export ${expectedClass.name}`);
     }
 
     return obj;
@@ -135,7 +116,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
   /**
    * Loads commands, events, and application commands into the bot.
    */
-  public async load(): Promise<EventBuilder[]> {
+  public async load(): Promise<EventListener[]> {
     this.checkPaths();
 
     // add commands
@@ -144,9 +125,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     );
 
     const commands = await Promise.all(
-      commandFiles.map((fileName) =>
-        this.import<CommandBuilder>(fileName, CommandBuilder)
-      )
+      commandFiles.map((fileName) => this.import<Command>(fileName, Command))
     );
 
     for (const command of commands) {
@@ -164,14 +143,14 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
     const events = await Promise.all(
       eventFiles.map((fileName) =>
-        this.import<EventBuilder>(fileName, EventBuilder)
+        this.import<EventListener>(fileName, EventListener)
       )
     );
 
     for (const event of events) {
       this.on(
         event.data.event,
-        event.data.run.bind(null, this as Client<true>)
+        event.data.listener.bind(null, this as Client<true>)
       );
     }
 
@@ -214,7 +193,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
         });
 
         if (
-          isEqual(
+          _.isEqual(
             toEdit,
             quickClean({
               name: applicationCommand.name,
@@ -283,7 +262,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
    */
   public getCommandsByCategory(
     category: string
-  ): Discord.Collection<string, CommandBuilder> {
+  ): Discord.Collection<string, Command> {
     return this.commands.filter((cmd) => cmd.data.category === category);
   }
 }

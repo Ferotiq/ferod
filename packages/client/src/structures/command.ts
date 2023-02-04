@@ -1,14 +1,22 @@
 import * as Discord from "discord.js";
-import { Client } from "./client";
 import { CommandFunction, CommandOptions, Option } from "../types";
+import { Client } from "./client";
 
 /**
  * A class to easily create commands that interop with Fero-DC
  */
-export class CommandBuilder<
+export class Command<
   T extends Discord.ApplicationCommandType = Discord.ApplicationCommandType.ChatInput
 > {
   private _data: Partial<CommandOptions<T>> = {};
+
+  /**
+   * Creates a new command
+   * @param options The options for the command
+   */
+  public constructor(options: CommandOptions<T>) {
+    this._data = options;
+  }
 
   /**
    * The data of this command
@@ -37,8 +45,9 @@ export class CommandBuilder<
 
   /**
    * Set the name
+   * @param name The name of the command
    */
-  public name(name: string): this {
+  public setName(name: string): this {
     this._data.name = name;
 
     return this;
@@ -46,8 +55,9 @@ export class CommandBuilder<
 
   /**
    * Set the description
+   * @param description The description of the command
    */
-  public description(description: string): this {
+  public setDescription(description: string): this {
     this._data.description = description;
 
     return this;
@@ -55,8 +65,9 @@ export class CommandBuilder<
 
   /**
    * Sets the category
+   * @param category The category of the command
    */
-  public category(category: string): this {
+  public setCategory(category: string): this {
     this._data.category = category;
 
     return this;
@@ -64,8 +75,9 @@ export class CommandBuilder<
 
   /**
    * Sets the options
+   * @param options The options of the command
    */
-  public options(
+  public setOptions(
     ...options:
       | Discord.ApplicationCommandOptionData[]
       | Discord.ApplicationCommandOptionData[][]
@@ -76,9 +88,24 @@ export class CommandBuilder<
   }
 
   /**
-   * Sets the type
+   * Adds an option
+   * @param option The option to add
    */
-  public type(type: T): this {
+  public addOption(option: Discord.ApplicationCommandOptionData): this {
+    if (this._data.options === undefined) {
+      this._data.options = [];
+    }
+
+    this._data.options.push(option);
+
+    return this;
+  }
+
+  /**
+   * Sets the type
+   * @param type The type of the command
+   */
+  public setType(type: T): this {
     this._data.type = type;
 
     return this;
@@ -86,8 +113,9 @@ export class CommandBuilder<
 
   /**
    * Sets the run function
+   * @param run The function to run when the command is executed
    */
-  public run(run: CommandFunction<T>): this {
+  public setRun(run: CommandFunction<T>): this {
     this._data.run = run;
 
     return this;

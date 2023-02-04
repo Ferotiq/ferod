@@ -42,11 +42,11 @@ export interface Option {
   optional: boolean;
 }
 
-export interface EventFunction<E extends keyof Discord.ClientEvents> {
+export interface EventListenerFunction<E extends keyof Discord.ClientEvents> {
   (client: Client<true>, ...eventArgs: Discord.ClientEvents[E]): void;
 }
 
-export interface EventOptions<E extends keyof Discord.ClientEvents> {
+export interface EventListenerOptions<E extends keyof Discord.ClientEvents> {
   event: E;
-  run: EventFunction<E>;
+  listener: EventListenerFunction<E>;
 }
