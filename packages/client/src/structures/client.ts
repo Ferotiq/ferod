@@ -3,6 +3,7 @@ import * as fs from "fs";
 import glob from "glob";
 import _ from "lodash";
 import { resolve } from "path";
+import { pathToFileURL } from "url";
 import { promisify } from "util";
 import type { ClientOptions } from "../types";
 import { quickClean } from "../util/misc";
@@ -122,7 +123,9 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
     // add commands
     const commandFiles = await this.glob(
-      `${this.clientOptions.commandsPath}/**/*.{ts,js}`
+      pathToFileURL(
+        `${this.clientOptions.commandsPath}/**/*.{ts,js}`
+      ).toString()
     );
 
     const commands = await Promise.all(
@@ -139,7 +142,9 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
     // add events
     const eventFiles = await this.glob(
-      `${this.clientOptions.eventListenersPath}/**/*.{ts,js}`
+      pathToFileURL(
+        `${this.clientOptions.eventListenersPath}/**/*.{ts,js}`
+      ).toString()
     );
 
     const events = await Promise.all(
