@@ -25,7 +25,7 @@ export async function importFiles<T>(
   const normalizedFilePath = filePath.split(path.sep).join("/");
 
   const filePaths = (await glob(normalizedFilePath)).map((fileName) =>
-    pathToFileURL(fileName).toString()
+    useUrlIfNecessary(fileName)
   );
 
   const importedFiles = await Promise.all(
@@ -44,4 +44,15 @@ export async function importFiles<T>(
   }
 
   return objects;
+}
+
+/**
+ * Returns the url to the file if in ESModules mode, otherwise returns the file path.
+ */
+function useUrlIfNecessary(filePath: string): string {
+  if (typeof __filename === "string") {
+    return filePath;
+  }
+
+  return pathToFileURL(filePath).toString();
 }
