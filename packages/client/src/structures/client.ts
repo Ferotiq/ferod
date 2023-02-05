@@ -1,12 +1,9 @@
 import * as Discord from "discord.js";
 import * as fs from "fs";
-import glob from "glob";
 import _ from "lodash";
 import path from "path";
-import { pathToFileURL } from "url";
-import { promisify } from "util";
 import type { ClientOptions } from "../types";
-import { quickClean } from "../util/misc";
+import { importFiles, quickClean } from "../util/misc";
 import { Command } from "./command";
 import { EventListener } from "./event-listener";
 
@@ -18,7 +15,6 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
   public clientOptions: ClientOptions;
   public commands = new Discord.Collection<string, Command>();
   public categories: string[] = [];
-  private glob = promisify(glob);
 
   /**
    * Creates a new client
@@ -65,39 +61,6 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
   }
 
   /**
-   * Imports a file and returns the generic type
-   * @param filePath The path to import
-   * @param expectedClass The class to check against
-   */
-  private async importFiles<T>(
-    filePath: string,
-    expectedClass?: new (...args: any[]) => T
-  ): Promise<T[]> {
-    const normalizedFilePath = filePath.split(path.sep).join("/");
-
-    const filePaths = (await this.glob(normalizedFilePath)).map((fileName) =>
-      pathToFileURL(fileName).toString()
-    );
-
-    const importedFiles = await Promise.all(
-      filePaths.map((fileName) => import(fileName))
-    );
-
-    const objects: T[] = importedFiles.map((file) => file.default ?? file);
-
-    if (
-      expectedClass !== undefined &&
-      !objects.every((obj) => obj instanceof expectedClass)
-    ) {
-      throw new Error(
-        `${normalizedFilePath} does not export ${expectedClass.name}`
-      );
-    }
-
-    return objects;
-  }
-
-  /**
    * Starts the client
    * @param token The token to use for the client
    */
@@ -139,7 +102,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     this.checkPaths();
 
     // add commands
-    const commands = await this.importFiles<Command>(
+    const commands = await importFiles<Command>(
       path.resolve(this.clientOptions.commandsPath, "**", "*.{ts,js}"),
       Command
     );
@@ -153,7 +116,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     ];
 
     // add event listeners
-    const listeners = await this.importFiles<EventListener>(
+    const listeners = await importFiles<EventListener>(
       path.resolve(this.clientOptions.eventListenersPath, "**", "*.{ts,js}"),
       EventListener
     );
@@ -165,91 +128,102 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
       );
     }
 
+    this.registerApplicationCommands();
+
+    return listeners;
+  }
+
+  /**
+   * Uses the list of commands on the client to create/edit/delete application commands.
+   */
+  private async registerApplicationCommands() {
     const applicationCommands = this.clientOptions.dev
       ? await this.fetchApplicationCommands(this.clientOptions.devGuildId)
       : await this.fetchApplicationCommands();
 
-    if (applicationCommands) {
-      // create/edit application commands
-      for (const command of this.commands.values()) {
-        const applicationCommand = applicationCommands.find(
-          (appCmd) => appCmd.name === command.data.name
-        );
-
-        if (applicationCommand === undefined) {
-          await command.create(this as Client<true>);
-
-          console.log(`Created application command ${command.data.name}`);
-
-          continue;
-        }
-
-        if (!this.clientOptions.editApplicationCommands) {
-          continue;
-        }
-
-        const type =
-          command.data.type ?? Discord.ApplicationCommandType.ChatInput;
-
-        const description =
-          type === Discord.ApplicationCommandType.ChatInput
-            ? command.data.description ?? "No description provided"
-            : "";
-
-        const toEdit = quickClean({
-          name: command.data.name,
-          description,
-          type,
-          options: command.data.options ?? []
-        });
-
-        if (
-          _.isEqual(
-            toEdit,
-            quickClean({
-              name: applicationCommand.name,
-              description: applicationCommand.description,
-              type: applicationCommand.type,
-              options: applicationCommand.options
-            })
-          )
-        ) {
-          continue;
-        }
-
-        await applicationCommand.edit({
-          ...toEdit,
-          options: command.data.options
-        });
-
-        console.log(`Edited application command ${command.data.name}`);
-      }
-
-      // delete application commands
-      if (this.clientOptions.deleteUnusedApplicationCommands) {
-        const otherApplicationCommands =
-          (this.clientOptions.dev
-            ? await this.fetchApplicationCommands()
-            : await this.fetchApplicationCommands(
-                this.clientOptions.devGuildId
-              )) ?? new Discord.Collection();
-
-        const toDelete: Discord.ApplicationCommand[] = [
-          ...applicationCommands
-            .concat(otherApplicationCommands)
-            .filter((appCmd) => !this.commands.has(appCmd.name))
-            .values()
-        ];
-
-        for (const applicationCommand of toDelete) {
-          await applicationCommand.delete();
-
-          console.log(`Deleted application command ${applicationCommand.name}`);
-        }
-      }
+    if (applicationCommands === undefined) {
+      return;
     }
 
-    return listeners;
+    // create/edit application commands
+    for (const command of this.commands.values()) {
+      const applicationCommand = applicationCommands.find(
+        (applicationCommand) => applicationCommand.name === command.data.name
+      );
+
+      if (applicationCommand === undefined) {
+        await command.create(this as Client<true>);
+
+        console.log(`Created application command ${command.data.name}`);
+
+        continue;
+      }
+
+      if (!this.clientOptions.editApplicationCommands) {
+        return;
+      }
+
+      const type =
+        command.data.type ?? Discord.ApplicationCommandType.ChatInput;
+
+      const description =
+        type === Discord.ApplicationCommandType.ChatInput
+          ? command.data.description ?? "No description provided"
+          : "";
+
+      const toEdit = quickClean({
+        name: command.data.name,
+        description,
+        type,
+        options: command.data.options ?? []
+      });
+
+      if (
+        _.isEqual(
+          toEdit,
+          quickClean({
+            name: applicationCommand.name,
+            description: applicationCommand.description,
+            type: applicationCommand.type,
+            options: applicationCommand.options
+          })
+        )
+      ) {
+        return;
+      }
+
+      await applicationCommand.edit({
+        ...toEdit,
+        options: command.data.options
+      });
+
+      console.log(`Edited application command ${command.data.name}`);
+    }
+
+    // delete application commands
+    if (this.clientOptions.deleteUnusedApplicationCommands) {
+      const otherApplicationCommands =
+        (this.clientOptions.dev
+          ? await this.fetchApplicationCommands()
+          : await this.fetchApplicationCommands(
+              this.clientOptions.devGuildId
+            )) ?? new Discord.Collection();
+
+      const toDelete: Discord.ApplicationCommand[] = [
+        ...applicationCommands
+          .concat(otherApplicationCommands)
+          .filter(
+            (applicationCommand) => !this.commands.has(applicationCommand.name)
+          )
+          .values()
+      ];
+
+      for (const applicationCommand of toDelete) {
+        await applicationCommand.delete();
+
+        console.log(`Deleted application command ${applicationCommand.name}`);
+      }
+    }
   }
 
   /**
