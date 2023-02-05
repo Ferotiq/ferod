@@ -20,7 +20,7 @@ export function quickClean<T>(obj: T): T {
  */
 export async function importFiles<T>(
   filePath: string,
-  expectedClass?: new (...args: any[]) => T
+  expectedClass?: new (...args: never[]) => T
 ): Promise<T[]> {
   const normalizedFilePath = filePath.split(path.sep).join("/");
 
