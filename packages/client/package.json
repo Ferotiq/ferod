@@ -4,6 +4,13 @@
   "description": "Ultimate Classes and Structures to organize the client, commands, events, and more for your discord bot.",
   "author": "Evan <evanrayweigel@outlook.com>",
   "license": "MIT",
+  "files": [
+    "dist",
+    "src",
+    ".npmignore",
+    "tsconfig.json",
+    "tsup.config.ts"
+  ],
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
