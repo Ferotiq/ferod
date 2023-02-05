@@ -31,9 +31,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     };
 
     if (options.dev && !options.devGuildId) {
-      throw new Error(
-        "You must provide a dev guild id if you are in dev mode."
-      );
+      throw new Error("devGuildId must be provided if dev is set to true.");
     }
   }
 
