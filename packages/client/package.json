@@ -4,6 +4,7 @@
   "description": "Ultimate Classes and Structures to organize the client, commands, events, and more for your discord bot.",
   "author": "Evan <evanrayweigel@outlook.com>",
   "license": "MIT",
+  "type": "module",
   "files": [
     "dist",
     "src",
@@ -21,7 +22,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsup",
-    "test": "ts-node-esm ./test/index.ts",
+    "test": "ts-node-esm --experimental-specifier-resolution=node ./test/index.ts",
     "pretty": "prettier --check \"src/**/*.{ts,tsx,scss}\"",
     "pretty-fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",

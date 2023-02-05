@@ -1,12 +1,16 @@
 console.clear();
 
+import { config } from "dotenv";
+config();
+
 import { Client, ClientOptions } from "../src";
 
-import { config } from "dotenv";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
-config({ path: "./test/.env" });
+import options from "./config/config.json" assert { type: "json" };
 
-import conf from "./config/config.json";
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const token = process.env.TOKEN;
 
@@ -16,6 +20,6 @@ if (!token) {
   process.exit(1);
 }
 
-const client = new Client(conf as ClientOptions, __dirname);
+const client = new Client(options as ClientOptions, __dirname);
 
 client.start(token);
