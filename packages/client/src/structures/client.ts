@@ -38,7 +38,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
   /**
    * Checks and adds commands/events folders.
    */
-  private checkPaths() {
+  private checkPaths(): void {
     // commands
     if (!fs.existsSync(this.clientOptions.commandsPath)) {
       fs.mkdirSync(this.clientOptions.commandsPath, { recursive: true });
@@ -134,7 +134,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
   /**
    * Uses the list of commands on the client to create/edit/delete application commands.
    */
-  private async registerApplicationCommands() {
+  private async registerApplicationCommands(): Promise<void> {
     const applicationCommands = this.clientOptions.dev
       ? await this.fetchApplicationCommands(this.clientOptions.devGuildId)
       : await this.fetchApplicationCommands();
