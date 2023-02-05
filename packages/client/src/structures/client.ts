@@ -2,7 +2,7 @@ import * as Discord from "discord.js";
 import * as fs from "fs";
 import glob from "glob";
 import _ from "lodash";
-import { resolve } from "path";
+import path from "path";
 import { pathToFileURL } from "url";
 import { promisify } from "util";
 import type { ClientOptions } from "../types";
@@ -30,8 +30,8 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
     this.clientOptions = {
       ...options,
-      commandsPath: resolve(dirname, options.commandsPath),
-      eventListenersPath: resolve(dirname, options.eventListenersPath)
+      commandsPath: path.resolve(dirname, options.commandsPath),
+      eventListenersPath: path.resolve(dirname, options.eventListenersPath)
     };
 
     if (options.dev && !options.devGuildId) {
@@ -66,18 +66,35 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
   /**
    * Imports a file and returns the generic type
-   * @param path The path to import
+   * @param filePath The path to import
    * @param expectedClass The class to check against
    */
-  private async import<T>(path: string, expectedClass?: any): Promise<T> {
-    const file = await import(path);
-    const obj: T = file.default ?? file;
+  private async importFiles<T>(
+    filePath: string,
+    expectedClass?: new (...args: any[]) => T
+  ): Promise<T[]> {
+    const normalizedFilePath = filePath.split(path.sep).join("/");
 
-    if (expectedClass !== undefined && !(obj instanceof expectedClass)) {
-      throw new Error(`${path} does not export ${expectedClass.name}`);
+    const filePaths = (await this.glob(normalizedFilePath)).map((fileName) =>
+      pathToFileURL(fileName).toString()
+    );
+
+    const importedFiles = await Promise.all(
+      filePaths.map((fileName) => import(fileName))
+    );
+
+    const objects: T[] = importedFiles.map((file) => file.default ?? file);
+
+    if (
+      expectedClass !== undefined &&
+      !objects.every((obj) => obj instanceof expectedClass)
+    ) {
+      throw new Error(
+        `${normalizedFilePath} does not export ${expectedClass.name}`
+      );
     }
 
-    return obj;
+    return objects;
   }
 
   /**
@@ -122,14 +139,9 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     this.checkPaths();
 
     // add commands
-    const commandFiles = await this.glob(
-      pathToFileURL(
-        `${this.clientOptions.commandsPath}/**/*.{ts,js}`
-      ).toString()
-    );
-
-    const commands = await Promise.all(
-      commandFiles.map((fileName) => this.import<Command>(fileName, Command))
+    const commands = await this.importFiles<Command>(
+      path.resolve(this.clientOptions.commandsPath, "**", "*.{ts,js}"),
+      Command
     );
 
     for (const command of commands) {
@@ -140,23 +152,16 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
       ...new Set(this.commands.map((command) => command.data.category))
     ];
 
-    // add events
-    const eventFiles = await this.glob(
-      pathToFileURL(
-        `${this.clientOptions.eventListenersPath}/**/*.{ts,js}`
-      ).toString()
+    // add event listeners
+    const listeners = await this.importFiles<EventListener>(
+      path.resolve(this.clientOptions.eventListenersPath, "**", "*.{ts,js}"),
+      EventListener
     );
 
-    const events = await Promise.all(
-      eventFiles.map((fileName) =>
-        this.import<EventListener>(fileName, EventListener)
-      )
-    );
-
-    for (const event of events) {
+    for (const listener of listeners) {
       this.on(
-        event.data.event,
-        event.data.listener.bind(null, this as Client<true>)
+        listener.data.event,
+        listener.data.listener.bind(null, this as Client<true>)
       );
     }
 
@@ -244,7 +249,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
       }
     }
 
-    return events;
+    return listeners;
   }
 
   /**
