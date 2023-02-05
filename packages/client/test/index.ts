@@ -1,22 +1,12 @@
 console.clear();
 
-import { Client } from "../src";
+import { Client, ClientOptions } from "../src";
 
 import { config } from "dotenv";
 
 config({ path: "./test/.env" });
 
-import * as fs from "fs";
-
-const conf = JSON.parse(
-  fs.readFileSync("./test/config/config.json").toString() || "null"
-);
-
-if (!conf) {
-  console.error("No config.json found!");
-
-  process.exit(1);
-}
+import conf from "./config/config.json";
 
 const token = process.env.TOKEN;
 
@@ -26,6 +16,6 @@ if (!token) {
   process.exit(1);
 }
 
-const client = new Client(conf, __dirname);
+const client = new Client(conf as ClientOptions, __dirname);
 
 client.start(token);

@@ -14,7 +14,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsup",
-    "test": "ts-node-dev ./test/index.ts --extensions \"ts,json\" --watch \"src,test\"",
+    "test": "ts-node-esm ./test/index.ts",
     "pretty": "prettier --check \"src/**/*.{ts,tsx,scss}\"",
     "pretty-fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "discord.js": "14.7.1",
-    "glob": "8.1.0",
+    "glob": "7.2.0",
     "lodash": "4.17.21"
   },
   "devDependencies": {
@@ -30,6 +30,7 @@
     "@types/lodash": "4.14.191",
     "@types/node": "18.11.18",
     "dotenv": "16.0.3",
+    "ts-node": "10.9.1",
     "ts-node-dev": "2.0.0",
     "tsup": "6.5.0",
     "typescript": "4.9.5"

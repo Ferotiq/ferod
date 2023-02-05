@@ -1,9 +1,11 @@
 {
   "dev": true,
   "devGuildId": "your server id",
-  "intents": ["Guilds"],
+  "intents": [
+    "Guilds"
+  ],
   "commandsPath": "./commands",
-  "eventsPath": "./events",
+  "eventListenersPath": "./listeners",
   "commandLoadedMessage": true,
   "deleteUnusedApplicationCommands": true,
   "editApplicationCommands": true,

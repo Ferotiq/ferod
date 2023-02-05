@@ -1,9 +1,9 @@
-import { CommandBuilder } from "../../src";
+import { Command } from "../../src";
 
-export default new CommandBuilder()
-  .name("test")
-  .description("Test Command")
-  .category("Test")
-  .run(async (client, interaction) => {
+export default new Command()
+  .setName("test")
+  .setDescription("Test Command")
+  .setCategory("Test")
+  .setRun(async (client, interaction) => {
     interaction.reply("Test");
   });
