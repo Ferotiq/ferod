@@ -122,7 +122,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     for (const listener of listeners) {
       this.on(
         listener.event,
-        listener.listener.bind(null, this as Client<true>)
+        listener.handler.bind(null, this as Client<true>)
       );
     }
 

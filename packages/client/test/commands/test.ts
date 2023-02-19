@@ -4,6 +4,6 @@ export default new Command()
   .setName("test")
   .setDescription("Test Command")
   .setCategory("Test")
-  .setRun(async (client, interaction) => {
+  .setExecutor(async (client, interaction) => {
     interaction.reply("Test");
   });

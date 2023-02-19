@@ -14,7 +14,7 @@ export class Command<
   private _options?: Discord.ApplicationCommandOptionData[];
   private _permissions?: Discord.PermissionResolvable[];
   private _type?: T;
-  private _run?: CommandFunction<T>;
+  private _executor?: CommandFunction<T>;
 
   /**
    * Creates a new command
@@ -28,7 +28,7 @@ export class Command<
       this._options = options.options ?? [];
       this._permissions = options.permissions ?? [];
       this._type = options.type;
-      this._run = options.run;
+      this._executor = options.executor;
     }
   }
 
@@ -100,14 +100,14 @@ export class Command<
   }
 
   /**
-   * The run function of the command
+   * The executor function of the command
    */
-  public get run(): CommandFunction<T> {
-    if (this._run === undefined) {
-      throw new Error("Missing required property: run");
+  public get executor(): CommandFunction<T> {
+    if (this._executor === undefined) {
+      throw new Error("Missing required property: executor");
     }
 
-    return this._run;
+    return this._executor;
   }
 
   /**
@@ -193,11 +193,11 @@ export class Command<
   }
 
   /**
-   * Sets the run function
-   * @param run The function to run when the command is executed
+   * Sets the executor function
+   * @param executor The function to run when the command is executed
    */
-  public setRun(run: CommandFunction<T>): this {
-    this._run = run;
+  public setExecutor(executor: CommandFunction<T>): this {
+    this._executor = executor;
 
     return this;
   }

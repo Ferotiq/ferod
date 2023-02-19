@@ -1,5 +1,5 @@
 import * as Discord from "discord.js";
-import { EventListenerFunction, EventListenerOptions } from "../types";
+import { EventListenerHandler, EventListenerOptions } from "../types";
 
 /**
  * A class to easily create events that interop with Fero-DC
@@ -8,7 +8,7 @@ export class EventListener<
   E extends keyof Discord.ClientEvents = keyof Discord.ClientEvents
 > {
   private _event?: E;
-  private _listener?: EventListenerFunction<E>;
+  private _handler?: EventListenerHandler<E>;
 
   /**
    * Creates a new event listener
@@ -17,7 +17,7 @@ export class EventListener<
   public constructor(options?: EventListenerOptions<E>) {
     if (options !== undefined) {
       this._event = options.event;
-      this._listener = options.listener;
+      this._handler = options.handler;
     }
   }
 
@@ -35,12 +35,12 @@ export class EventListener<
   /**
    * The function to run when the event is emitted
    */
-  public get listener(): EventListenerFunction<E> {
-    if (this._listener === undefined) {
-      throw new Error("Missing required property: listener");
+  public get handler(): EventListenerHandler<E> {
+    if (this._handler === undefined) {
+      throw new Error("Missing required property: handler");
     }
 
-    return this._listener;
+    return this._handler;
   }
 
   /**
@@ -54,11 +54,11 @@ export class EventListener<
   }
 
   /**
-   * Set the listener function
-   * @param listener The function to run when the event is emitted
+   * Set the handler function
+   * @param handler The function to run when the event is emitted
    */
-  public setListener(listener: EventListenerFunction<E>): this {
-    this._listener = listener;
+  public setHandler(handler: EventListenerHandler<E>): this {
+    this._handler = handler;
 
     return this;
   }

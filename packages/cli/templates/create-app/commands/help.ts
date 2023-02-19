@@ -1,17 +1,17 @@
 import * as Discord from "discord.js";
-import { CommandBuilder, toPascalCase } from "fero-dc";
+import { Command } from "fero-dc";
 
-export default new CommandBuilder()
-  .name("help")
-  .description("Shows a help embed")
-  .category("Utility")
-  .options({
+export default new Command()
+  .setName("help")
+  .setDescription("Shows a help embed")
+  .setCategory("Utility")
+  .setOptions({
     name: "command",
     type: Discord.ApplicationCommandOptionType.String,
     description: "The command to receive help for",
     required: false
   })
-  .run(async (client, interaction) => {
+  .setExecutor(async (client, interaction) => {
     const command = client.commands.get(
       interaction.options.getString("command", false) ?? ""
     );
@@ -38,19 +38,19 @@ export default new CommandBuilder()
         .addFields([
           {
             name: "Command Name",
-            value: command.data.name,
+            value: command.name,
             inline: true
           },
           {
             name: "Command Description",
-            value: command.data.description.trim(),
+            value: command.description.trim(),
             inline: true
           }
         ]);
 
-      const usage = await command.getUsage(client);
+      const usage = await command.getUsage();
 
-      const args = await command.getArguments(client);
+      const args = await command.getArguments();
 
       if (usage && args) {
         embed.addFields([
@@ -61,7 +61,7 @@ export default new CommandBuilder()
 
       embed.addFields({
         name: "Command Category",
-        value: toPascalCase(command.data.category),
+        value: toPascalCase(command.category),
         inline: true
       });
     } else {

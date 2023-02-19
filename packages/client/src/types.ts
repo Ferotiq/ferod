@@ -33,7 +33,7 @@ export interface CommandOptions<
   options?: Discord.ApplicationCommandOptionData[];
   permissions?: Discord.PermissionResolvable[];
   type: T;
-  run: CommandFunction<T>;
+  executor: CommandFunction<T>;
 }
 
 export interface Option {
@@ -43,11 +43,11 @@ export interface Option {
   optional: boolean;
 }
 
-export interface EventListenerFunction<E extends keyof Discord.ClientEvents> {
+export interface EventListenerHandler<E extends keyof Discord.ClientEvents> {
   (client: Client<true>, ...eventArgs: Discord.ClientEvents[E]): void;
 }
 
 export interface EventListenerOptions<E extends keyof Discord.ClientEvents> {
   event: E;
-  listener: EventListenerFunction<E>;
+  handler: EventListenerHandler<E>;
 }
