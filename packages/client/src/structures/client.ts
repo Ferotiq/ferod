@@ -72,7 +72,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
         name,
         {
           ...command.data,
-          type: Discord.ApplicationCommandType[command.data.type]
+          type: Discord.ApplicationCommandType[command.type]
         }
       ]);
 
@@ -110,7 +110,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     }
 
     this.categories = [
-      ...new Set(this.commands.map((command) => command.data.category))
+      ...new Set(this.commands.map((command) => command.category))
     ];
 
     // add event listeners
@@ -121,8 +121,8 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
     for (const listener of listeners) {
       this.on(
-        listener.data.event,
-        listener.data.listener.bind(null, this as Client<true>)
+        listener.event,
+        listener.listener.bind(null, this as Client<true>)
       );
     }
 
@@ -166,14 +166,14 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
       const description =
         type === Discord.ApplicationCommandType.ChatInput
-          ? command.data.description ?? "No description provided"
+          ? command.description ?? "No description provided"
           : "";
 
       const toEdit = quickClean({
         name: command.data.name,
         description,
         type,
-        options: command.data.options ?? []
+        options: command.options ?? []
       });
 
       if (
@@ -192,7 +192,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
       await applicationCommand.edit({
         ...toEdit,
-        options: command.data.options
+        options: command.options
       });
 
       console.log(`Edited application command ${command.data.name}`);
@@ -247,6 +247,6 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
   public getCommandsByCategory(
     category: string
   ): Discord.Collection<string, Command> {
-    return this.commands.filter((cmd) => cmd.data.category === category);
+    return this.commands.filter((cmd) => cmd.category === category);
   }
 }

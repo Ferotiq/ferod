@@ -7,7 +7,8 @@ import { EventListenerFunction, EventListenerOptions } from "../types";
 export class EventListener<
   E extends keyof Discord.ClientEvents = keyof Discord.ClientEvents
 > {
-  private _data: Partial<EventListenerOptions<E>> = {};
+  private _event?: E;
+  private _listener?: EventListenerFunction<E>;
 
   /**
    * Creates a new event listener
@@ -15,19 +16,31 @@ export class EventListener<
    */
   public constructor(options?: EventListenerOptions<E>) {
     if (options !== undefined) {
-      this._data = options;
+      this._event = options.event;
+      this._listener = options.listener;
     }
   }
 
   /**
-   * The data of this event
+   * The event to listen to
    */
-  public get data(): EventListenerOptions<E> {
-    if (this._data.event === undefined || this._data.listener === undefined) {
-      throw new Error("Event is missing required options");
+  public get event(): E {
+    if (this._event === undefined) {
+      throw new Error("Missing required property: event");
     }
 
-    return this._data as EventListenerOptions<E>;
+    return this._event;
+  }
+
+  /**
+   * The function to run when the event is emitted
+   */
+  public get listener(): EventListenerFunction<E> {
+    if (this._listener === undefined) {
+      throw new Error("Missing required property: listener");
+    }
+
+    return this._listener;
   }
 
   /**
@@ -35,7 +48,7 @@ export class EventListener<
    * @param event The event to listen to
    */
   public setEvent(event: E): this {
-    this._data.event = event;
+    this._event = event;
 
     return this;
   }
@@ -45,7 +58,7 @@ export class EventListener<
    * @param listener The function to run when the event is emitted
    */
   public setListener(listener: EventListenerFunction<E>): this {
-    this._data.listener = listener;
+    this._listener = listener;
 
     return this;
   }

@@ -31,7 +31,8 @@ export interface CommandOptions<
   description: string;
   category: string;
   options?: Discord.ApplicationCommandOptionData[];
-  type?: T;
+  permissions?: Discord.PermissionResolvable[];
+  type: T;
   run: CommandFunction<T>;
 }
 

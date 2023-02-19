@@ -8,7 +8,13 @@ import { Client } from "./client";
 export class Command<
   T extends Discord.ApplicationCommandType = Discord.ApplicationCommandType.ChatInput
 > {
-  private _data: Partial<CommandOptions<T>> = {};
+  private _name?: string;
+  private _description?: string;
+  private _category?: string;
+  private _options?: Discord.ApplicationCommandOptionData[];
+  private _permissions?: Discord.PermissionResolvable[];
+  private _type?: T;
+  private _run?: CommandFunction<T>;
 
   /**
    * Creates a new command
@@ -16,33 +22,92 @@ export class Command<
    */
   public constructor(options?: CommandOptions<T>) {
     if (options !== undefined) {
-      this._data = options;
+      this._name = options.name;
+      this._description = options.description;
+      this._category = options.category;
+      this._options = options.options ?? [];
+      this._permissions = options.permissions ?? [];
+      this._type = options.type;
+      this._run = options.run;
     }
   }
 
   /**
-   * The data of this command
+   * The application command data from this command
    */
-  public get data(): Required<CommandOptions<T>> {
-    if (
-      this._data.name === undefined ||
-      this._data.description === undefined ||
-      this._data.category === undefined ||
-      this._data.run === undefined
-    ) {
-      throw new Error("Missing required options");
+  public get data(): Discord.ApplicationCommandData {
+    return {
+      name: this.name,
+      description: this.description,
+      options: this.options,
+      type: this.type,
+      defaultMemberPermissions: this.permissions
+    };
+  }
+
+  /**
+   * The name of the command
+   */
+  public get name(): string {
+    if (this._name === undefined) {
+      throw new Error("Missing required property: name");
     }
 
-    const options = {
-      name: this._data.name,
-      description: this._data.description,
-      category: this._data.category,
-      options: this._data.options ?? [],
-      type: this._data.type ?? Discord.ApplicationCommandType.ChatInput,
-      run: this._data.run
-    };
+    return this._name;
+  }
 
-    return options as Required<CommandOptions<T>>;
+  /**
+   * The description of the command
+   */
+  public get description(): string {
+    if (this._description === undefined) {
+      throw new Error("Missing required property: description");
+    }
+
+    return this._description;
+  }
+
+  /**
+   * The category of the command
+   */
+  public get category(): string {
+    if (this._category === undefined) {
+      throw new Error("Missing required property: category");
+    }
+
+    return this._category;
+  }
+
+  /**
+   * The options of the command
+   */
+  public get options(): Discord.ApplicationCommandOptionData[] {
+    return this._options ?? [];
+  }
+
+  /**
+   * The permissions of the command
+   */
+  public get permissions(): Discord.PermissionResolvable[] {
+    return this._permissions ?? [];
+  }
+
+  /**
+   * The type of the command
+   */
+  public get type(): T {
+    return this._type ?? (Discord.ApplicationCommandType.ChatInput as T);
+  }
+
+  /**
+   * The run function of the command
+   */
+  public get run(): CommandFunction<T> {
+    if (this._run === undefined) {
+      throw new Error("Missing required property: run");
+    }
+
+    return this._run;
   }
 
   /**
@@ -50,7 +115,7 @@ export class Command<
    * @param name The name of the command
    */
   public setName(name: string): this {
-    this._data.name = name;
+    this._name = name;
 
     return this;
   }
@@ -60,7 +125,7 @@ export class Command<
    * @param description The description of the command
    */
   public setDescription(description: string): this {
-    this._data.description = description;
+    this._description = description;
 
     return this;
   }
@@ -70,7 +135,7 @@ export class Command<
    * @param category The category of the command
    */
   public setCategory(category: string): this {
-    this._data.category = category;
+    this._category = category;
 
     return this;
   }
@@ -84,7 +149,7 @@ export class Command<
       | Discord.ApplicationCommandOptionData[]
       | Discord.ApplicationCommandOptionData[][]
   ): this {
-    this._data.options = options.flat();
+    this._options = options.flat();
 
     return this;
   }
@@ -94,11 +159,25 @@ export class Command<
    * @param option The option to add
    */
   public addOption(option: Discord.ApplicationCommandOptionData): this {
-    if (this._data.options === undefined) {
-      this._data.options = [];
+    if (this._options === undefined) {
+      this._options = [];
     }
 
-    this._data.options.push(option);
+    this._options.push(option);
+
+    return this;
+  }
+
+  /**
+   * Sets the permissions
+   * @param permissions The permissions of the command
+   */
+  public setPermissions(
+    ...permissions:
+      | Discord.PermissionResolvable[]
+      | Discord.PermissionResolvable[][]
+  ): this {
+    this._permissions = permissions.flat();
 
     return this;
   }
@@ -108,7 +187,7 @@ export class Command<
    * @param type The type of the command
    */
   public setType(type: T): this {
-    this._data.type = type;
+    this._type = type;
 
     return this;
   }
@@ -118,21 +197,9 @@ export class Command<
    * @param run The function to run when the command is executed
    */
   public setRun(run: CommandFunction<T>): this {
-    this._data.run = run;
+    this._run = run;
 
     return this;
-  }
-
-  /**
-   * The application command data from this command
-   */
-  public get applicationCommandData(): Discord.ApplicationCommandData {
-    return {
-      name: this.data.name,
-      description: this.data.description,
-      options: this.data.options,
-      type: this.data.type
-    };
   }
 
   /**
@@ -150,10 +217,10 @@ export class Command<
 
     const app = await (client.clientOptions.dev
       ? client.application.commands.create(
-          this.applicationCommandData,
+          this.data,
           client.clientOptions.devGuildId
         )
-      : client.application.commands.create(this.applicationCommandData)
+      : client.application.commands.create(this.data)
     ).catch(() => undefined);
 
     if (app === undefined) {
@@ -204,7 +271,7 @@ export class Command<
       )) as Discord.ApplicationCommand;
     }
 
-    return applicationCommand.edit(this.applicationCommandData);
+    return applicationCommand.edit(this.data);
   }
 
   /**
@@ -320,7 +387,7 @@ export class Command<
    * Convert this command's options to a tree
    */
   public getOptionsTree(): Option[][] {
-    const options = this.data.options;
+    const options = this.options;
 
     const tree: Option[][] = [];
 
