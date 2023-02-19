@@ -224,12 +224,10 @@ export class Command<
     ).catch(() => undefined);
 
     if (app === undefined) {
-      throw Error(
-        `Could not create application command for ${this.data.name}.`
-      );
+      throw Error(`Could not create application command for ${this.name}.`);
     } else if (Array.isArray(app) && app.includes(undefined)) {
       throw Error(
-        `Could not create application command for some guilds for ${this.data.name}.`
+        `Could not create application command for some guilds for ${this.name}.`
       );
     }
 
@@ -252,7 +250,7 @@ export class Command<
     }
 
     const command = applicationCommands.find(
-      (appCmd) => appCmd.name === this.data.name
+      (appCmd) => appCmd.name === this.name
     );
 
     return command;
@@ -298,7 +296,7 @@ export class Command<
 
     const lines: string[] = optionTree.map(
       (options) =>
-        `\`/${this.data.name} ${options
+        `\`/${this.name} ${options
           .map((option) => {
             if (
               [

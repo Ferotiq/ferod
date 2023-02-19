@@ -106,7 +106,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     );
 
     for (const command of commands) {
-      this.commands.set(command.data.name, command);
+      this.commands.set(command.name, command);
     }
 
     this.categories = [
@@ -146,13 +146,13 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
     // create/edit application commands
     for (const command of this.commands.values()) {
       const applicationCommand = applicationCommands.find(
-        (applicationCommand) => applicationCommand.name === command.data.name
+        (applicationCommand) => applicationCommand.name === command.name
       );
 
       if (applicationCommand === undefined) {
         await command.create(this as Client<true>);
 
-        console.log(`Created application command ${command.data.name}`);
+        console.log(`Created application command ${command.name}`);
 
         continue;
       }
@@ -161,8 +161,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
         continue;
       }
 
-      const type =
-        command.data.type ?? Discord.ApplicationCommandType.ChatInput;
+      const type = command.type ?? Discord.ApplicationCommandType.ChatInput;
 
       const description =
         type === Discord.ApplicationCommandType.ChatInput
@@ -170,7 +169,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
           : "";
 
       const toEdit = quickClean({
-        name: command.data.name,
+        name: command.name,
         description,
         type,
         options: command.options ?? []
@@ -195,7 +194,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
         options: command.options
       });
 
-      console.log(`Edited application command ${command.data.name}`);
+      console.log(`Edited application command ${command.name}`);
     }
 
     // delete application commands
