@@ -172,7 +172,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
         name: command.name,
         description,
         type,
-        defaultMemberPermissions: command.permissions,
+        defaultMemberPermissions: command.permissions.valueOf(),
         options: command.options
       });
 

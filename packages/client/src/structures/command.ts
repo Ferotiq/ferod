@@ -41,9 +41,7 @@ export class Command<
       description: this.description,
       options: this.options,
       type: this.type,
-      defaultMemberPermissions: new Discord.PermissionsBitField(
-        this.permissions
-      ).valueOf()
+      defaultMemberPermissions: this.permissions
     };
   }
 
@@ -90,8 +88,8 @@ export class Command<
   /**
    * The permissions of the command
    */
-  public get permissions(): Discord.PermissionResolvable[] {
-    return this._permissions ?? [];
+  public get permissions(): Discord.PermissionsBitField {
+    return new Discord.PermissionsBitField(this._permissions ?? []);
   }
 
   /**
