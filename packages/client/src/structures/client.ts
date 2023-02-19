@@ -172,7 +172,8 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
         name: command.name,
         description,
         type,
-        options: command.options ?? []
+        permissions: command.permissions,
+        options: command.options
       });
 
       if (
@@ -182,6 +183,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
             name: applicationCommand.name,
             description: applicationCommand.description,
             type: applicationCommand.type,
+            permissions: applicationCommand.defaultMemberPermissions,
             options: applicationCommand.options
           })
         )
@@ -189,10 +191,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
         continue;
       }
 
-      await applicationCommand.edit({
-        ...toEdit,
-        options: command.options
-      });
+      await applicationCommand.edit(toEdit);
 
       console.log(`Edited application command ${command.name}`);
     }
