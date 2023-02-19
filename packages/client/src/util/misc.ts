@@ -10,7 +10,57 @@ const glob = promisify(globCallback);
  * @param obj The object to clean
  */
 export function quickClean<T>(obj: T): T {
-  return JSON.parse(JSON.stringify(obj));
+  return parse(stringify(obj));
+}
+
+/**
+ * Returns a string representation of the object with unserializable types considered.
+ */
+function stringify<T>(value: T): string {
+  return JSON.stringify(value, (key, value) => {
+    if (typeof value === "bigint" || value instanceof BigInt) {
+      return {
+        __type: "bigint",
+        value: value.toString()
+      };
+    } else if (typeof value === "symbol" || value instanceof Symbol) {
+      return {
+        __type: "symbol",
+        value: value.toString()
+      };
+    } else if (value instanceof Map) {
+      return {
+        __type: "map",
+        value: Array.from(value.entries())
+      };
+    } else if (value instanceof Set) {
+      return {
+        __type: "set",
+        value: Array.from(value.values())
+      };
+    }
+  });
+}
+
+/**
+ * Parses a stringified object.
+ */
+function parse<T>(value: string): T {
+  return JSON.parse(value, (key, value) => {
+    if (typeof value === "object" && value !== null) {
+      if (value.__type === "bigint") {
+        return BigInt(value.value);
+      } else if (value.__type === "symbol") {
+        return Symbol(value.value);
+      } else if (value.__type === "map") {
+        return new Map(value.value);
+      } else if (value.__type === "set") {
+        return new Set(value.value);
+      }
+    }
+
+    return value;
+  });
 }
 
 /**
