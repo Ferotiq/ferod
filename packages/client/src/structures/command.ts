@@ -41,7 +41,9 @@ export class Command<
       description: this.description,
       options: this.options,
       type: this.type,
-      defaultMemberPermissions: this.permissions
+      defaultMemberPermissions: new Discord.PermissionsBitField(
+        this.permissions
+      ).valueOf()
     };
   }
 
