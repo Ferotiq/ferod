@@ -1,6 +1,6 @@
 {
   "name": "fero-dc",
-  "version": "4.0.0-dev-14",
+  "version": "4.0.0-dev-15",
   "description": "Ultimate Classes and Structures to organize the client, commands, events, and more for your discord bot.",
   "author": "Evan <evanrayweigel@outlook.com>",
   "license": "MIT",
