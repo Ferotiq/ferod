@@ -39,6 +39,8 @@ function stringify<T>(value: T): string {
         value: Array.from(value.values())
       };
     }
+
+    return value;
   });
 }
 
