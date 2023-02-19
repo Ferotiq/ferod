@@ -158,7 +158,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
       }
 
       if (!this.clientOptions.editApplicationCommands) {
-        return;
+        continue;
       }
 
       const type =
@@ -187,7 +187,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
           })
         )
       ) {
-        return;
+        continue;
       }
 
       await applicationCommand.edit({
