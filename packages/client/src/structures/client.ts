@@ -14,7 +14,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
   // With how Discord.JS now defines Client.prototype.options, we cannot override it.
   public clientOptions: ClientOptions;
   public commands = new Discord.Collection<string, Command>();
-  public categories: string[] = [];
+  public categories = new Set<string>();
 
   /**
    * Creates a new client
@@ -107,11 +107,9 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 
     for (const command of commands) {
       this.commands.set(command.name, command);
-    }
 
-    this.categories = [
-      ...new Set(this.commands.map((command) => command.category))
-    ];
+      this.categories.add(command.category);
+    }
 
     // add event listeners
     const listeners = await importFiles<EventListener>(
