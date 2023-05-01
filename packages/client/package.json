@@ -1,6 +1,6 @@
 {
   "name": "fero-dc",
-  "version": "4.0.0-dev-20",
+  "version": "4.0.0-dev-21",
   "description": "Ultimate Classes and Structures to organize the client, commands, events, and more for your discord bot.",
   "author": "Evan <evanrayweigel@outlook.com>",
   "license": "MIT",
@@ -29,7 +29,7 @@
     "lint-fix": "eslint --fix \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
-    "discord.js": "14.7.1",
+    "discord.js": "14.9.0",
     "glob": "8.1.0",
     "lodash": "4.17.21"
   },
