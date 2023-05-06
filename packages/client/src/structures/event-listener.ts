@@ -1,5 +1,5 @@
 import * as Discord from "discord.js";
-import { EventListenerHandler, EventListenerOptions } from "../types";
+import type { EventListenerHandler, EventListenerOptions } from "../types";
 
 /**
  * A class to easily create events that interop with Fero-DC

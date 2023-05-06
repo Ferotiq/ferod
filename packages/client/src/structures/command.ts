@@ -1,5 +1,5 @@
 import * as Discord from "discord.js";
-import { CommandFunction, CommandOptions, Option } from "../types";
+import type { CommandFunction, CommandOptions, Option } from "../types";
 import { Client } from "./client";
 
 /**
