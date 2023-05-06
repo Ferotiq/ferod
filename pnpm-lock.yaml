@@ -28,10 +28,12 @@ importers:
     specifiers:
       '@types/inquirer': 9.0.3
       commander: 10.0.1
+      discord.js: 14.11.0
       esm: 3.2.25
       inquirer: 9.2.2
     dependencies:
       commander: 10.0.1
+      discord.js: 14.11.0
       esm: 3.2.25
       inquirer: 9.2.2
     devDependencies:
