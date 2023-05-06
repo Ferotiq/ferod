@@ -5,7 +5,6 @@
     "lib": ["ESNext"],
     "outDir": "./dist",
     "sourceMap": true,
-    "sourceRoot": "../src",
     "declaration": true,
     "declarationMap": true
   },
