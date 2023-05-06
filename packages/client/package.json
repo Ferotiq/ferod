@@ -1,7 +1,7 @@
 {
   "name": "@fero-dc/client",
   "version": "0.0.0",
-  "description": "Ultimate Classes and Structures to organize the client, commands, events, and more for your discord bot.",
+  "description": "An extension on Discord.JS that makes it simpler and safer to create Discord bots.",
   "author": "Evan <evanrayweigel@outlook.com>",
   "license": "MIT",
   "type": "module",
@@ -39,6 +39,5 @@
     "dotenv": "16.0.3",
     "ts-node": "10.9.1",
     "tsup": "6.7.0"
-  },
-  "packageManager": "yarn@3.2.2"
+  }
 }
