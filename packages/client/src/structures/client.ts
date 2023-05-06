@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
 import * as fs from "fs";
-import _ from "lodash";
+import isEqual from "lodash/isEqual";
 import path from "path";
 import type { ClientOptions } from "../types";
 import { importFiles, quickClean } from "../util/misc";
@@ -175,7 +175,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
       });
 
       if (
-        _.isEqual(
+        isEqual(
           toEdit,
           quickClean({
             name: applicationCommand.name,
