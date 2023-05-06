@@ -1,6 +1,6 @@
 {
   "name": "@fero-dc/cli",
-  "version": "3.0.5",
+  "version": "0.0.0",
   "description": "CLI for Fero-DC",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -14,13 +14,11 @@
     "dev": "ts-node-dev src/index.ts"
   },
   "dependencies": {
-    "commander": "9.3.0",
+    "commander": "10.0.1",
     "esm": "3.2.25",
-    "inquirer": "8.2.3"
+    "inquirer": "9.2.2"
   },
   "devDependencies": {
-    "@types/inquirer": "8.2.1",
-    "typescript": "^4.7.4"
-  },
-  "packageManager": "yarn@3.2.2"
+    "@types/inquirer": "9.0.3"
+  }
 }
