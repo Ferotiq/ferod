@@ -17,7 +17,7 @@ interface Answers {
 }
 
 /**
- * Create a new Fero-DC app.
+ * Create a new Ferod app.
  */
 export async function createFeroDCApp(
   options: CreateAppOptions
@@ -142,7 +142,7 @@ function getUserPackageManager(): PackageManager {
 }
 
 /**
- * Scaffold a new Fero-DC app
+ * Scaffold a new Ferod app
  */
 async function scaffoldProject(
   options: Answers & {
@@ -153,7 +153,7 @@ async function scaffoldProject(
   const templatesDirectory = resolve(__dirname, "../../templates");
   console.log(templatesDirectory);
 
-  const packages = ["fero-dc"];
+  const packages = ["ferod"];
 
   if (options.prisma) {
     packages.push("prisma", "@prisma/client");

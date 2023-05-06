@@ -1,5 +1,5 @@
 import * as Discord from "discord.js";
-import { Command } from "fero-dc";
+import { Command } from "ferod";
 
 export default new Command()
   .setName("help")

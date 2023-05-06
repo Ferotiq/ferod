@@ -1,7 +1,7 @@
 {
-  "name": "@fero-dc/root",
+  "name": "@ferod/root",
   "private": true,
-  "repository": "https://github.com/ferotiq/fero-dc",
+  "repository": "https://github.com/ferotiq/ferod",
   "author": "Evan <evanrayweigel@outlook.com>",
   "license": "MIT",
   "engines": {

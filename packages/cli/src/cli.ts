@@ -9,10 +9,10 @@ import type { CreateAppOptions } from "./types";
  * @param args The arguments to parse.
  */
 export function cli(args: string[]): void {
-  const program = new Command("fero-dc");
+  const program = new Command("ferod");
 
   program
-    .description("Create a new Fero-DC app/command/event.")
+    .description("Create a new Ferod app/command/event.")
     .argument("<command>", "The command to run.")
     .argument("<subcommand>", "The subcommand to run.")
     .argument("[dir]", "The directory to create the app in.")

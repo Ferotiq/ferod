@@ -1,5 +1,5 @@
-import inquirer from "inquirer";
 import type * as Discord from "discord.js";
+import inquirer from "inquirer";
 // import { Options } from "../types";
 
 interface Answers {
@@ -11,7 +11,7 @@ interface Answers {
 }
 
 /**
- * Create a new Fero-DC app.
+ * Create a new Ferod app.
  */
 export async function createFeroDCCommand(): Promise<void> {
   const answers: Answers = await inquirer.prompt([

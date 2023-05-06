@@ -3,7 +3,7 @@ import type { CommandFunction, CommandOptions, Option } from "../types";
 import { Client } from "./client";
 
 /**
- * A class to easily create commands that interop with Fero-DC
+ * A class to easily create commands that interop with Ferod
  */
 export class Command<
   T extends Discord.ApplicationCommandType = Discord.ApplicationCommandType.ChatInput

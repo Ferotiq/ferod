@@ -2,7 +2,7 @@ import * as Discord from "discord.js";
 import type { EventListenerHandler, EventListenerOptions } from "../types";
 
 /**
- * A class to easily create events that interop with Fero-DC
+ * A class to easily create events that interop with Ferod
  */
 export class EventListener<
   E extends keyof Discord.ClientEvents = keyof Discord.ClientEvents

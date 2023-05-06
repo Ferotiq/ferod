@@ -1,13 +1,13 @@
 {
-  "name": "@fero-dc/cli",
+  "name": "@ferod/cli",
   "version": "0.0.0",
-  "description": "CLI for Fero-DC",
+  "description": "CLI for Ferod",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "author": "Evan <evanrayweigel@outlook.com>",
   "license": "MIT",
   "bin": {
-    "fero-dc": "bin/fero-dc"
+    "ferod": "bin/ferod"
   },
   "scripts": {
     "build": "tsc",
