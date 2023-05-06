@@ -26,7 +26,8 @@
     "pretty": "prettier --check \"src/**/*.{ts,tsx,scss}\"",
     "pretty-fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
-    "lint-fix": "eslint --fix \"src/**/*.{ts,tsx}\""
+    "lint-fix": "eslint --fix \"src/**/*.{ts,tsx}\"",
+    "prepare": "pnpm build && pnpm lint && pnpm pretty && pnpm test"
   },
   "dependencies": {
     "discord.js": "14.11.0",
