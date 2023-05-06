@@ -2,6 +2,6 @@ import { EventListener } from "../../src";
 
 export default new EventListener<"ready">()
   .setEvent("ready")
-  .setListener((client) => {
+  .setHandler((client) => {
     console.log(`${client.user.tag} is online!`);
   });

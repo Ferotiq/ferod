@@ -1,9 +1,9 @@
 console.clear();
 
 import { config } from "dotenv";
-config();
+config({ path: "./test/.env" });
 
-import { Client, ClientOptions } from "../src";
+import { Client, type ClientOptions } from "../src";
 
 import { dirname } from "path";
 import { fileURLToPath } from "url";
