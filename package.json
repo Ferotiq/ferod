@@ -10,7 +10,8 @@
   },
   "engineStrict": true,
   "scripts": {
-    "build": "pnpm -r build"
+    "build": "pnpm -r build",
+    "test": "pnpm -r test"
   },
   "devDependencies": {
     "@types/node": "20.1.0",
