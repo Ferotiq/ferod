@@ -2,8 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "lib": ["ESNext"],
-    "module": "ESNext",
-    "verbatimModuleSyntax": true
+    "module": "ESNext"
   },
   "include": ["src/**/*.ts"]
 }
