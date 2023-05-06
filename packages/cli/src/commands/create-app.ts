@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
 import { resolve } from "path";
-import { CreateAppOptions } from "../types";
+import type { CreateAppOptions } from "../types";
 
 interface Answers {
   name: string;
@@ -151,6 +151,7 @@ async function scaffoldProject(
   }
 ): Promise<void> {
   const templatesDirectory = resolve(__dirname, "../../templates");
+  console.log(templatesDirectory);
 
   const packages = ["fero-dc"];
 

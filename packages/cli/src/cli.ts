@@ -2,13 +2,13 @@ import { Command } from "commander";
 import { createFeroDCApp } from "./commands/create-app";
 // import { createFeroDCCommand } from "./commands/create-command";
 // import { createFeroDCEvent } from "./commands/create-event";
-import { CreateAppOptions } from "./types";
+import type { CreateAppOptions } from "./types";
 
 /**
  * Basic CLI
  * @param args The arguments to parse.
  */
-export function cli(args: string[]) {
+export function cli(args: string[]): void {
   const program = new Command("fero-dc");
 
   program
