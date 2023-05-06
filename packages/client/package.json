@@ -27,7 +27,7 @@
     "pretty-fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint-fix": "eslint --fix \"src/**/*.{ts,tsx}\"",
-    "prepare": "pnpm build && pnpm lint && pnpm test"
+    "prepare": "pnpm build && pnpm lint && pnpm pretty"
   },
   "dependencies": {
     "discord.js": "14.11.0",
