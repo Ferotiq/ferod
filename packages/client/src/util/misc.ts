@@ -1,9 +1,6 @@
-import globCallback from "glob";
+import { glob } from "glob";
 import path from "path";
 import { pathToFileURL } from "url";
-import { promisify } from "util";
-
-const glob = promisify(globCallback);
 
 /**
  * Removes all deeply nested undefined properties from a plain object.
