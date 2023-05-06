@@ -11,7 +11,13 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node-dev src/index.ts"
+    "dev": "ts-node-dev src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pretty": "prettier --check \"src/**/*.{ts,tsx,scss}\"",
+    "pretty-fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "lint-fix": "eslint --fix \"src/**/*.{ts,tsx}\"",
+    "prepare": "pnpm build && pnpm lint && pnpm test"
   },
   "dependencies": {
     "commander": "10.0.1",

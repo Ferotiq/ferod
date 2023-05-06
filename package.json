@@ -12,7 +12,8 @@
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm -r test",
-    "prepare": "pnpm -r build && pnpm -r lint && pnpm -r test"
+    "publish": "pnpm -r publish",
+    "publish-dev": "pnpm -r publish -- --dev"
   },
   "devDependencies": {
     "@types/node": "20.1.0",
