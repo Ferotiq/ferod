@@ -1,6 +1,6 @@
 {
   "name": "@ferod/create",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Create CLI for Ferod",
   "types": "./dist/index.d.ts",
   "author": "Evan <evanrayweigel@outlook.com>",
