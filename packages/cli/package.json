@@ -1,10 +1,19 @@
 {
   "name": "@ferod/create",
-  "version": "0.1.3",
   "description": "Create CLI for Ferod",
-  "types": "./dist/index.d.ts",
+  "version": "0.1.3",
   "author": "Evan <evanrayweigel@outlook.com>",
+  "repository": "https://github.com/ferotiq/ferod",
+  "bugs": {
+    "url": "https://github.com/ferotiq/ferod/issues"
+  },
+  "homepage": "https://github.com/ferotiq/ferod#readme",
   "license": "MIT",
+  "engines": {
+    "node": "18.16.0",
+    "pnpm": "8.4.0"
+  },
+  "engineStrict": true,
   "type": "module",
   "files": [
     "dist",
@@ -13,6 +22,7 @@
     "tsconfig.json",
     "tsup.config.json"
   ],
+  "types": "./dist/index.d.ts",
   "bin": {
     "ferod": "bin/ferod.mjs"
   },

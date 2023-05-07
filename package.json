@@ -1,8 +1,12 @@
 {
   "name": "@ferod/root",
   "private": true,
-  "repository": "https://github.com/ferotiq/ferod",
   "author": "Evan <evanrayweigel@outlook.com>",
+  "repository": "https://github.com/ferotiq/ferod",
+  "bugs": {
+    "url": "https://github.com/ferotiq/ferod/issues"
+  },
+  "homepage": "https://github.com/ferotiq/ferod#readme",
   "license": "MIT",
   "engines": {
     "node": "18.16.0",
