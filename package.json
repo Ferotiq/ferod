@@ -12,9 +12,9 @@
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm -r test",
-    "publish": "pnpm -r publish -- --access public",
-    "publish-dev": "pnpm -r publish -- --tag dev --access public",
-    "publish-dry": "pnpm -r publish -- --dry-run --access public"
+    "publish": "pnpm -r publish",
+    "publish-dev": "pnpm -r publish -- --tag dev",
+    "publish-dry": "pnpm -r publish -- --dry-run"
   },
   "devDependencies": {
     "@types/node": "20.1.0",
