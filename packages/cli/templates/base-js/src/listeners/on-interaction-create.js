@@ -3,13 +3,13 @@ import { EventListener } from "@ferod/client";
 export default new EventListener()
 	.setEvent("interactionCreate")
 	.setHandler(async (client, interaction) => {
-		if (!interaction.isCommand()) return;
+		if (!interaction.isChatInputCommand()) return;
 
 		const command = client.commands.get(interaction.commandName);
 		if (command === undefined) return;
 
 		try {
-			await command.executor(interaction);
+			await command.executor(client, interaction);
 		} catch (error) {
 			console.error(error);
 			await interaction.reply({
