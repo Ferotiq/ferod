@@ -225,11 +225,8 @@ export class Command<
 			return applicationCommand;
 		}
 
-		const app = await (client.clientOptions.dev
-			? client.application.commands.create(
-					this.data,
-					client.clientOptions.devGuildId
-			  )
+		const app = await (client.options.dev
+			? client.application.commands.create(this.data, client.options.devGuildId)
 			: client.application.commands.create(this.data)
 		).catch(() => undefined);
 
@@ -245,8 +242,8 @@ export class Command<
 	 * @param client The client to fetch the command from
 	 */
 	public async fetch(client: Client): Promise<ApplicationCommand | undefined> {
-		const applicationCommands = client.clientOptions.dev
-			? await client.fetchApplicationCommands(client.clientOptions.devGuildId)
+		const applicationCommands = client.options.dev
+			? await client.fetchApplicationCommands(client.options.devGuildId)
 			: await client.fetchApplicationCommands();
 
 		if (applicationCommands === undefined) {

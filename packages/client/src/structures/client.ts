@@ -3,7 +3,8 @@ import {
 	ApplicationCommand,
 	ApplicationCommandType,
 	Collection,
-	Client as DiscordClient
+	Client as DiscordClient,
+	IntentsBitField
 } from "discord.js";
 import * as fs from "fs";
 import isEqual from "lodash/isEqual";
@@ -18,7 +19,9 @@ import { EventListener } from "./event-listener";
  */
 export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 	// With how Discord.JS now defines Client.prototype.options, we cannot override it.
-	public clientOptions: ClientOptions;
+	public override options: Omit<ClientOptions, "intents"> & {
+		intents: IntentsBitField;
+	};
 	public commands = new Collection<string, Command<ApplicationCommandType>>();
 	public categories = new Set<string>();
 
@@ -30,8 +33,9 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 	public constructor(options: ClientOptions, dirname: string) {
 		super(options);
 
-		this.clientOptions = {
+		this.options = {
 			...options,
+			intents: new IntentsBitField(options.intents),
 			commandsPath: path.resolve(dirname, options.commandsPath),
 			eventListenersPath: path.resolve(dirname, options.eventListenersPath)
 		};
@@ -46,22 +50,22 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 	 */
 	private checkPaths(): void {
 		// commands
-		if (!fs.existsSync(this.clientOptions.commandsPath)) {
+		if (!fs.existsSync(this.options.commandsPath)) {
 			console.log(
 				chalk.yellow("The commands directory does not exist. Creating...")
 			);
-			fs.mkdirSync(this.clientOptions.commandsPath, { recursive: true });
+			fs.mkdirSync(this.options.commandsPath, { recursive: true });
 			console.log(
 				chalk.green("The commands directory has been created successfully!")
 			);
 		}
 
 		// events
-		if (!fs.existsSync(this.clientOptions.eventListenersPath)) {
+		if (!fs.existsSync(this.options.eventListenersPath)) {
 			console.log(
 				chalk.yellow("The events directory does not exist. Creating...")
 			);
-			fs.mkdirSync(this.clientOptions.eventListenersPath, { recursive: true });
+			fs.mkdirSync(this.options.eventListenersPath, { recursive: true });
 			console.log(
 				chalk.green(
 					"The event listeners directory has been created successfully!"
@@ -102,12 +106,12 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 		console.log(
 			chalk.yellow(
 				`Loading files from ${chalk.magenta(
-					this.clientOptions.eventListenersPath
+					this.options.eventListenersPath
 				)}...`
 			)
 		);
 		const listeners = await importFiles<EventListener>(
-			path.resolve(this.clientOptions.eventListenersPath, "**", "*.{ts,js}"),
+			path.resolve(this.options.eventListenersPath, "**", "*.{ts,js}"),
 			EventListener
 		);
 		console.log(
@@ -144,11 +148,11 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 	public async loadCommands(): Promise<number> {
 		console.log(
 			chalk.yellow(
-				`Loading files from ${chalk.cyan(this.clientOptions.commandsPath)}`
+				`Loading files from ${chalk.cyan(this.options.commandsPath)}`
 			)
 		);
 		const commands = await importFiles<Command>(
-			path.resolve(this.clientOptions.commandsPath, "**", "*.{ts,js}"),
+			path.resolve(this.options.commandsPath, "**", "*.{ts,js}"),
 			Command
 		);
 		console.log(chalk.green(`Loaded ${chalk.cyan(commands.length)} files!`));
@@ -163,8 +167,8 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 		}
 
 		console.log(chalk.yellow("Registering application commands..."));
-		const applicationCommands = this.clientOptions.dev
-			? await this.fetchApplicationCommands(this.clientOptions.devGuildId)
+		const applicationCommands = this.options.dev
+			? await this.fetchApplicationCommands(this.options.devGuildId)
 			: await this.fetchApplicationCommands();
 
 		if (applicationCommands === undefined) {
@@ -210,7 +214,7 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 					`Found application command for ${chalk.cyan(command.name)}!`
 				)
 			);
-			if (!this.clientOptions.editApplicationCommands) {
+			if (!this.options.editApplicationCommands) {
 				continue;
 			}
 			console.log(
@@ -274,7 +278,7 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 		}
 
 		// delete application commands
-		if (this.clientOptions.deleteUnusedApplicationCommands) {
+		if (this.options.deleteUnusedApplicationCommands) {
 			console.log(chalk.yellow("Finding unused application commands..."));
 			const toDelete = applicationCommands.filter(
 				(applicationCommand) => !this.commands.has(applicationCommand.name)
