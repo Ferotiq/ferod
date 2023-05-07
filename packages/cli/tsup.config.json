@@ -3,12 +3,8 @@
     "./src/**/*.ts"
   ],
   "sourcemap": true,
-  "format": [
-    "cjs",
-    "esm"
-  ],
+  "format": "esm",
   "outDir": "./dist",
-  "dts": true,
   "splitting": true,
   "clean": true
 }
