@@ -1,5 +1,5 @@
 # Ferod
-config/config.json
+src/config/config.json
 
 # Logs
 logs
