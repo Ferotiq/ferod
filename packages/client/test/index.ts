@@ -15,9 +15,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const token = process.env.TOKEN;
 
 if (!token) {
-  console.error("No token found!");
+	console.error("No token found!");
 
-  process.exit(1);
+	process.exit(1);
 }
 
 const client = new Client(options as ClientOptions, __dirname);
