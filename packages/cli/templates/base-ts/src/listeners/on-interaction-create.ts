@@ -4,7 +4,7 @@ import { Events } from "discord.js";
 export default new EventListener()
 	.setEvent(Events.InteractionCreate)
 	.setHandler(async (client, interaction) => {
-		if (!interaction.isChatInputCommand()) {
+		if (!interaction.isCommand()) {
 			return;
 		}
 

@@ -13,7 +13,10 @@ import { EventListener } from "./event-listener";
 export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 	// With how Discord.JS now defines Client.prototype.options, we cannot override it.
 	public clientOptions: ClientOptions;
-	public commands = new Discord.Collection<string, Command>();
+	public commands = new Discord.Collection<
+		string,
+		Command<Discord.ApplicationCommandType>
+	>();
 	public categories = new Set<string>();
 
 	/**
@@ -243,7 +246,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 	 */
 	public getCommandsByCategory(
 		category: string
-	): Discord.Collection<string, Command> {
+	): Discord.Collection<string, Command<Discord.ApplicationCommandType>> {
 		return this.commands.filter((cmd) => cmd.category === category);
 	}
 }

@@ -4,10 +4,14 @@ import { Events } from "discord.js";
 export default new EventListener()
 	.setEvent(Events.InteractionCreate)
 	.setHandler(async (client, interaction) => {
-		if (!interaction.isChatInputCommand()) return;
+		if (!interaction.isCommand()) {
+			return;
+		}
 
 		const command = client.commands.get(interaction.commandName);
-		if (command === undefined) return;
+		if (command === undefined) {
+			return;
+		}
 
 		try {
 			await command.executor(client, interaction);
