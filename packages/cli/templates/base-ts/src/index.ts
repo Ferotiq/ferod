@@ -13,7 +13,7 @@ const client = new Client(options as ClientOptions, __dirname);
 
 const token = process.env.TOKEN;
 if (token === undefined) {
-  throw new Error("Missing Discord token.");
+	throw new Error("Missing Discord token.");
 }
 
 client.start(token);
