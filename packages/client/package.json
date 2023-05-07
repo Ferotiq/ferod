@@ -29,6 +29,7 @@
     "prepare": "pnpm build && pnpm lint && pnpm pretty"
   },
   "dependencies": {
+    "chalk": "5.2.0",
     "discord.js": "14.11.0",
     "glob": "10.2.2",
     "lodash": "4.17.21"

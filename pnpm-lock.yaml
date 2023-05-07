@@ -59,6 +59,9 @@ importers:
 
   packages/client:
     dependencies:
+      chalk:
+        specifier: 5.2.0
+        version: 5.2.0
       discord.js:
         specifier: 14.11.0
         version: 14.11.0

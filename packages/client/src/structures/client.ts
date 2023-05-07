@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import {
 	ApplicationCommand,
 	ApplicationCommandType,
@@ -46,19 +47,25 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 	private checkPaths(): void {
 		// commands
 		if (!fs.existsSync(this.clientOptions.commandsPath)) {
+			console.log(
+				chalk.yellow("The commands directory does not exist. Creating...")
+			);
 			fs.mkdirSync(this.clientOptions.commandsPath, { recursive: true });
-
-			console.warn(
-				"The commands directory has been created using the path provided."
+			console.log(
+				chalk.green("The commands directory has been created successfully!")
 			);
 		}
 
 		// events
 		if (!fs.existsSync(this.clientOptions.eventListenersPath)) {
+			console.log(
+				chalk.yellow("The events directory does not exist. Creating...")
+			);
 			fs.mkdirSync(this.clientOptions.eventListenersPath, { recursive: true });
-
-			console.warn(
-				"The event listeners directory has been created using the path provided."
+			console.log(
+				chalk.green(
+					"The event listeners directory has been created successfully!"
+				)
 			);
 		}
 	}
@@ -68,111 +75,166 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 	 * @param token The token to use for the client
 	 */
 	public async start(token: string): Promise<void> {
-		await this.login(token);
+		console.log(chalk.yellow("Checking paths..."));
+		this.checkPaths();
+		console.log(chalk.green("Paths are valid!"));
 
-		const events = await this.load();
-
-		if (this.clientOptions.commandLoadedMessage) {
-			const commandEntries = this.commands.map((command, name) => [
-				name,
-				{
-					...command.data,
-					category: command.category,
-					type: ApplicationCommandType[command.type]
-				}
-			]);
-
-			const commandObject = Object.fromEntries(commandEntries);
-
-			console.table(commandObject, [
-				"description",
-				"type",
-				"category",
-				"options"
-			]);
-		}
-
+		console.log(chalk.yellow("Loading events..."));
+		const eventListenerCount = await this.loadEventListeners();
 		console.log(
-			`Loaded ${this.commands.size} commands and ${events.length} events.`
+			chalk.green(`Loaded ${chalk.magenta(eventListenerCount)} events!`)
 		);
 
-		this.emit("ready", this as Client<true>);
+		console.log(chalk.yellow("Logging in..."));
+		await this.login(token);
+		console.log(chalk.green("Logged in successfully!"));
+
+		console.log(chalk.yellow("Loading commands..."));
+		const commandCount = await this.loadCommands();
+		console.log(chalk.green(`Loaded ${chalk.cyan(commandCount)} commands!`));
 	}
 
 	/**
-	 * Loads commands, events, and application commands into the bot.
+	 * Loads event listeners into the bot
+	 * @returns The amount of event listeners loaded
 	 */
-	public async load(): Promise<EventListener[]> {
-		this.checkPaths();
-
-		// add commands
-		const commands = await importFiles<Command>(
-			path.resolve(this.clientOptions.commandsPath, "**", "*.{ts,js}"),
-			Command
+	public async loadEventListeners(): Promise<number> {
+		console.log(
+			chalk.yellow(
+				`Loading files from ${chalk.magenta(
+					this.clientOptions.eventListenersPath
+				)}...`
+			)
 		);
-
-		for (const command of commands) {
-			this.commands.set(command.name, command);
-
-			this.categories.add(command.category);
-		}
-
-		// add event listeners
 		const listeners = await importFiles<EventListener>(
 			path.resolve(this.clientOptions.eventListenersPath, "**", "*.{ts,js}"),
 			EventListener
 		);
+		console.log(
+			chalk.green(`Loaded ${chalk.magenta(listeners.length)} files!`)
+		);
 
 		for (const listener of listeners) {
+			console.log(
+				chalk.yellow(
+					`Registering event listener for ${chalk.magenta(listener.event)}...`
+				)
+			);
+			// TODO: Fix this
+			// This only shows an error in Visual Studio Code, but it works fine.
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
 			this.on(
 				listener.event,
 				listener.handler.bind(null, this as Client<true>)
 			);
+			console.log(
+				chalk.green(
+					`Registered event listener for ${chalk.magenta(listener.event)}!`
+				)
+			);
 		}
 
-		this.registerApplicationCommands();
-
-		return listeners;
+		return listeners.length;
 	}
 
 	/**
-	 * Uses the list of commands on the client to create/edit/delete application commands.
+	 * Loads commands into the bot
 	 */
-	private async registerApplicationCommands(): Promise<void> {
+	public async loadCommands(): Promise<number> {
+		console.log(
+			chalk.yellow(
+				`Loading files from ${chalk.cyan(this.clientOptions.commandsPath)}`
+			)
+		);
+		const commands = await importFiles<Command>(
+			path.resolve(this.clientOptions.commandsPath, "**", "*.{ts,js}"),
+			Command
+		);
+		console.log(chalk.green(`Loaded ${chalk.cyan(commands.length)} files!`));
+
+		for (const command of commands) {
+			console.log(
+				chalk.yellow(`Loading command ${chalk.cyan(command.name)}...`)
+			);
+			this.commands.set(command.name, command);
+			this.categories.add(command.category);
+			console.log(chalk.green(`Loaded command ${chalk.cyan(command.name)}!`));
+		}
+
+		console.log(chalk.yellow("Registering application commands..."));
 		const applicationCommands = this.clientOptions.dev
 			? await this.fetchApplicationCommands(this.clientOptions.devGuildId)
 			: await this.fetchApplicationCommands();
 
 		if (applicationCommands === undefined) {
-			return;
+			console.error(chalk.red("Failed to fetch application commands!"));
+			return commands.length;
 		}
 
 		// create/edit application commands
 		for (const command of this.commands.values()) {
+			console.log(
+				chalk.yellow(
+					`Fetching application command for ${chalk.cyan(command.name)}...`
+				)
+			);
 			const applicationCommand = applicationCommands.find(
 				(applicationCommand) => applicationCommand.name === command.name
 			);
 
 			if (applicationCommand === undefined) {
-				await command.create(this as Client<true>);
-
-				console.log(`Created application command ${command.name}`);
+				console.log(
+					chalk.yellow(
+						`Application command for ${chalk.cyan(
+							command.name
+						)} not found! Creating...`
+					)
+				);
+				const createdApplicationCommand = await command.create(
+					this as Client<true>
+				);
+				applicationCommands.set(
+					createdApplicationCommand.id,
+					createdApplicationCommand
+				);
+				console.log(
+					`Created application command for ${chalk.cyan(command.name)}!`
+				);
 
 				continue;
 			}
 
+			console.log(
+				chalk.green(
+					`Found application command for ${chalk.cyan(command.name)}!`
+				)
+			);
 			if (!this.clientOptions.editApplicationCommands) {
 				continue;
 			}
+			console.log(
+				chalk.yellow(
+					`Checking if application command for ${chalk.cyan(
+						command.name
+					)} matches...`
+				)
+			);
 
 			const type = command.type ?? ApplicationCommandType.ChatInput;
 
 			const description =
-				type === ApplicationCommandType.ChatInput
-					? command.description ?? "No description provided"
-					: "";
+				type === ApplicationCommandType.ChatInput ? command.description : "";
 
-			const toEdit = quickClean({
+			const cleanedApplicationCommand = quickClean({
+				name: applicationCommand.name,
+				description: applicationCommand.description,
+				type: applicationCommand.type,
+				defaultMemberPermissions:
+					applicationCommand.defaultMemberPermissions?.valueOf(),
+				options: applicationCommand.options
+			});
+			const cleanedLocalCommand = quickClean({
 				name: command.name,
 				description,
 				type,
@@ -180,51 +242,77 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 				options: command.options
 			});
 
-			if (
-				isEqual(
-					toEdit,
-					quickClean({
-						name: applicationCommand.name,
-						description: applicationCommand.description,
-						type: applicationCommand.type,
-						defaultMemberPermissions:
-							applicationCommand.defaultMemberPermissions?.valueOf(),
-						options: applicationCommand.options
-					})
-				)
-			) {
+			if (isEqual(cleanedLocalCommand, cleanedApplicationCommand)) {
+				console.log(
+					chalk.green(
+						`Application command for ${chalk.cyan(command.name)} matches!`
+					)
+				);
+
 				continue;
 			}
 
-			await applicationCommand.edit(toEdit);
-
-			console.log(`Edited application command ${command.name}`);
+			console.log(
+				chalk.yellow(
+					`Application command for ${chalk.cyan(
+						command.name
+					)} does not match ${chalk.cyan(command.name)}! Editing...`
+				)
+			);
+			const editedApplicationCommand = await applicationCommand.edit(
+				cleanedLocalCommand
+			);
+			applicationCommands.set(
+				editedApplicationCommand.id,
+				editedApplicationCommand
+			);
+			console.log(
+				chalk.green(
+					`Edited application command for ${chalk.cyan(command.name)}!`
+				)
+			);
 		}
 
 		// delete application commands
 		if (this.clientOptions.deleteUnusedApplicationCommands) {
-			const otherApplicationCommands =
-				(this.clientOptions.dev
-					? await this.fetchApplicationCommands()
-					: await this.fetchApplicationCommands(
-							this.clientOptions.devGuildId
-					  )) ?? new Collection();
+			console.log(chalk.yellow("Finding unused application commands..."));
+			const toDelete = applicationCommands.filter(
+				(applicationCommand) => !this.commands.has(applicationCommand.name)
+			);
 
-			const toDelete: ApplicationCommand[] = [
-				...applicationCommands
-					.concat(otherApplicationCommands)
-					.filter(
-						(applicationCommand) => !this.commands.has(applicationCommand.name)
+			if (toDelete.size === 0) {
+				console.log(chalk.green("No unused application commands found!"));
+
+				return commands.length;
+			}
+
+			console.log(
+				chalk.yellow(
+					`Found ${chalk.cyan(toDelete.size)} unused application commands!`
+				)
+			);
+
+			for (const applicationCommand of toDelete.values()) {
+				console.log(
+					chalk.yellow(
+						`Deleting application command ${chalk.cyan(
+							applicationCommand.name
+						)}...`
 					)
-					.values()
-			];
-
-			for (const applicationCommand of toDelete) {
-				await applicationCommand.delete();
-
-				console.log(`Deleted application command ${applicationCommand.name}`);
+				);
+				const deletedApplicationCommand = await applicationCommand.delete();
+				applicationCommands.delete(deletedApplicationCommand.id);
+				console.log(
+					chalk.green(
+						`Deleted application command ${chalk.cyan(
+							applicationCommand.name
+						)}!`
+					)
+				);
 			}
 		}
+
+		return commands.length;
 	}
 
 	/**

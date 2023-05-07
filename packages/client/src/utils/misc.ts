@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import { glob } from "glob";
 import path from "path";
 import { pathToFileURL } from "url";
@@ -88,7 +89,9 @@ export async function importFiles<T>(
 		!objects.every((obj) => obj instanceof expectedClass)
 	) {
 		throw new Error(
-			`${normalizedFilePath} does not export ${expectedClass.name}`
+			chalk.red(
+				`Event listener "${normalizedFilePath}" does not export ${expectedClass.name}`
+			)
 		);
 	}
 

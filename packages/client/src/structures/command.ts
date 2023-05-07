@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import {
 	ApplicationCommand,
 	ApplicationCommandOptionType,
@@ -63,7 +64,7 @@ export class Command<
 	 */
 	public get name(): string {
 		if (this._name === undefined) {
-			throw new Error("Missing required property: name");
+			throw new Error(chalk.red("Missing required property: name"));
 		}
 
 		return this._name;
@@ -74,7 +75,7 @@ export class Command<
 	 */
 	public get description(): string {
 		if (this._description === undefined) {
-			throw new Error("Missing required property: description");
+			throw new Error(chalk.red("Missing required property: description"));
 		}
 
 		return this._description;
@@ -85,7 +86,7 @@ export class Command<
 	 */
 	public get category(): string {
 		if (this._category === undefined) {
-			throw new Error("Missing required property: category");
+			throw new Error(chalk.red("Missing required property: category"));
 		}
 
 		return this._category;
@@ -117,7 +118,7 @@ export class Command<
 	 */
 	public get executor(): CommandFunction<T> {
 		if (this._executor === undefined) {
-			throw new Error("Missing required property: executor");
+			throw new Error(chalk.red("Missing required property: executor"));
 		}
 
 		return this._executor;
