@@ -205,14 +205,6 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		fse.mkdirSync(options.projectDirectory);
 	}
 
-	// initialize git repository
-	if (options.gitRepo) {
-		exec(`cd "${options.projectDirectory}" && git init`, (_, stdout) =>
-			console.log(stdout)
-		);
-		fse.copySync(resolve(templatesDirectory, "git"), options.projectDirectory);
-	}
-
 	// copy base files
 	const basePath = options.typescript ? "base-ts" : "base-js";
 	fse.copySync(resolve(templatesDirectory, "base"), options.projectDirectory);
@@ -228,6 +220,36 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 			resolve(templatesDirectory, `prisma/${databaseType}.prisma`),
 			resolve(options.projectDirectory, "prisma/schema.prisma")
 		);
+
+		fse.copyFileSync(
+			resolve(templatesDirectory, "prisma/example.env"),
+			resolve(options.projectDirectory, "example.env")
+		);
+	}
+
+	// copy example.env to .env
+	fse.copyFileSync(
+		resolve(options.projectDirectory, "example.env"),
+		resolve(options.projectDirectory, ".env")
+	);
+
+	// copy config-example.json to config.json
+	fse.copyFileSync(
+		resolve(options.projectDirectory, "src/config/config-example.json"),
+		resolve(options.projectDirectory, "src/config/config.json")
+	);
+
+	// edit .env
+	if (options.prisma) {
+		const databaseUri =
+			options.databaseUri ??
+			`mongodb://localhost:27017/${options.name ?? "my-app"}`;
+
+		const env = fse
+			.readFileSync(resolve(options.projectDirectory, ".env"), "utf-8")
+			.replace("database url", databaseUri);
+
+		fse.writeFileSync(resolve(options.projectDirectory, ".env"), env);
 	}
 
 	// copy eslint and prettier files
@@ -251,6 +273,19 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		fse.copySync(
 			resolve(templatesDirectory, options.typescript ? "help-ts" : "help-js"),
 			options.projectDirectory
+		);
+	}
+
+	// initialize git repository
+	if (options.gitRepo) {
+		exec(`cd "${options.projectDirectory}" && git init`, (_, stdout) =>
+			console.log(stdout)
+		);
+		fse.copySync(resolve(templatesDirectory, "git"), options.projectDirectory);
+	} else {
+		fse.removeSync(resolve(options.projectDirectory, "example.env"));
+		fse.removeSync(
+			resolve(options.projectDirectory, "src/config/config-example.json")
 		);
 	}
 

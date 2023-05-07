@@ -1,0 +1,13 @@
+{
+	"dev": true,
+	"devGuildId": "your dev guild id",
+	"commandsPath": "./commands",
+	"eventListenersPath": "./event-listeners",
+	"intents": [
+		"Guilds",
+		"GuildMembers"
+	],
+	"commandLoadedMessage": true,
+	"deleteUnusedApplicationCommands": false,
+	"editApplicationCommands": true
+}
