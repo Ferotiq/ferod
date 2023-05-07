@@ -230,6 +230,14 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		);
 	}
 
+	// copy eslint and prettier files
+	if (options.eslintAndPrettier) {
+		fse.copySync(
+			resolve(templatesDirectory, "eslint-prettier"),
+			options.projectDirectory
+		);
+	}
+
 	// merge package.json files
 	const packageJson = createPackageJson(options.name, ...templates);
 	fse.writeJSONSync(
