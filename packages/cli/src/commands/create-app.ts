@@ -1,17 +1,27 @@
 import { exec } from "child_process";
-import * as fs from "fs";
 import fse from "fs-extra";
 import inquirer from "inquirer";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 import type { CreateAppOptions } from "../types";
 
+const databases = [
+	"MySQL",
+	"MongoDB",
+	"SQLite",
+	"PostgreSQL",
+	"SQLServer",
+	"CockroachDB"
+] as const;
+
+type DatabaseType = (typeof databases)[number];
+
 interface Answers {
 	name: string;
 	gitRepo: boolean;
 	install: boolean;
 	prisma: boolean;
-	databaseType?: "PostgreSQL" | "MySQL" | "MongoDB" | "SQLite";
+	databaseType?: DatabaseType;
 	databaseUri?: string;
 	typescript: boolean;
 	helpCommand: boolean;
@@ -99,7 +109,7 @@ async function getAnswers(options: CreateAppOptions): Promise<Answers> {
 			name: "databaseType",
 			type: "list",
 			message: "What database do you want to use?",
-			choices: ["PostgreSQL", "MySQL", "MongoDB", "SQLite"],
+			choices: databases,
 			default: "MongoDB",
 			when: (answers) => !options.flags.yes && answers.prisma
 		},
@@ -212,8 +222,8 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 
 	console.log(`Using ${options.packageManager} to scaffold the project`);
 
-	if (fs.existsSync(options.projectDirectory)) {
-		if (fs.readdirSync(options.projectDirectory).length > 0) {
+	if (fse.existsSync(options.projectDirectory)) {
+		if (fse.readdirSync(options.projectDirectory).length > 0) {
 			console.log(
 				`The directory ${options.projectDirectory} is not empty. Please try again.`
 			);
@@ -221,11 +231,34 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 			return;
 		}
 	} else {
-		fs.mkdirSync(options.projectDirectory);
+		fse.mkdirSync(options.projectDirectory);
 	}
 
 	// initialize npm/yarn/pnpm project
 	exec(`cd "${options.projectDirectory}" && ${options.packageManager} init -y`);
+
+	// initialize git repository
+	if (options.gitRepo) {
+		exec(`cd "${options.projectDirectory}" && git init`);
+		fse.copySync(resolve(templatesDirectory, "git"), options.projectDirectory);
+	}
+
+	// copy base files
+	const basePath = options.typescript ? "base-ts" : "base-js";
+	fse.copySync(resolve(templatesDirectory, "base"), options.projectDirectory);
+	fse.copySync(resolve(templatesDirectory, basePath), options.projectDirectory);
+
+	// copy prisma files
+	if (options.prisma) {
+		fse.mkdirSync(resolve(options.projectDirectory, "prisma"));
+
+		const databaseType = options.databaseType?.toLowerCase() ?? "mongodb";
+
+		fse.copyFileSync(
+			resolve(templatesDirectory, `prisma/${databaseType}.prisma`),
+			resolve(options.projectDirectory, "prisma/schema.prisma")
+		);
+	}
 
 	// install dependencies
 	if (options.install) {
@@ -238,15 +271,4 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 			console.log
 		);
 	}
-
-	// initialize git repository
-	if (options.gitRepo) {
-		exec(`cd "${options.projectDirectory}" && git init`);
-		fse.copySync(resolve(templatesDirectory, "git"), options.projectDirectory);
-	}
-
-	// copy base files
-	const basePath = options.typescript ? "base-ts" : "base-js";
-	fse.copySync(resolve(templatesDirectory, "base"), options.projectDirectory);
-	fse.copySync(resolve(templatesDirectory, basePath), options.projectDirectory);
 }
