@@ -300,9 +300,11 @@ export class Command<
 							return option.name;
 						}
 
-						const name = option.optional ? `[${option.name}]` : option.name;
+						const name = option.optional
+							? `[${option.name}]`
+							: `<${option.name}>`;
 
-						return `<${name}>`;
+						return name;
 					})
 					.join(" ")}\``
 		);
@@ -314,52 +316,48 @@ export class Command<
 	 * Outputs a string representation of the arguments this command has
 	 */
 	public getArguments(): string {
-		const lines = new Set<string>();
+		const lines: string[] = [];
 
 		for (const options of this.optionsTree) {
-			for (const option of options) {
-				if (option.type === ApplicationCommandOptionType.SubcommandGroup) {
-					const line = `\`${option.name}\`: ${option.description}`;
+			const [option1, option2, ...rest] = options;
 
-					lines.add(line);
-				} else if (option.type === ApplicationCommandOptionType.Subcommand) {
-					const [subCommandGroup] = options;
+			const type = ApplicationCommandOptionType[option1.type];
+			const optional = option1.optional ? "?" : "";
+			const description = option1.description;
 
-					const line =
-						subCommandGroup &&
-						subCommandGroup.type ===
-							ApplicationCommandOptionType.SubcommandGroup
-							? `\`${subCommandGroup.name} ${option.name}\`: ${option.description}`
-							: `\`${option.name}\`: ${option.description}`;
+			const line = `\`${option1.name} (${type}${optional})\`: ${description}`;
 
-					lines.add(line);
-				} else {
-					const [subCommandGroup, subCommand] = options;
+			if (!lines.includes(line)) {
+				lines.push("", line);
+			}
 
-					let line = "`";
+			if (option1.type === ApplicationCommandOptionType.SubcommandGroup) {
+				const type = ApplicationCommandOptionType[option2.type];
+				const optional = option2.optional ? "?" : "";
+				const description = option2.description;
 
-					if (
-						subCommandGroup &&
-						subCommandGroup.type ===
-							ApplicationCommandOptionType.SubcommandGroup
-					) {
-						line += `${subCommandGroup.name} `;
-					}
+				lines.push(
+					`\`${option1.name} ${option2.name} (${type}${optional})\`: ${description}`
+				);
 
-					if (
-						subCommand &&
-						subCommand.type === ApplicationCommandOptionType.Subcommand
-					) {
-						line += `${subCommand.name} `;
-					}
+				for (const option of rest) {
+					const type = ApplicationCommandOptionType[option.type];
+					const optional = option.optional ? "?" : "";
+					const description = option.description;
 
-					const name = option.optional ? `[${option.name}]` : option.name;
+					lines.push(
+						`\`${option1.name} ${option2.name} ${option.name} (${type}${optional})\`: ${description}`
+					);
+				}
+			} else if (option1.type === ApplicationCommandOptionType.Subcommand) {
+				for (const option of [option2, ...rest]) {
+					const type = ApplicationCommandOptionType[option.type];
+					const optional = option.optional ? "?" : "";
+					const description = option.description;
 
-					line += `${name} (${ApplicationCommandOptionType[option.type]})\`: ${
-						option.description
-					}`;
-
-					lines.add(line);
+					lines.push(
+						`\`${option1.name} ${option.name} (${type}${optional})\`: ${description}`
+					);
 				}
 			}
 		}
