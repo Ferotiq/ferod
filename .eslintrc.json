@@ -1,44 +1,45 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "eslint:recommended",
-    "prettier"
-  ],
-  "env": {
-    "es2022": true,
-    "node": true,
-    "browser": true
-  },
-  "rules": {
-    "prettier/prettier": "error",
-    "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": "error",
-    "no-redeclare": "off",
-    "@typescript-eslint/no-redeclare": "error",
-    "@typescript-eslint/explicit-function-return-type": "error",
-    "@typescript-eslint/no-import-type-side-effects": "error",
-    "curly": ["error", "all"],
-    "quotes": ["error", "double"],
-    "require-jsdoc": [
-      "error",
-      {
-        "require": {
-          "FunctionDeclaration": true,
-          "MethodDefinition": true,
-          "ClassDeclaration": true
-        }
-      }
-    ]
-  },
-  "plugins": ["prettier"],
-  "overrides": [
-    {
-      "files": ["*.tsx"],
-      "rules": {
-        "require-jsdoc": "off"
-      }
-    }
-  ]
+	"parser": "@typescript-eslint/parser",
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"eslint:recommended",
+		"prettier"
+	],
+	"env": {
+		"es2022": true,
+		"node": true,
+		"browser": true
+	},
+	"rules": {
+		"indent": ["error", "tab"],
+		"prettier/prettier": "error",
+		"no-unused-vars": "off",
+		"@typescript-eslint/no-unused-vars": "error",
+		"no-redeclare": "off",
+		"@typescript-eslint/no-redeclare": "error",
+		"@typescript-eslint/explicit-function-return-type": "error",
+		"@typescript-eslint/no-import-type-side-effects": "error",
+		"curly": ["error", "all"],
+		"quotes": ["error", "double"],
+		"require-jsdoc": [
+			"error",
+			{
+				"require": {
+					"FunctionDeclaration": true,
+					"MethodDefinition": true,
+					"ClassDeclaration": true
+				}
+			}
+		]
+	},
+	"plugins": ["prettier"],
+	"overrides": [
+		{
+			"files": ["*.tsx"],
+			"rules": {
+				"require-jsdoc": "off"
+			}
+		}
+	]
 }
