@@ -1,4 +1,5 @@
 {
+	"type": "module",
 	"scripts": {
 		"pretty": "prettier --check \"src/**/*.{ts,js,tsx,scss,css}\"",
 		"pretty-fix": "prettier --write \"src/**/*.{ts,js,tsx,scss,css}\"",
