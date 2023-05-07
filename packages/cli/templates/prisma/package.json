@@ -1,0 +1,11 @@
+{
+	"scripts": {
+		"prisma": "prisma"
+	},
+	"dependencies": {
+		"@prisma/client": "^4.13.0"
+	},
+	"devDependencies": {
+		"prisma": "^4.13.0"
+	}
+}

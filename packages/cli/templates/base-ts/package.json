@@ -1,0 +1,11 @@
+{
+	"scripts": {
+		"build": "tsc",
+		"start": "node --experimental-specifier-resolution=node dist --enable-source-maps"
+	},
+	"devDependencies": {
+		"@types/node": "^20.1.0",
+		"typescript": "^5.0.4",
+		"ts-node": "^10.9.1"
+	}
+}

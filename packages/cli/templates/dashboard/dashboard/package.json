@@ -1,9 +1,9 @@
 {
   "name": "dashboard",
   "scripts": {
-    "dev": "solid-start dev",
-    "build": "solid-start build",
-    "start": "solid-start start"
+    "dashboard-dev": "solid-start dev",
+    "dashboard-build": "solid-start build",
+    "dashboard-start": "solid-start start"
   },
   "type": "module",
   "devDependencies": {

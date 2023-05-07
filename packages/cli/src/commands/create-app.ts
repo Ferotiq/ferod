@@ -35,6 +35,7 @@ interface ScaffoldOptions extends Answers {
 }
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const templatesDirectory = resolve(__dirname, "../templates");
 
 /**
  * Create a new Ferod app.
@@ -176,52 +177,22 @@ function getUserPackageManager(): PackageManager {
  * Scaffold a new Ferod app
  */
 async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
-	const templatesDirectory = resolve(__dirname, "../templates");
-
-	const dependencies = new Set<string>([]);
-	const devDependencies = new Set(["nodemon", "dotenv"]);
+	const templates = new Set([
+		"base",
+		options.typescript ? "base-ts" : "base-js"
+	]);
 
 	if (options.prisma) {
-		dependencies.add("@prisma/client");
-
-		devDependencies.add("prisma");
-	}
-
-	if (options.typescript) {
-		devDependencies.add("@types/node");
-		devDependencies.add("typescript");
-		devDependencies.add("ts-node");
-	}
-
-	if (options.dashboard) {
-		dependencies.add("@solidjs/meta");
-		dependencies.add("@solidjs/router");
-		dependencies.add("solid-js");
-		dependencies.add("solid-start");
-		dependencies.add("undici");
-
-		devDependencies.add("vite");
-		devDependencies.add("solid-start-node");
-		devDependencies.add("esbuild");
-		devDependencies.add("postcss");
-		devDependencies.add("@types/node");
-		devDependencies.add("typescript");
+		templates.add("prisma");
 	}
 
 	if (options.eslintAndPrettier) {
-		devDependencies.add("eslint");
-		devDependencies.add("prettier");
-		devDependencies.add("eslint-config-prettier");
-		devDependencies.add("eslint-plugin-prettier");
-
-		if (options.typescript) {
-			devDependencies.add("@typescript-eslint/eslint-plugin");
-			devDependencies.add("@typescript-eslint/parser");
-		}
+		templates.add("eslint-prettier");
 	}
 
 	console.log(`Using ${options.packageManager} to scaffold the project`);
 
+	// make project directory
 	if (fse.existsSync(options.projectDirectory)) {
 		if (fse.readdirSync(options.projectDirectory).length > 0) {
 			console.log(
@@ -234,12 +205,11 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		fse.mkdirSync(options.projectDirectory);
 	}
 
-	// initialize npm/yarn/pnpm project
-	exec(`cd "${options.projectDirectory}" && ${options.packageManager} init -y`);
-
 	// initialize git repository
 	if (options.gitRepo) {
-		exec(`cd "${options.projectDirectory}" && git init`);
+		exec(`cd "${options.projectDirectory}" && git init`, (_, stdout) =>
+			console.log(stdout)
+		);
 		fse.copySync(resolve(templatesDirectory, "git"), options.projectDirectory);
 	}
 
@@ -260,15 +230,79 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		);
 	}
 
+	// merge package.json files
+	const packageJson = createPackageJson(options.name, ...templates);
+	fse.writeJSONSync(
+		resolve(options.projectDirectory, "package.json"),
+		packageJson,
+		{
+			spaces: "\t"
+		}
+	);
+
 	// install dependencies
 	if (options.install) {
-		const dependenciesString = Array.from(dependencies).join(" ");
-		const devDependenciesString = Array.from(devDependencies).join(" ");
-		const installCommand = options.packageManager === "npm" ? "install" : "add";
-		const devFlag = options.packageManager === "npm" ? "--save-dev" : "-D";
 		exec(
-			`cd "${options.projectDirectory}" && ${options.packageManager} ${installCommand} ${dependenciesString} && ${options.packageManager} ${installCommand} ${devFlag} ${devDependenciesString}`,
-			console.log
+			`cd "${options.projectDirectory}" && ${options.packageManager} install --ignore-workspace`,
+			(_, stdout) => console.log(stdout)
 		);
 	}
+}
+
+/**
+ * Merge the dependencies and devDependencies of all package.json template files
+ * @param projectName The name of the project
+ * @param paths The paths to the package.json files
+ */
+function createPackageJson(
+	projectName: string,
+	...templates: string[]
+): Record<string, unknown> {
+	type PackageJsonFieldEntries = [string, string][];
+
+	const directories = templates.map((template) =>
+		resolve(templatesDirectory, template)
+	);
+
+	const dependencies = new Map<string, string>();
+	const devDependencies = new Map<string, string>();
+	const scripts = new Map<string, string>();
+
+	for (const directory of directories) {
+		const packageJson = fse.readJSONSync(resolve(directory, "package.json"));
+
+		const dependenciesEntries = Object.entries(
+			packageJson.dependencies ?? {}
+		) as PackageJsonFieldEntries;
+		const devDependenciesEntries = Object.entries(
+			packageJson.devDependencies ?? {}
+		) as PackageJsonFieldEntries;
+		const scriptsEntries = Object.entries(
+			packageJson.scripts ?? {}
+		) as PackageJsonFieldEntries;
+
+		for (const [name, version] of dependenciesEntries) {
+			dependencies.set(name, version);
+		}
+
+		for (const [name, version] of devDependenciesEntries) {
+			devDependencies.set(name, version);
+		}
+
+		for (const [name, line] of scriptsEntries) {
+			scripts.set(name, line);
+		}
+	}
+
+	const basePackageJson = fse.readJSONSync(
+		resolve(directories[0], "package.json")
+	);
+
+	return {
+		...basePackageJson,
+		name: projectName,
+		scripts: Object.fromEntries(scripts),
+		dependencies: Object.fromEntries(dependencies),
+		devDependencies: Object.fromEntries(devDependencies)
+	};
 }
