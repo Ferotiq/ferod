@@ -1,7 +1,7 @@
 import { Command } from "commander";
 import { createFerodApp } from "./commands/create-app";
-// import { createFerodCommand } from "./commands/create-command";
-// import { createFerodEvent } from "./commands/create-event";
+import { createFerodCommand } from "./commands/create-command";
+import { createFerodEventListener } from "./commands/create-event-listener";
 import type { CLIFlags, CreateAppOptions } from "./types";
 
 /**
@@ -34,14 +34,17 @@ export function cli(args: string[]): void {
 			break;
 		}
 
-		// case "command":
-		//   createFerodCommand();
+		case "command":
+			createFerodCommand();
 
-		//   break;
+			break;
 
-		// case "event":
-		//   createFerodEvent();
+		case "event-listener":
+		case "listener":
+		case "event": {
+			createFerodEventListener();
 
-		//   break;
+			break;
+		}
 	}
 }

@@ -1,13 +1,18 @@
-import type * as Discord from "discord.js";
+import { ApplicationCommandType } from "discord.js";
 import inquirer from "inquirer";
-// import { Options } from "../types";
+
+const applicationCommandOptionTypes = Object.keys(
+	ApplicationCommandType
+).filter((key) =>
+	isNaN(parseInt(key))
+) as (keyof typeof ApplicationCommandType)[];
 
 interface Answers {
 	fileName: string;
 	name: string;
 	description: string;
 	category: string;
-	type: Discord.ApplicationCommandType;
+	type: keyof typeof ApplicationCommandType;
 }
 
 /**
@@ -39,7 +44,7 @@ export async function createFerodCommand(): Promise<void> {
 			name: "type",
 			type: "list",
 			message: "What type of command do you want to create?",
-			choices: ["ChatInput", "Message", "User"]
+			choices: applicationCommandOptionTypes
 		}
 	]);
 
