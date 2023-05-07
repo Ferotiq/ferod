@@ -1,4 +1,5 @@
 import { Command } from "commander";
+import { version } from "../package.json";
 import { createFerodApp } from "./commands/create-app";
 import { createFerodCommand } from "./commands/create-command";
 import { createFerodEventListener } from "./commands/create-event-listener";
@@ -14,11 +15,11 @@ export function cli(args: string[]): void {
 	program
 		.description("Create a new Ferod app/command/event.")
 		.argument("[command]", "The command to run.")
-		.argument("[dir]", "The directory to create the app in.")
-		.option("--noInstall", "Do not install dependencies.")
-		.option("--noGit", "Do not initialize a git repository.")
+		.argument("[name]", "The name of the app/command/event-listener.")
+		.option("--no-install, --noInstall", "Do not install dependencies.")
+		.option("--no-git, --noGit", "Do not initialize a git repository.")
 		.option("-y, --yes", "Answer yes to all questions.")
-		.version("3.0.5", "-v, --version", "Show the version.")
+		.version(version, "-v, --version", "Show the version.")
 		.parse(args);
 
 	const [command, name] = program.args;
