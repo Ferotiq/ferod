@@ -71,6 +71,9 @@ importers:
       lodash:
         specifier: 4.17.21
         version: 4.17.21
+      superjson:
+        specifier: 1.12.3
+        version: 1.12.3
     devDependencies:
       '@types/lodash':
         specifier: 4.14.194
@@ -931,6 +934,13 @@ packages:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
     dev: true
 
+  /copy-anything@3.0.4:
+    resolution: {integrity: sha512-MaQ9FwzlZ/KLeVCLhzI3rZw0EhrIryfZa3AyT4agVybR0DjlkDHA8898lamLD6kfkf9MMn8D+zDAUR4+GxaymQ==}
+    engines: {node: '>=12.13'}
+    dependencies:
+      is-what: 4.1.9
+    dev: false
+
   /create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
     dev: true
@@ -1549,6 +1559,11 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
+  /is-what@4.1.9:
+    resolution: {integrity: sha512-I3FU0rkVvwhgLLEs6iITwZ/JaLXe7tQcHyzupXky8jigt1vu4KM0UOqDr963j36JRvJ835EATVIm6MnGz/i1/g==}
+    engines: {node: '>=12.13'}
+    dev: false
+
   /isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
@@ -2092,6 +2107,13 @@ packages:
       pirates: 4.0.5
       ts-interface-checker: 0.1.13
     dev: true
+
+  /superjson@1.12.3:
+    resolution: {integrity: sha512-0j+U70KUtP8+roVPbwfqkyQI7lBt7ETnuA7KXbTDX3mCKiD/4fXs2ldKSMdt0MCfpTwiMxo20yFU3vu6ewETpQ==}
+    engines: {node: '>=10'}
+    dependencies:
+      copy-anything: 3.0.4
+    dev: false
 
   /supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
