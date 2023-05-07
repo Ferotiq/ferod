@@ -1,4 +1,9 @@
-import * as Discord from "discord.js";
+import {
+	ApplicationCommand,
+	ApplicationCommandType,
+	Collection,
+	Client as DiscordClient
+} from "discord.js";
 import * as fs from "fs";
 import isEqual from "lodash/isEqual";
 import path from "path";
@@ -10,13 +15,10 @@ import { EventListener } from "./event-listener";
 /**
  * A simple yet powerful Discord.JS client that automates many features for you
  */
-export class Client<T extends boolean = boolean> extends Discord.Client<T> {
+export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 	// With how Discord.JS now defines Client.prototype.options, we cannot override it.
 	public clientOptions: ClientOptions;
-	public commands = new Discord.Collection<
-		string,
-		Command<Discord.ApplicationCommandType>
-	>();
+	public commands = new Collection<string, Command<ApplicationCommandType>>();
 	public categories = new Set<string>();
 
 	/**
@@ -75,7 +77,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 				name,
 				{
 					...command.data,
-					type: Discord.ApplicationCommandType[command.type]
+					type: ApplicationCommandType[command.type]
 				}
 			]);
 
@@ -162,10 +164,10 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 				continue;
 			}
 
-			const type = command.type ?? Discord.ApplicationCommandType.ChatInput;
+			const type = command.type ?? ApplicationCommandType.ChatInput;
 
 			const description =
-				type === Discord.ApplicationCommandType.ChatInput
+				type === ApplicationCommandType.ChatInput
 					? command.description ?? "No description provided"
 					: "";
 
@@ -205,9 +207,9 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 					? await this.fetchApplicationCommands()
 					: await this.fetchApplicationCommands(
 							this.clientOptions.devGuildId
-					  )) ?? new Discord.Collection();
+					  )) ?? new Collection();
 
-			const toDelete: Discord.ApplicationCommand[] = [
+			const toDelete: ApplicationCommand[] = [
 				...applicationCommands
 					.concat(otherApplicationCommands)
 					.filter(
@@ -230,9 +232,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 	 */
 	public async fetchApplicationCommands(
 		guildId?: string
-	): Promise<
-		Discord.Collection<string, Discord.ApplicationCommand> | undefined
-	> {
+	): Promise<Collection<string, ApplicationCommand> | undefined> {
 		return this.application?.commands.fetch({
 			cache: true,
 			force: true,
@@ -246,7 +246,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 	 */
 	public getCommandsByCategory(
 		category: string
-	): Discord.Collection<string, Command<Discord.ApplicationCommandType>> {
+	): Collection<string, Command<ApplicationCommandType>> {
 		return this.commands.filter((cmd) => cmd.category === category);
 	}
 }

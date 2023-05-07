@@ -1,9 +1,20 @@
-import type * as Discord from "discord.js";
+import type {
+	ApplicationCommandOptionData,
+	ApplicationCommandOptionType,
+	ApplicationCommandType,
+	ChatInputCommandInteraction,
+	ClientEvents,
+	ClientOptions as DiscordClientOptions,
+	MessageContextMenuCommandInteraction,
+	PermissionResolvable,
+	Snowflake,
+	UserContextMenuCommandInteraction
+} from "discord.js";
 import type { Client } from "./structures/client";
 
-export interface ClientOptions extends Discord.ClientOptions {
+export interface ClientOptions extends DiscordClientOptions {
 	dev: boolean;
-	devGuildId: Discord.Snowflake;
+	devGuildId: Snowflake;
 	commandsPath: string;
 	eventListenersPath: string;
 	commandLoadedMessage?: boolean;
@@ -11,27 +22,27 @@ export interface ClientOptions extends Discord.ClientOptions {
 	editApplicationCommands?: boolean;
 }
 
-type Interaction<T extends Discord.ApplicationCommandType> =
-	T extends Discord.ApplicationCommandType.ChatInput
-		? Discord.ChatInputCommandInteraction
-		: T extends Discord.ApplicationCommandType.Message
-		? Discord.MessageContextMenuCommandInteraction
-		: Discord.UserContextMenuCommandInteraction;
+type Interaction<T extends ApplicationCommandType> =
+	T extends ApplicationCommandType.ChatInput
+		? ChatInputCommandInteraction
+		: T extends ApplicationCommandType.Message
+		? MessageContextMenuCommandInteraction
+		: UserContextMenuCommandInteraction;
 
 export interface CommandFunction<
-	T extends Discord.ApplicationCommandType = Discord.ApplicationCommandType
+	T extends ApplicationCommandType = ApplicationCommandType
 > {
 	(client: Client<true>, interaction: Interaction<T>): void;
 }
 
 export interface CommandOptions<
-	T extends Discord.ApplicationCommandType = Discord.ApplicationCommandType.ChatInput
+	T extends ApplicationCommandType = ApplicationCommandType.ChatInput
 > {
 	name: string;
 	description: string;
 	category: string;
-	options?: Discord.ApplicationCommandOptionData[];
-	permissions?: Discord.PermissionResolvable[];
+	options?: ApplicationCommandOptionData[];
+	permissions?: PermissionResolvable[];
 	type: T;
 	executor: CommandFunction<T>;
 }
@@ -39,15 +50,15 @@ export interface CommandOptions<
 export interface Option {
 	name: string;
 	description: string;
-	type: Discord.ApplicationCommandOptionType;
+	type: ApplicationCommandOptionType;
 	optional: boolean;
 }
 
-export interface EventListenerHandler<E extends keyof Discord.ClientEvents> {
-	(client: Client<true>, ...eventArgs: Discord.ClientEvents[E]): void;
+export interface EventListenerHandler<E extends keyof ClientEvents> {
+	(client: Client<true>, ...eventArgs: ClientEvents[E]): void;
 }
 
-export interface EventListenerOptions<E extends keyof Discord.ClientEvents> {
+export interface EventListenerOptions<E extends keyof ClientEvents> {
 	event: E;
 	handler: EventListenerHandler<E>;
 }

@@ -1,4 +1,17 @@
-import * as Discord from "discord.js";
+import {
+	ApplicationCommand,
+	ApplicationCommandOptionType,
+	ApplicationCommandType,
+	PermissionsBitField,
+	type ApplicationCommandChannelOption,
+	type ApplicationCommandChoicesOption,
+	type ApplicationCommandData,
+	type ApplicationCommandNonOptions,
+	type ApplicationCommandOptionData,
+	type ApplicationCommandSubCommand,
+	type ApplicationCommandSubGroup,
+	type PermissionResolvable
+} from "discord.js";
 import type { CommandFunction, CommandOptions, Option } from "../types";
 import { Client } from "./client";
 
@@ -6,13 +19,13 @@ import { Client } from "./client";
  * A class to easily create commands that interop with Ferod
  */
 export class Command<
-	T extends Discord.ApplicationCommandType = Discord.ApplicationCommandType.ChatInput
+	T extends ApplicationCommandType = ApplicationCommandType.ChatInput
 > {
 	private _name?: string;
 	private _description?: string;
 	private _category?: string;
-	private _options?: Discord.ApplicationCommandOptionData[];
-	private _permissions?: Discord.PermissionResolvable[];
+	private _options?: ApplicationCommandOptionData[];
+	private _permissions?: PermissionResolvable[];
 	private _type?: T;
 	private _executor?: CommandFunction<T>;
 
@@ -35,7 +48,7 @@ export class Command<
 	/**
 	 * The application command data from this command
 	 */
-	public get data(): Discord.ApplicationCommandData {
+	public get data(): ApplicationCommandData {
 		return {
 			name: this.name,
 			description: this.description,
@@ -81,22 +94,22 @@ export class Command<
 	/**
 	 * The options of the command
 	 */
-	public get options(): Discord.ApplicationCommandOptionData[] {
+	public get options(): ApplicationCommandOptionData[] {
 		return this._options ?? [];
 	}
 
 	/**
 	 * The permissions of the command
 	 */
-	public get permissions(): Discord.PermissionsBitField {
-		return new Discord.PermissionsBitField(this._permissions ?? []);
+	public get permissions(): PermissionsBitField {
+		return new PermissionsBitField(this._permissions ?? []);
 	}
 
 	/**
 	 * The type of the command
 	 */
 	public get type(): T {
-		return this._type ?? (Discord.ApplicationCommandType.ChatInput as T);
+		return this._type ?? (ApplicationCommandType.ChatInput as T);
 	}
 
 	/**
@@ -146,8 +159,8 @@ export class Command<
 	 */
 	public setOptions(
 		...options:
-			| Discord.ApplicationCommandOptionData[]
-			| Discord.ApplicationCommandOptionData[][]
+			| ApplicationCommandOptionData[]
+			| ApplicationCommandOptionData[][]
 	): this {
 		this._options = options.flat();
 
@@ -158,7 +171,7 @@ export class Command<
 	 * Adds an option
 	 * @param option The option to add
 	 */
-	public addOption(option: Discord.ApplicationCommandOptionData): this {
+	public addOption(option: ApplicationCommandOptionData): this {
 		if (this._options === undefined) {
 			this._options = [];
 		}
@@ -173,9 +186,7 @@ export class Command<
 	 * @param permissions The permissions of the command
 	 */
 	public setPermissions(
-		...permissions:
-			| Discord.PermissionResolvable[]
-			| Discord.PermissionResolvable[][]
+		...permissions: PermissionResolvable[] | PermissionResolvable[][]
 	): this {
 		this._permissions = permissions.flat();
 
@@ -186,9 +197,7 @@ export class Command<
 	 * Sets the type
 	 * @param type The type of the command
 	 */
-	public setType<T2 extends Discord.ApplicationCommandType>(
-		type: T2
-	): Command<T2> {
+	public setType<T2 extends ApplicationCommandType>(type: T2): Command<T2> {
 		this._type = type as unknown as T;
 
 		return this as unknown as Command<T2>;
@@ -208,9 +217,7 @@ export class Command<
 	 * Creates an application command on Discord from the options of this command
 	 * @param client The client to create the command on
 	 */
-	public async create(
-		client: Client<true>
-	): Promise<Discord.ApplicationCommand> {
+	public async create(client: Client<true>): Promise<ApplicationCommand> {
 		const applicationCommand = await this.fetch(client);
 
 		if (applicationCommand !== undefined) {
@@ -240,9 +247,7 @@ export class Command<
 	 * Fetches the command from Discord
 	 * @param client The client to fetch the command from
 	 */
-	public async fetch(
-		client: Client
-	): Promise<Discord.ApplicationCommand | undefined> {
+	public async fetch(client: Client): Promise<ApplicationCommand | undefined> {
 		const applicationCommands = client.clientOptions.dev
 			? await client.fetchApplicationCommands(client.clientOptions.devGuildId)
 			: await client.fetchApplicationCommands();
@@ -262,7 +267,7 @@ export class Command<
 	 * Edit this application command on Discord with the options of this command
 	 * @param client The client to edit the command on
 	 */
-	public async edit(client: Client): Promise<Discord.ApplicationCommand> {
+	public async edit(client: Client): Promise<ApplicationCommand> {
 		let applicationCommand = await this.fetch(client);
 
 		if (!applicationCommand) {
@@ -276,9 +281,7 @@ export class Command<
 	 * Deletes this command from Discord
 	 * @param client The client to delete the command on
 	 */
-	public async delete(
-		client: Client
-	): Promise<Discord.ApplicationCommand | undefined> {
+	public async delete(client: Client): Promise<ApplicationCommand | undefined> {
 		const applicationCommand = await this.fetch(client);
 
 		return applicationCommand?.delete();
@@ -296,8 +299,8 @@ export class Command<
 					.map((option) => {
 						if (
 							[
-								Discord.ApplicationCommandOptionType.SubcommandGroup,
-								Discord.ApplicationCommandOptionType.Subcommand
+								ApplicationCommandOptionType.SubcommandGroup,
+								ApplicationCommandOptionType.Subcommand
 							].includes(option.type)
 						) {
 							return option.name;
@@ -321,23 +324,19 @@ export class Command<
 
 		for (const options of this.getOptionsTree()) {
 			for (const option of options) {
-				if (
-					option.type === Discord.ApplicationCommandOptionType.SubcommandGroup
-				) {
+				if (option.type === ApplicationCommandOptionType.SubcommandGroup) {
 					const line = `\`${option.name}\`: ${option.description}`;
 
 					if (!lines.includes(line)) {
 						lines.push(line);
 					}
-				} else if (
-					option.type === Discord.ApplicationCommandOptionType.Subcommand
-				) {
+				} else if (option.type === ApplicationCommandOptionType.Subcommand) {
 					const subCommandGroup = options[0];
 
 					const line =
 						subCommandGroup &&
 						subCommandGroup.type ===
-							Discord.ApplicationCommandOptionType.SubcommandGroup
+							ApplicationCommandOptionType.SubcommandGroup
 							? `\`${subCommandGroup.name} ${option.name}\`: ${option.description}`
 							: `\`${option.name}\`: ${option.description}`;
 
@@ -351,23 +350,23 @@ export class Command<
 					if (
 						subCommandGroup &&
 						subCommandGroup.type ===
-							Discord.ApplicationCommandOptionType.SubcommandGroup
+							ApplicationCommandOptionType.SubcommandGroup
 					) {
 						line += `${subCommandGroup.name} `;
 					}
 
 					if (
 						subCommand &&
-						subCommand.type === Discord.ApplicationCommandOptionType.Subcommand
+						subCommand.type === ApplicationCommandOptionType.Subcommand
 					) {
 						line += `${subCommand.name} `;
 					}
 
 					const name = option.optional ? `[${option.name}]` : option.name;
 
-					line += `${name} (${
-						Discord.ApplicationCommandOptionType[option.type]
-					})\`: ${option.description}`;
+					line += `${name} (${ApplicationCommandOptionType[option.type]})\`: ${
+						option.description
+					}`;
 
 					lines.push(line);
 				}
@@ -387,14 +386,12 @@ export class Command<
 
 		if (
 			options.some(
-				(option) =>
-					option.type === Discord.ApplicationCommandOptionType.SubcommandGroup
+				(option) => option.type === ApplicationCommandOptionType.SubcommandGroup
 			)
 		) {
 			const subCommandGroups = options.filter(
-				(option) =>
-					option.type === Discord.ApplicationCommandOptionType.SubcommandGroup
-			) as Discord.ApplicationCommandSubGroup[];
+				(option) => option.type === ApplicationCommandOptionType.SubcommandGroup
+			) as ApplicationCommandSubGroup[];
 
 			for (const subCommandGroup of subCommandGroups) {
 				const subCommands = subCommandGroup.options ?? [];
@@ -430,14 +427,12 @@ export class Command<
 			}
 		} else if (
 			options.some(
-				(option) =>
-					option.type === Discord.ApplicationCommandOptionType.Subcommand
+				(option) => option.type === ApplicationCommandOptionType.Subcommand
 			)
 		) {
 			const subCommands = options.filter(
-				(option) =>
-					option.type === Discord.ApplicationCommandOptionType.Subcommand
-			) as Discord.ApplicationCommandSubCommand[];
+				(option) => option.type === ApplicationCommandOptionType.Subcommand
+			) as ApplicationCommandSubCommand[];
 
 			for (const subCommand of subCommands) {
 				if (!subCommand.options) {
@@ -465,9 +460,9 @@ export class Command<
 			tree.push(
 				...(
 					options as (
-						| Discord.ApplicationCommandNonOptions
-						| Discord.ApplicationCommandChannelOption
-						| Discord.ApplicationCommandChoicesOption
+						| ApplicationCommandNonOptions
+						| ApplicationCommandChannelOption
+						| ApplicationCommandChoicesOption
 					)[]
 				).map(({ name, description, type, required }) => [
 					{

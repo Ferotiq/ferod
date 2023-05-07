@@ -1,12 +1,10 @@
-import * as Discord from "discord.js";
+import type { ClientEvents } from "discord.js";
 import type { EventListenerHandler, EventListenerOptions } from "../types";
 
 /**
  * A class to easily create events that interop with Ferod
  */
-export class EventListener<
-	E extends keyof Discord.ClientEvents = keyof Discord.ClientEvents
-> {
+export class EventListener<E extends keyof ClientEvents = keyof ClientEvents> {
 	private _event?: E;
 	private _handler?: EventListenerHandler<E>;
 
@@ -47,9 +45,7 @@ export class EventListener<
 	 * Set the event
 	 * @param event The event to listen to
 	 */
-	public setEvent<E2 extends keyof Discord.ClientEvents>(
-		event: E2
-	): EventListener<E2> {
+	public setEvent<E2 extends keyof ClientEvents>(event: E2): EventListener<E2> {
 		this._event = event as unknown as E;
 
 		return this as unknown as EventListener<E2>;
