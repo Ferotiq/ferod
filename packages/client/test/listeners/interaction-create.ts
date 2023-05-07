@@ -1,7 +1,8 @@
+import { Events } from "discord.js";
 import { EventListener } from "../../src";
 
 export default new EventListener()
-	.setEvent("interactionCreate")
+	.setEvent(Events.InteractionCreate)
 	.setHandler(async (client, interaction) => {
 		if (!interaction.isChatInputCommand()) {
 			return;

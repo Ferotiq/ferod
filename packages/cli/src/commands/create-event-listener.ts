@@ -21,12 +21,12 @@ export async function createFerodEventListener(): Promise<void> {
 	const answers = await getAnswers();
 
 	const name = answers.name.replace(/\.[^/.]+$/, "");
-	const event = Events[answers.event];
+	const event = answers.event;
 
 	const eventListener = fse
 		.readFileSync(resolve(templatesDirectory, "event-listener/example.ts"))
 		.toString()
-		.replace("interactionCreate", event);
+		.replace("InteractionCreate", event);
 
 	const projectDirectory = process.cwd();
 	const indexTSPath = resolve(projectDirectory, "src/index.ts");
