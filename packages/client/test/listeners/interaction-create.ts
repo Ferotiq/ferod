@@ -1,6 +1,6 @@
 import { EventListener } from "../../src";
 
-export default new EventListener<"interactionCreate">()
+export default new EventListener()
 	.setEvent("interactionCreate")
 	.setHandler(async (client, interaction) => {
 		if (!interaction.isChatInputCommand()) {
