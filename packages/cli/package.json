@@ -23,6 +23,7 @@
     "commander": "10.0.1",
     "discord.js": "14.11.0",
     "esm": "3.2.25",
+    "fs-extra": "11.1.1",
     "inquirer": "9.2.2"
   },
   "devDependencies": {
