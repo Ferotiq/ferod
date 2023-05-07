@@ -47,10 +47,12 @@ export class EventListener<
 	 * Set the event
 	 * @param event The event to listen to
 	 */
-	public setEvent(event: E): this {
-		this._event = event;
+	public setEvent<E2 extends keyof Discord.ClientEvents>(
+		event: E2
+	): EventListener<E2> {
+		this._event = event as unknown as E;
 
-		return this;
+		return this as unknown as EventListener<E2>;
 	}
 
 	/**

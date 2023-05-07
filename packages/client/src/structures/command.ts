@@ -186,10 +186,12 @@ export class Command<
 	 * Sets the type
 	 * @param type The type of the command
 	 */
-	public setType(type: T): this {
-		this._type = type;
+	public setType<T2 extends Discord.ApplicationCommandType>(
+		type: T2
+	): Command<T2> {
+		this._type = type as unknown as T;
 
-		return this;
+		return this as unknown as Command<T2>;
 	}
 
 	/**
