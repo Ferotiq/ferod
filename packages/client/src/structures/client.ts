@@ -77,6 +77,7 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 				name,
 				{
 					...command.data,
+					category: command.category,
 					type: ApplicationCommandType[command.type]
 				}
 			]);
