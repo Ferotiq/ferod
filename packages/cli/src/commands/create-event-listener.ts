@@ -1,8 +1,8 @@
 import { Events } from "discord.js";
 import fse from "fs-extra";
 import inquirer from "inquirer";
-import { dirname, resolve } from "path";
-import { fileURLToPath } from "url";
+import { resolve } from "path";
+import { getTemplatesDirectory } from "../utils/file";
 
 const events = Object.keys(Events) as (keyof typeof Events)[];
 
@@ -11,8 +11,7 @@ interface Answers {
 	event: keyof typeof Events;
 }
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const templatesDirectory = resolve(__dirname, "../templates");
+const templatesDirectory = getTemplatesDirectory(import.meta.url);
 
 /**
  * Create a new Ferod event listener.

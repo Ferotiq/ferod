@@ -1,8 +1,8 @@
 import { ApplicationCommandType, PermissionFlagsBits } from "discord.js";
 import fse from "fs-extra";
 import inquirer from "inquirer";
-import { dirname, resolve } from "path";
-import { fileURLToPath } from "url";
+import { resolve } from "path";
+import { getTemplatesDirectory } from "../utils/file";
 
 const applicationCommandTypes = Object.keys(ApplicationCommandType).filter(
 	(key) => isNaN(parseInt(key))
@@ -20,8 +20,7 @@ interface Answers {
 	type: keyof typeof ApplicationCommandType;
 }
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const templatesDirectory = resolve(__dirname, "../templates");
+const templatesDirectory = getTemplatesDirectory(import.meta.url);
 
 /**
  * Create a new Ferod command.

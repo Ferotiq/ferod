@@ -1,9 +1,9 @@
 import { exec } from "child_process";
 import fse from "fs-extra";
 import inquirer from "inquirer";
-import { dirname, resolve } from "path";
-import { fileURLToPath } from "url";
+import { resolve } from "path";
 import type { CreateAppOptions } from "../types";
+import { getTemplatesDirectory } from "../utils/file";
 
 const databases = [
 	"MySQL",
@@ -34,8 +34,7 @@ interface ScaffoldOptions extends Answers {
 	projectDirectory: string;
 }
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const templatesDirectory = resolve(__dirname, "../templates");
+const templatesDirectory = getTemplatesDirectory(import.meta.url);
 
 /**
  * Create a new Ferod app.
