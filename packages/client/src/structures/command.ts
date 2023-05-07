@@ -361,7 +361,7 @@ export class Command<
 			}
 		}
 
-		return [...lines].join("\n");
+		return lines.join("\n");
 	}
 
 	/**
