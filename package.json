@@ -6,7 +6,7 @@
   "license": "MIT",
   "engines": {
     "node": "18.16.0",
-    "pnpm": "7.29.3"
+    "pnpm": "8.4.0"
   },
   "engineStrict": true,
   "scripts": {
@@ -28,5 +28,5 @@
     "tsup": "6.7.0",
     "typescript": "5.0.4"
   },
-  "packageManager": "pnpm@7.29.3"
+  "packageManager": "pnpm@8.4.0"
 }
