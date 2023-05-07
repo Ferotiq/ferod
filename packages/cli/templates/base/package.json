@@ -7,12 +7,12 @@
     "dev": "nodemon"
   },
   "dependencies": {
-    "@ferod/client": "^0.0.9",
+    "@ferod/client": "^0.1.0",
     "discord.js": "^14.11.0",
     "dotenv": "^16.0.3"
   },
   "devDependencies": {
-    "@ferod/create": "^0.0.9",
+    "@ferod/create": "^0.1.0",
     "nodemon": "^2.0.22"
   }
 }

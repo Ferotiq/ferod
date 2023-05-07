@@ -1,6 +1,6 @@
 {
   "name": "@ferod/client",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "An extension on Discord.JS that makes it simpler and safer to create Discord bots.",
   "author": "Evan <evanrayweigel@outlook.com>",
   "license": "MIT",
