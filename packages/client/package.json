@@ -8,9 +8,8 @@
   "files": [
     "dist",
     "src",
-    ".npmignore",
     "tsconfig.json",
-    "tsup.config.ts"
+    "tsup.config.json"
   ],
   "exports": {
     ".": {

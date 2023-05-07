@@ -6,6 +6,14 @@
   "author": "Evan <evanrayweigel@outlook.com>",
   "license": "MIT",
   "type": "module",
+  "files": [
+    "dist",
+    "src",
+    "templates",
+    "templates/git",
+    "tsconfig.json",
+    "tsup.config.json"
+  ],
   "bin": {
     "ferod": "bin/ferod.mjs"
   },
