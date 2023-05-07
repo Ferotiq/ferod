@@ -2,7 +2,7 @@ import { ApplicationCommandType, PermissionFlagsBits } from "discord.js";
 import fse from "fs-extra";
 import inquirer from "inquirer";
 import { resolve } from "path";
-import type { CreateCommandOptions } from "../types";
+import type { CreateCommandAnswers, CreateCommandOptions } from "../types";
 import { getTemplatesDirectory } from "../utils/file";
 
 const applicationCommandTypes = Object.keys(ApplicationCommandType).filter(
@@ -12,14 +12,6 @@ const applicationCommandTypes = Object.keys(ApplicationCommandType).filter(
 const permissions = Object.keys(PermissionFlagsBits).filter((key) =>
 	isNaN(parseInt(key))
 ) as (keyof typeof PermissionFlagsBits)[];
-
-interface Answers {
-	name: string;
-	description: string;
-	category: string;
-	defaultPermissions: (keyof typeof PermissionFlagsBits)[];
-	type: keyof typeof ApplicationCommandType;
-}
 
 const templatesDirectory = getTemplatesDirectory(import.meta.url);
 
@@ -105,8 +97,10 @@ export async function createFerodCommand(
  * @param options The options passed to the command
  * @returns The answers to the questions
  */
-async function getAnswers(options: CreateCommandOptions): Promise<Answers> {
-	return await inquirer.prompt<Answers>([
+async function getAnswers(
+	options: CreateCommandOptions
+): Promise<CreateCommandAnswers> {
+	return await inquirer.prompt<CreateCommandAnswers>([
 		{
 			name: "name",
 			type: "input",

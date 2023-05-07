@@ -2,37 +2,14 @@ import { exec } from "child_process";
 import fse from "fs-extra";
 import inquirer from "inquirer";
 import { resolve } from "path";
-import type { CreateAppOptions } from "../types";
+import {
+	databases,
+	type CreateAppAnswers,
+	type CreateAppOptions,
+	type PackageManager,
+	type ScaffoldOptions
+} from "../types";
 import { getTemplatesDirectory } from "../utils/file";
-
-const databases = [
-	"MySQL",
-	"MongoDB",
-	"SQLite",
-	"PostgreSQL",
-	"SQLServer",
-	"CockroachDB"
-] as const;
-
-type DatabaseType = (typeof databases)[number];
-
-interface Answers {
-	name: string;
-	gitRepo: boolean;
-	install: boolean;
-	prisma: boolean;
-	databaseType?: DatabaseType;
-	databaseUri?: string;
-	typescript: boolean;
-	helpCommand: boolean;
-	dashboard: boolean;
-	eslintAndPrettier: boolean;
-}
-
-interface ScaffoldOptions extends Answers {
-	packageManager: PackageManager;
-	projectDirectory: string;
-}
 
 const templatesDirectory = getTemplatesDirectory(import.meta.url);
 
@@ -66,7 +43,9 @@ export async function createFerodApp(options: CreateAppOptions): Promise<void> {
  * @param options The options passed to the command
  * @returns The answers to the questions
  */
-async function getAnswers(options: CreateAppOptions): Promise<Answers> {
+async function getAnswers(
+	options: CreateAppOptions
+): Promise<CreateAppAnswers> {
 	if (options.flags.yes) {
 		return {
 			name: options.name ?? "my-app",
@@ -156,8 +135,6 @@ async function getAnswers(options: CreateAppOptions): Promise<Answers> {
 		}
 	]);
 }
-
-type PackageManager = "npm" | "yarn" | "pnpm";
 
 /**
  * Gets the user's package manager

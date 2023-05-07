@@ -2,15 +2,13 @@ import { Events } from "discord.js";
 import fse from "fs-extra";
 import inquirer from "inquirer";
 import { resolve } from "path";
-import type { CreateEventListenerOptions } from "../types";
+import type {
+	CreateEventListenerAnswers,
+	CreateEventListenerOptions
+} from "../types";
 import { getTemplatesDirectory } from "../utils/file";
 
 const events = Object.keys(Events) as (keyof typeof Events)[];
-
-interface Answers {
-	name: string;
-	event: keyof typeof Events;
-}
 
 const templatesDirectory = getTemplatesDirectory(import.meta.url);
 
@@ -75,8 +73,8 @@ export async function createFerodEventListener(
  */
 async function getAnswers(
 	options: CreateEventListenerOptions
-): Promise<Answers> {
-	const answers = await inquirer.prompt<Answers>([
+): Promise<CreateEventListenerAnswers> {
+	const answers = await inquirer.prompt<CreateEventListenerAnswers>([
 		{
 			name: "name",
 			type: "input",
