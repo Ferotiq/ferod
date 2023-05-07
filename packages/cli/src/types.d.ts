@@ -5,6 +5,14 @@ export interface CLIFlags {
 }
 
 export interface CreateAppOptions {
-	name: string;
+	name?: string;
 	flags: CLIFlags;
+}
+
+export interface CreateCommandOptions {
+	name?: string;
+}
+
+export interface CreateEventListenerOptions {
+	name?: string;
 }

@@ -2,6 +2,7 @@ import { Events } from "discord.js";
 import fse from "fs-extra";
 import inquirer from "inquirer";
 import { resolve } from "path";
+import type { CreateEventListenerOptions } from "../types";
 import { getTemplatesDirectory } from "../utils/file";
 
 const events = Object.keys(Events) as (keyof typeof Events)[];
@@ -16,10 +17,12 @@ const templatesDirectory = getTemplatesDirectory(import.meta.url);
 /**
  * Create a new Ferod event listener.
  */
-export async function createFerodEventListener(): Promise<void> {
-	const answers = await getAnswers();
+export async function createFerodEventListener(
+	options: CreateEventListenerOptions
+): Promise<void> {
+	const answers = await getAnswers(options);
 
-	const name = answers.name.replace(/\.[^/.]+$/, "");
+	const name = options.name ?? answers.name.replace(/\.[^/.]+$/, "");
 	const event = answers.event;
 
 	const eventListener = fse
@@ -64,12 +67,15 @@ export async function createFerodEventListener(): Promise<void> {
  * @param options The options passed to the command
  * @returns The answers to the questions
  */
-async function getAnswers(): Promise<Answers> {
+async function getAnswers(
+	options: CreateEventListenerOptions
+): Promise<Answers> {
 	const answers = await inquirer.prompt<Answers>([
 		{
 			name: "name",
 			type: "input",
-			message: "What is the name of the listener?"
+			message: "What is the name of the listener?",
+			when: () => options.name === undefined
 		},
 		{
 			name: "event",
