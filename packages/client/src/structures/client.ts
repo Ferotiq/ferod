@@ -3,7 +3,7 @@ import * as fs from "fs";
 import isEqual from "lodash/isEqual";
 import path from "path";
 import type { ClientOptions } from "../types";
-import { importFiles, quickClean } from "../util/misc";
+import { importFiles, quickClean } from "../utils/misc";
 import { Command } from "./command";
 import { EventListener } from "./event-listener";
 
