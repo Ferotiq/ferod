@@ -9,7 +9,7 @@
 	"rules": {
 		"prettier/prettier": "error",
 		"curly": ["error", "all"],
-		"quotes": ["error", "double"],
+		"quotes": ["error", "double", { "avoidEscape": true }],
 		"require-jsdoc": [
 			"error",
 			{
