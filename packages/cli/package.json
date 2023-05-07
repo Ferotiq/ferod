@@ -7,7 +7,8 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "ferod": "bin/ferod.mjs"
+    "ferod": "bin/ferod.mjs",
+    "create-ferod": "bin/ferod.mjs"
   },
   "scripts": {
     "build": "tsup",
