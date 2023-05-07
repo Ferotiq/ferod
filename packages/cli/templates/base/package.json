@@ -9,7 +9,7 @@
   "dependencies": {
     "@ferod/client": "^0.0.7",
     "discord.js": "^14.11.0",
-    "dotenv": "^10.0.0"
+    "dotenv": "^16.0.3"
   },
   "devDependencies": {
     "@ferod/create": "^0.0.7",
