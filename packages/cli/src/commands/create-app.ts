@@ -42,6 +42,12 @@ const templatesDirectory = getTemplatesDirectory(import.meta.url);
 export async function createFerodApp(options: CreateAppOptions): Promise<void> {
 	const answers = await getAnswers(options);
 
+	if (answers.name === "") {
+		console.log("Name field is required.");
+
+		return;
+	}
+
 	const packageManager = getUserPackageManager();
 
 	const name = answers.name ?? options.name;

@@ -22,6 +22,12 @@ export async function createFerodEventListener(
 ): Promise<void> {
 	const answers = await getAnswers(options);
 
+	if (answers.name === "") {
+		console.log("Name field is required.");
+
+		return;
+	}
+
 	const name = options.name ?? answers.name.replace(/\.[^/.]+$/, "");
 	const event = answers.event;
 

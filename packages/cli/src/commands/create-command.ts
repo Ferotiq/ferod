@@ -31,6 +31,17 @@ export async function createFerodCommand(
 ): Promise<void> {
 	const answers = await getAnswers(options);
 
+	if (answers.name === "") {
+		console.log("Name field is required.");
+
+		return;
+	}
+	if (answers.category === "") {
+		console.log("Category field is required.");
+
+		return;
+	}
+
 	const defaultPermissions = answers.defaultPermissions.map(
 		(permission) => `PermissionFlagsBits.${permission}`
 	);
