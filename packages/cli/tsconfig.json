@@ -1,8 +1,9 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "lib": ["ESNext"],
-    "outDir": "./dist"
-  },
-  "include": ["src/**/*.ts"]
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"module": "ESNext",
+		"lib": ["ESNext"],
+		"outDir": "./dist"
+	},
+	"include": ["src/**/*.ts"]
 }
