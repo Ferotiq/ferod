@@ -210,7 +210,7 @@ export class Command<
 	 */
 	public async create(
 		client: Client<true>
-	): Promise<Discord.ApplicationCommand | Discord.ApplicationCommand[]> {
+	): Promise<Discord.ApplicationCommand> {
 		const applicationCommand = await this.fetch(client);
 
 		if (applicationCommand !== undefined) {
@@ -248,7 +248,7 @@ export class Command<
 			: await client.fetchApplicationCommands();
 
 		if (applicationCommands === undefined) {
-			return undefined;
+			return;
 		}
 
 		const command = applicationCommands.find(
@@ -266,9 +266,7 @@ export class Command<
 		let applicationCommand = await this.fetch(client);
 
 		if (!applicationCommand) {
-			applicationCommand = (await this.create(
-				client
-			)) as Discord.ApplicationCommand;
+			applicationCommand = await this.create(client);
 		}
 
 		return applicationCommand.edit(this.data);
@@ -283,11 +281,7 @@ export class Command<
 	): Promise<Discord.ApplicationCommand | undefined> {
 		const applicationCommand = await this.fetch(client);
 
-		if (applicationCommand) {
-			return applicationCommand.delete();
-		}
-
-		return undefined;
+		return applicationCommand?.delete();
 	}
 
 	/**
@@ -403,8 +397,7 @@ export class Command<
 			) as Discord.ApplicationCommandSubGroup[];
 
 			for (const subCommandGroup of subCommandGroups) {
-				const subCommands = (subCommandGroup.options ??
-					[]) as Discord.ApplicationCommandSubCommand[];
+				const subCommands = subCommandGroup.options ?? [];
 
 				for (const subCommand of subCommands) {
 					if (!subCommand.options) {

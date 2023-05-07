@@ -1,6 +1,7 @@
 import { Command } from "@ferod/client";
 import {
 	ApplicationCommandOptionType,
+	ApplicationCommandType,
 	Collection,
 	EmbedBuilder,
 	PermissionFlagsBits,
@@ -93,7 +94,10 @@ export default new Command()
 				);
 			}
 		} else {
-			const commandsByCategory = new Collection<string, Command[]>();
+			const commandsByCategory = new Collection<
+				string,
+				Command<ApplicationCommandType>[]
+			>();
 			for (const category of client.categories) {
 				const commands = client.getCommandsByCategory(category).values();
 				commandsByCategory.set(toPascalCase(category, " "), [...commands]);
