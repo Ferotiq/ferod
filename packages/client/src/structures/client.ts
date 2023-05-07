@@ -201,7 +201,7 @@ export class Client<T extends boolean = boolean> extends Discord.Client<T> {
 				(this.clientOptions.dev
 					? await this.fetchApplicationCommands()
 					: await this.fetchApplicationCommands(
-						this.clientOptions.devGuildId
+							this.clientOptions.devGuildId
 					  )) ?? new Discord.Collection();
 
 			const toDelete: Discord.ApplicationCommand[] = [
