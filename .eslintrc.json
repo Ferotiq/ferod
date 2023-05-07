@@ -6,6 +6,10 @@
 		"node": true,
 		"browser": true
 	},
+	"parserOptions": {
+		"sourceType": "module",
+		"ecmaVersion": 2023
+	},
 	"rules": {
 		"prettier/prettier": "error",
 		"curly": ["error", "all"],
