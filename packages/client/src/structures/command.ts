@@ -291,9 +291,7 @@ export class Command<
 	 * Outputs a string representation of how to use this command
 	 */
 	public getUsage(): string {
-		const optionTree = this.getOptionsTree();
-
-		const lines: string[] = optionTree.map(
+		const lines: string[] = this.optionsTree.map(
 			(options) =>
 				`\`/${this.name} ${options
 					.map((option) => {
@@ -320,18 +318,16 @@ export class Command<
 	 * Outputs a string representation of the arguments this command has
 	 */
 	public getArguments(): string {
-		const lines: string[] = [];
+		const lines = new Set<string>();
 
-		for (const options of this.getOptionsTree()) {
+		for (const options of this.optionsTree) {
 			for (const option of options) {
 				if (option.type === ApplicationCommandOptionType.SubcommandGroup) {
 					const line = `\`${option.name}\`: ${option.description}`;
 
-					if (!lines.includes(line)) {
-						lines.push(line);
-					}
+					lines.add(line);
 				} else if (option.type === ApplicationCommandOptionType.Subcommand) {
-					const subCommandGroup = options[0];
+					const [subCommandGroup] = options;
 
 					const line =
 						subCommandGroup &&
@@ -340,10 +336,9 @@ export class Command<
 							? `\`${subCommandGroup.name} ${option.name}\`: ${option.description}`
 							: `\`${option.name}\`: ${option.description}`;
 
-					lines.push(line);
+					lines.add(line);
 				} else {
-					const subCommandGroup = options[0];
-					const subCommand = options[1];
+					const [subCommandGroup, subCommand] = options;
 
 					let line = "`";
 
@@ -368,31 +363,31 @@ export class Command<
 						option.description
 					}`;
 
-					lines.push(line);
+					lines.add(line);
 				}
 			}
 		}
 
-		return lines.join("\n");
+		return [...lines].join("\n");
 	}
 
 	/**
 	 * Convert this command's options to a tree
 	 */
-	public getOptionsTree(): Option[][] {
+	public get optionsTree(): Option[][] {
 		const options = this.options;
 
 		const tree: Option[][] = [];
 
-		if (
-			options.some(
-				(option) => option.type === ApplicationCommandOptionType.SubcommandGroup
-			)
-		) {
-			const subCommandGroups = options.filter(
-				(option) => option.type === ApplicationCommandOptionType.SubcommandGroup
-			) as ApplicationCommandSubGroup[];
+		const subCommandGroups = options.filter(
+			(option) => option.type === ApplicationCommandOptionType.SubcommandGroup
+		) as ApplicationCommandSubGroup[];
 
+		const subCommands = options.filter(
+			(option) => option.type === ApplicationCommandOptionType.Subcommand
+		) as ApplicationCommandSubCommand[];
+
+		if (subCommandGroups.length > 0) {
 			for (const subCommandGroup of subCommandGroups) {
 				const subCommands = subCommandGroup.options ?? [];
 
@@ -425,15 +420,7 @@ export class Command<
 					]);
 				}
 			}
-		} else if (
-			options.some(
-				(option) => option.type === ApplicationCommandOptionType.Subcommand
-			)
-		) {
-			const subCommands = options.filter(
-				(option) => option.type === ApplicationCommandOptionType.Subcommand
-			) as ApplicationCommandSubCommand[];
-
+		} else if (subCommands.length > 0) {
 			for (const subCommand of subCommands) {
 				if (!subCommand.options) {
 					continue;
