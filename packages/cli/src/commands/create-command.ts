@@ -24,7 +24,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const templatesDirectory = resolve(__dirname, "../templates");
 
 /**
- * Create a new Ferod app.
+ * Create a new Ferod command.
  */
 export async function createFerodCommand(): Promise<void> {
 	const answers = await getAnswers();
@@ -33,22 +33,29 @@ export async function createFerodCommand(): Promise<void> {
 		(permission) => `PermissionFlagsBits.${permission}`
 	);
 
+	const name = answers.name.replace(/\.[^/.]+$/, "");
 	const commandType = `ApplicationCommandType.${answers.type}`;
 
 	let command = fse
 		.readFileSync(resolve(templatesDirectory, "command/example.ts"))
 		.toString()
-		.replace("NAME", answers.name)
+		.replace("NAME", name)
 		.replace("DESCRIPTION", answers.description)
 		.replace("CATEGORY", answers.category)
 		.replace("PermissionFlagsBits.SendMessages", defaultPermissions.join(", "))
 		.replace("ApplicationCommandType.ChatInput", commandType);
 
 	if (command.includes("(ApplicationCommandType.ChatInput)")) {
-		// delete the line and remove type from import
 		command = command
 			.replace("{ ApplicationCommandType,", "{")
 			.replace(/\s+\.setType\(ApplicationCommandType\.ChatInput\)/, "");
+	}
+
+	if (command.includes(".setPermissions()")) {
+		command = command
+			.replace('\nimport { PermissionFlagsBits } from "discord.js";', "")
+			.replace(", PermissionFlagsBits", "")
+			.replace(/\s+\.setPermissions\(\)/, "");
 	}
 
 	const projectDirectory = process.cwd();
@@ -71,21 +78,19 @@ export async function createFerodCommand(): Promise<void> {
 		config.commandsPath
 	);
 
-	const commandPath = resolve(
-		commandsDirectory,
-		`${answers.name}.${fileExtension}`
-	);
+	const commandPath = resolve(commandsDirectory, `${name}.${fileExtension}`);
 
 	if (fse.existsSync(commandPath)) {
-		throw new Error(`${answers.name}.${fileExtension} already exists.`);
+		throw new Error(`${name}.${fileExtension} already exists.`);
 	}
 
 	fse.writeFileSync(commandPath, command);
 }
 
 /**
- * Prompts the user for answers.
- * @returns The answers.
+ * Get the answers to the questions
+ * @param options The options passed to the command
+ * @returns The answers to the questions
  */
 async function getAnswers(): Promise<Answers> {
 	return await inquirer.prompt<Answers>([
@@ -108,8 +113,7 @@ async function getAnswers(): Promise<Answers> {
 			name: "defaultPermissions",
 			type: "checkbox",
 			message: "What are the default permissions of the command?",
-			choices: permissions,
-			default: ["SendMessages"]
+			choices: permissions
 		},
 		{
 			name: "type",
