@@ -19,9 +19,7 @@ interface Answers {
 /**
  * Create a new Ferod app.
  */
-export async function createFeroDCApp(
-  options: CreateAppOptions
-): Promise<void> {
+export async function createFerodApp(options: CreateAppOptions): Promise<void> {
   const answers: Answers = await inquirer.prompt([
     {
       name: "name",

@@ -1,16 +1,16 @@
 {
-  "name": "@ferod/cli",
+  "name": "@ferod/create",
   "version": "0.0.0",
-  "description": "CLI for Ferod",
-  "main": "./dist/index.js",
+  "description": "Create CLI for Ferod",
   "types": "./dist/index.d.ts",
   "author": "Evan <evanrayweigel@outlook.com>",
   "license": "MIT",
+  "type": "module",
   "bin": {
-    "ferod": "bin/ferod"
+    "ferod": "bin/ferod.mjs"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
     "dev": "ts-node-dev src/index.ts",
     "pretty": "prettier --check \"src/**/*.{ts,tsx,scss}\"",
     "pretty-fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",

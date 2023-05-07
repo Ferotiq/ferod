@@ -13,7 +13,7 @@ interface Answers {
 /**
  * Create a new Ferod app.
  */
-export async function createFeroDCCommand(): Promise<void> {
+export async function createFerodCommand(): Promise<void> {
   const answers: Answers = await inquirer.prompt([
     {
       name: "fileName",

@@ -89,7 +89,7 @@ interface Answers {
 /**
  * Create a new Ferod app.
  */
-export async function createFeroDCEvent(): Promise<void> {
+export async function createFerodEvent(): Promise<void> {
   const answers: Answers = await inquirer.prompt([
     {
       name: "fileName",
