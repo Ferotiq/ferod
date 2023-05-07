@@ -287,27 +287,26 @@ export class Command<
 	 * Outputs a string representation of how to use this command
 	 */
 	public getUsage(): string {
-		const lines: string[] = this.optionsTree.map(
-			(options) =>
-				`\`/${this.name} ${options
-					.map((option) => {
-						if (
-							[
-								ApplicationCommandOptionType.SubcommandGroup,
-								ApplicationCommandOptionType.Subcommand
-							].includes(option.type)
-						) {
-							return option.name;
-						}
+		const type = ApplicationCommandOptionType.Subcommand;
+		const groupType = ApplicationCommandOptionType.SubcommandGroup;
 
-						const name = option.optional
-							? `[${option.name}]`
-							: `<${option.name}>`;
+		const lines = this.optionsTree.map((options) => {
+			const optionsString = options
+				.map((option) => {
+					if (option.type === type || option.type === groupType) {
+						return option.name;
+					}
 
-						return name;
-					})
-					.join(" ")}\``
-		);
+					const name = option.optional
+						? `[${option.name}]`
+						: `<${option.name}>`;
+
+					return name;
+				})
+				.join(" ");
+
+			return `\`/${this.name} ${optionsString}\``;
+		});
 
 		return lines.join("\n");
 	}
