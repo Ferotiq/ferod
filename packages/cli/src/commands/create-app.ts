@@ -281,7 +281,10 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		exec(`cd "${options.projectDirectory}" && git init`, (_, stdout) =>
 			console.log(stdout)
 		);
-		fse.copySync(resolve(templatesDirectory, "git"), options.projectDirectory);
+		fse.copyFileSync(
+			resolve(templatesDirectory, "git/gitignore.example"),
+			resolve(options.projectDirectory, ".gitignore")
+		);
 	} else {
 		fse.removeSync(resolve(options.projectDirectory, "example.env"));
 		fse.removeSync(

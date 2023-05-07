@@ -10,7 +10,6 @@
     "dist",
     "src",
     "templates",
-    "templates/git/.gitignore",
     "tsconfig.json",
     "tsup.config.json"
   ],
