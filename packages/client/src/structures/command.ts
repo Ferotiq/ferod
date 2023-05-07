@@ -234,10 +234,6 @@ export class Command<
 
 		if (app === undefined) {
 			throw Error(`Could not create application command for ${this.name}.`);
-		} else if (Array.isArray(app) && app.includes(undefined)) {
-			throw Error(
-				`Could not create application command for some guilds for ${this.name}.`
-			);
 		}
 
 		return app;
