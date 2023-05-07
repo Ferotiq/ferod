@@ -246,6 +246,14 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		);
 	}
 
+	// copy help command files
+	if (options.helpCommand) {
+		fse.copySync(
+			resolve(templatesDirectory, options.typescript ? "help-ts" : "help-js"),
+			options.projectDirectory
+		);
+	}
+
 	// merge package.json files
 	const packageJson = createPackageJson(options.name, ...templates);
 	fse.writeJSONSync(
