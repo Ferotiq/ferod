@@ -238,6 +238,14 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		);
 	}
 
+	// copy dashboard files
+	if (options.dashboard) {
+		fse.copySync(
+			resolve(templatesDirectory, "dashboard"),
+			options.projectDirectory
+		);
+	}
+
 	// merge package.json files
 	const packageJson = createPackageJson(options.name, ...templates);
 	fse.writeJSONSync(
@@ -254,6 +262,13 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 			`cd "${options.projectDirectory}" && ${options.packageManager} install --ignore-workspace`,
 			(_, stdout) => console.log(stdout)
 		);
+
+		if (options.dashboard) {
+			exec(
+				`cd ${options.projectDirectory}/dashboard && ${options.packageManager} install --ignore-workspace`,
+				(_, stdout) => console.log(stdout)
+			);
+		}
 	}
 }
 
