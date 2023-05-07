@@ -2,7 +2,7 @@
 	"dev": true,
 	"devGuildId": "your dev guild id",
 	"commandsPath": "./commands",
-	"eventListenersPath": "./event-listeners",
+	"eventListenersPath": "./listeners",
 	"intents": [
 		"Guilds",
 		"GuildMembers"
