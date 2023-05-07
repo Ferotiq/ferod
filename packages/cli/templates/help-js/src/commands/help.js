@@ -94,7 +94,9 @@ export default new Command()
 		} else {
 			const commandsByCategory = new Collection();
 			for (const category of client.categories) {
-				const commands = client.getCommandsByCategory(category).values();
+				const commands = client.commands
+					.filter((cmd) => cmd.category === category)
+					.values();
 				commandsByCategory.set(toPascalCase(category, " "), [...commands]);
 			}
 

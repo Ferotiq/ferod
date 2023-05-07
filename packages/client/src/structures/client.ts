@@ -328,14 +328,4 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 			guildId
 		});
 	}
-
-	/**
-	 * Gets all the commands that are in the specified category
-	 * @param category The category to get commands from
-	 */
-	public getCommandsByCategory(
-		category: string
-	): Collection<string, Command<ApplicationCommandType>> {
-		return this.commands.filter((cmd) => cmd.category === category);
-	}
 }
