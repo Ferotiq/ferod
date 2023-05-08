@@ -1,7 +1,6 @@
 import chalk from "chalk";
 import { glob } from "glob";
 import path from "path";
-import { parse, stringify } from "superjson";
 import { pathToFileURL } from "url";
 
 /**
@@ -9,7 +8,7 @@ import { pathToFileURL } from "url";
  * @param obj The object to clean
  */
 export function quickClean<T>(obj: T): T {
-	return parse(stringify(obj));
+	return JSON.parse(JSON.stringify(obj));
 }
 
 /**

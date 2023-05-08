@@ -42,8 +42,7 @@
     "chalk": "5.2.0",
     "discord.js": "14.11.0",
     "glob": "10.2.2",
-    "remeda": "1.14.0",
-    "superjson": "1.12.3"
+    "remeda": "1.14.0"
   },
   "devDependencies": {
     "@types/node": "20.1.0",
