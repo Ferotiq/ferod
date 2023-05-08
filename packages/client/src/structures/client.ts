@@ -18,7 +18,6 @@ import { EventListener } from "./event-listener";
  * A simple yet powerful Discord.JS client that automates many features for you
  */
 export class Client<T extends boolean = boolean> extends DiscordClient<T> {
-	// With how Discord.JS now defines Client.prototype.options, we cannot override it.
 	public override options: Omit<ClientOptions, "intents"> & {
 		intents: IntentsBitField;
 	};
