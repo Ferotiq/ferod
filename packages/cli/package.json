@@ -24,7 +24,7 @@
   ],
   "types": "./dist/index.d.ts",
   "bin": {
-    "ferod": "bin/ferod.mjs"
+    "ferod": "dist/cli.js"
   },
   "scripts": {
     "build": "tsup",
