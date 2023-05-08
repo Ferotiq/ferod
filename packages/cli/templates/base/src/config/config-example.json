@@ -3,11 +3,10 @@
 	"devGuildId": "your dev guild id",
 	"commandsPath": "./commands",
 	"eventListenersPath": "./listeners",
+	"deleteUnusedApplicationCommands": false,
+	"editApplicationCommands": true,
 	"intents": [
 		"Guilds",
 		"GuildMembers"
-	],
-	"commandLoadedMessage": true,
-	"deleteUnusedApplicationCommands": false,
-	"editApplicationCommands": true
+	]
 }
