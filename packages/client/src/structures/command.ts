@@ -347,7 +347,7 @@ export class Command<
 	/**
 	 * Convert this command's options to a tree
 	 */
-	public get optionsTree(): Option[][] {
+	private get optionsTree(): Option[][] {
 		const options = this.options;
 
 		const tree: Option[][] = [];
