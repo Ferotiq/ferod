@@ -75,9 +75,6 @@ importers:
         specifier: 1.12.3
         version: 1.12.3
     devDependencies:
-      '@types/lodash':
-        specifier: 4.14.194
-        version: 4.14.194
       '@types/node':
         specifier: 20.1.0
         version: 20.1.0
@@ -544,10 +541,6 @@ packages:
     resolution: {integrity: sha512-GSgiRCVeapDN+3pqA35IkQwasaCh/0YFH5dEF6S88iDvEn901DjOeH3/QPY+XYP1DFzDZPvIvfeEgk+7br5png==}
     dependencies:
       '@types/node': 20.1.0
-    dev: true
-
-  /@types/lodash@4.14.194:
-    resolution: {integrity: sha512-r22s9tAS7imvBt2lyHC9B8AGwWnXaYb1tY09oyLkXDs4vArpYJzw09nj8MLx5VfciBPGIb+ZwG0ssYnEPJxn/g==}
     dev: true
 
   /@types/node@20.1.0:
