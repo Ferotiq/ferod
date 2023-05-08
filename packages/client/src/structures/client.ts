@@ -198,6 +198,17 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 				const createdApplicationCommand = await command.create(
 					this as Client<true>
 				);
+				if (createdApplicationCommand === undefined) {
+					console.error(
+						chalk.red(
+							`Failed to create application command for ${chalk.cyan(
+								command.name
+							)}!`
+						)
+					);
+
+					continue;
+				}
 				applicationCommands.set(
 					createdApplicationCommand.id,
 					createdApplicationCommand

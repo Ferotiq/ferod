@@ -216,23 +216,18 @@ export class Command<
 	 * Creates an application command on Discord from the options of this command
 	 * @param client The client to create the command on
 	 */
-	public async create(client: Client<true>): Promise<ApplicationCommand> {
-		const applicationCommand = await this.fetch(client);
+	public async create(
+		client: Client<true>
+	): Promise<ApplicationCommand | undefined> {
+		let applicationCommand = await this.fetch(client);
+		applicationCommand ??= await client.application.commands
+			.create(
+				this.data,
+				client.options.dev ? client.options.devGuildId : undefined
+			)
+			.catch(() => undefined);
 
-		if (applicationCommand !== undefined) {
-			return applicationCommand;
-		}
-
-		const app = await (client.options.dev
-			? client.application.commands.create(this.data, client.options.devGuildId)
-			: client.application.commands.create(this.data)
-		).catch(() => undefined);
-
-		if (app === undefined) {
-			throw Error(`Could not create application command for ${this.name}.`);
-		}
-
-		return app;
+		return applicationCommand;
 	}
 
 	/**
@@ -251,11 +246,11 @@ export class Command<
 	 * Edit this application command on Discord with the options of this command
 	 * @param client The client to edit the command on
 	 */
-	public async edit(client: Client): Promise<ApplicationCommand> {
+	public async edit(client: Client): Promise<ApplicationCommand | undefined> {
 		let applicationCommand = await this.fetch(client);
 		applicationCommand ??= await this.create(client);
 
-		return applicationCommand.edit(this.data);
+		return applicationCommand?.edit(this.data);
 	}
 
 	/**
