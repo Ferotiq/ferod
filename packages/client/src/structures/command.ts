@@ -4,10 +4,8 @@ import {
 	ApplicationCommandOptionType,
 	ApplicationCommandType,
 	PermissionsBitField,
-	type ApplicationCommandChannelOption,
-	type ApplicationCommandChoicesOption,
 	type ApplicationCommandData,
-	type ApplicationCommandNonOptions,
+	type ApplicationCommandOption,
 	type ApplicationCommandOptionData,
 	type ApplicationCommandSubCommand,
 	type ApplicationCommandSubGroup,
@@ -437,11 +435,10 @@ export class Command<
 		} else {
 			tree.push(
 				...(
-					options as (
-						| ApplicationCommandNonOptions
-						| ApplicationCommandChannelOption
-						| ApplicationCommandChoicesOption
-					)[]
+					options as Exclude<
+						ApplicationCommandOption,
+						ApplicationCommandSubCommand | ApplicationCommandSubGroup
+					>[]
 				).map(({ name, description, type, required }) => [
 					{
 						name,
