@@ -1,4 +1,5 @@
 import { EventListener } from "@ferod/client";
+import chalk from "chalk";
 import { Events } from "discord.js";
 
 export default new EventListener()
@@ -16,7 +17,7 @@ export default new EventListener()
 		try {
 			await command.executor(client, interaction);
 		} catch (error) {
-			console.error(error);
+			console.error(chalk.red(error));
 			await interaction.reply({
 				content: "There was an error while executing this command!",
 				ephemeral: true

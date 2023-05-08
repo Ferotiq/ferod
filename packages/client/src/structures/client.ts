@@ -212,7 +212,9 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 					createdApplicationCommand
 				);
 				console.log(
-					`Created application command for ${chalk.cyan(command.name)}!`
+					chalk.green(
+						`Created application command for ${chalk.cyan(command.name)}!`
+					)
 				);
 
 				continue;
