@@ -240,19 +240,11 @@ export class Command<
 	 * @param client The client to fetch the command from
 	 */
 	public async fetch(client: Client): Promise<ApplicationCommand | undefined> {
-		const applicationCommands = client.options.dev
-			? await client.fetchApplicationCommands(client.options.devGuildId)
-			: await client.fetchApplicationCommands();
-
-		if (applicationCommands === undefined) {
-			return;
-		}
-
-		const command = applicationCommands.find(
-			(appCmd) => appCmd.name === this.name
+		const applicationCommands = await client.fetchApplicationCommands(
+			client.options.dev ? client.options.devGuildId : undefined
 		);
 
-		return command;
+		return applicationCommands?.find((appCmd) => appCmd.name === this.name);
 	}
 
 	/**
@@ -261,10 +253,7 @@ export class Command<
 	 */
 	public async edit(client: Client): Promise<ApplicationCommand> {
 		let applicationCommand = await this.fetch(client);
-
-		if (!applicationCommand) {
-			applicationCommand = await this.create(client);
-		}
+		applicationCommand ??= await this.create(client);
 
 		return applicationCommand.edit(this.data);
 	}
