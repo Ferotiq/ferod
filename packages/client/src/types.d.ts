@@ -54,11 +54,11 @@ export interface Option {
 	optional: boolean;
 }
 
-export interface EventListenerHandler<E extends keyof ClientEvents> {
-	(client: Client<true>, ...eventArgs: ClientEvents[E]): void;
+export interface EventListenerHandler<Event extends keyof ClientEvents> {
+	(client: Client<true>, ...eventArgs: ClientEvents[Event]): void;
 }
 
-export interface EventListenerOptions<E extends keyof ClientEvents> {
-	event: E;
-	handler: EventListenerHandler<E>;
+export interface EventListenerOptions<Event extends keyof ClientEvents> {
+	event: Event;
+	handler: EventListenerHandler<Event>;
 }

@@ -18,21 +18,21 @@ import { Client } from "./client";
  * A class to easily create commands that interop with Ferod
  */
 export class Command<
-	T extends ApplicationCommandType = ApplicationCommandType.ChatInput
+	Type extends ApplicationCommandType = ApplicationCommandType.ChatInput
 > {
 	private _name?: string;
 	private _description?: string;
 	private _category?: string;
 	private _options?: ApplicationCommandOptionData[];
 	private _permissions?: PermissionResolvable[];
-	private _type?: T;
-	private _executor?: CommandFunction<T>;
+	private _type?: Type;
+	private _executor?: CommandFunction<Type>;
 
 	/**
 	 * Creates a new command
 	 * @param options The options for the command
 	 */
-	public constructor(options?: CommandOptions<T>) {
+	public constructor(options?: CommandOptions<Type>) {
 		if (options !== undefined) {
 			this._name = options.name;
 			this._description = options.description;
@@ -107,14 +107,14 @@ export class Command<
 	/**
 	 * The type of the command
 	 */
-	public get type(): T {
-		return this._type ?? (ApplicationCommandType.ChatInput as T);
+	public get type(): Type {
+		return this._type ?? (ApplicationCommandType.ChatInput as Type);
 	}
 
 	/**
 	 * The executor function of the command
 	 */
-	public get executor(): CommandFunction<T> {
+	public get executor(): CommandFunction<Type> {
 		if (this._executor === undefined) {
 			throw new Error(chalk.red("Missing required property: executor"));
 		}
@@ -196,17 +196,19 @@ export class Command<
 	 * Sets the type
 	 * @param type The type of the command
 	 */
-	public setType<T2 extends ApplicationCommandType>(type: T2): Command<T2> {
-		this._type = type as unknown as T;
+	public setType<Type2 extends ApplicationCommandType>(
+		type: Type2
+	): Command<Type2> {
+		this._type = type as unknown as Type;
 
-		return this as unknown as Command<T2>;
+		return this as unknown as Command<Type2>;
 	}
 
 	/**
 	 * Sets the executor function
 	 * @param executor The function to run when the command is executed
 	 */
-	public setExecutor(executor: CommandFunction<T>): this {
+	public setExecutor(executor: CommandFunction<Type>): this {
 		this._executor = executor;
 
 		return this;
