@@ -18,7 +18,7 @@ import { EventListener } from "./event-listener";
  * A simple yet powerful Discord.JS client that automates many features for you
  */
 export class Client<T extends boolean = boolean> extends DiscordClient<T> {
-	public override options: Omit<ClientOptions, "intents"> & {
+	public declare options: Omit<ClientOptions, "intents"> & {
 		intents: IntentsBitField;
 	};
 	public commands = new Collection<string, Command<ApplicationCommandType>>();
@@ -32,12 +32,11 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 	public constructor(options: ClientOptions, dirname: string) {
 		super(options);
 
-		this.options = {
-			...options,
-			intents: new IntentsBitField(options.intents),
-			commandsPath: path.resolve(dirname, options.commandsPath),
-			eventListenersPath: path.resolve(dirname, options.eventListenersPath)
-		};
+		this.options.commandsPath = path.resolve(dirname, options.commandsPath);
+		this.options.eventListenersPath = path.resolve(
+			dirname,
+			options.eventListenersPath
+		);
 
 		if (options.dev && !options.devGuildId) {
 			throw new Error("devGuildId must be provided if dev is set to true.");
