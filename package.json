@@ -18,8 +18,7 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "publish": "pnpm -r publish",
-    "publish-dev": "pnpm -r publish -- --tag dev",
-    "publish-dry": "pnpm -r publish -- --dry-run"
+    "publish-dev": "pnpm -r publish --tag dev"
   },
   "devDependencies": {
     "@types/node": "20.1.0",
