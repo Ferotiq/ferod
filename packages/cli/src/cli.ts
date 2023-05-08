@@ -1,4 +1,4 @@
-#!/usr/bin/env node --experimental-specifier-resolution=node --experimental-modules --no-warnings
+#!/usr/bin/env node --experimental-modules --no-warnings
 import { Command } from "commander";
 import { version } from "../package.json";
 import { createFerodApp } from "./commands/create-app";
