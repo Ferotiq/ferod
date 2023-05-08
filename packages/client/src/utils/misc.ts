@@ -8,7 +8,42 @@ import { pathToFileURL } from "url";
  * @param obj The object to clean
  */
 export function quickClean<T>(obj: T): T {
-	return JSON.parse(JSON.stringify(obj));
+	return parse(stringify(obj));
+}
+
+/**
+ * Stringifies an object, but converts BigInts to strings.
+ * @param obj The object to stringify
+ * @returns The stringified object
+ */
+export function stringify<T>(obj: T): string {
+	return JSON.stringify(obj, (key, value) => {
+		if (typeof value === "bigint") {
+			return {
+				__type: "bigint",
+				value: value.toString()
+			};
+		}
+
+		return value;
+	});
+}
+
+/**
+ * Parses a stringified object, but converts strings to BigInts.
+ * @param str The string to parse
+ * @returns The parsed object
+ */
+export function parse<T>(str: string): T {
+	return JSON.parse(str, (key, value) => {
+		if (typeof value === "object" && value !== null) {
+			if (value.__type === "bigint") {
+				return BigInt(+value.value);
+			}
+		}
+
+		return value;
+	});
 }
 
 /**
