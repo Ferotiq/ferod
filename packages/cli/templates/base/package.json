@@ -7,13 +7,13 @@
     "dev": "nodemon"
   },
   "dependencies": {
-    "@ferod/client": "^0.1.6",
+    "@ferod/client": "^0.1.7",
     "discord.js": "^14.11.0",
     "dotenv": "^16.0.3",
     "chalk": "^5.2.0"
   },
   "devDependencies": {
-    "@ferod/create": "^0.1.6",
+    "@ferod/create": "^0.1.7",
     "nodemon": "^2.0.22"
   }
 }
