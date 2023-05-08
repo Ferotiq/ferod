@@ -7,8 +7,8 @@ import {
 	IntentsBitField
 } from "discord.js";
 import * as fs from "fs";
-import isEqual from "lodash/isEqual";
 import path from "path";
+import { equals } from "remeda";
 import type { ClientOptions } from "../types";
 import { importFiles, quickClean } from "../utils/misc";
 import { Command } from "./command";
@@ -257,7 +257,7 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 				options: command.options
 			});
 
-			if (isEqual(cleanedLocalCommand, cleanedApplicationCommand)) {
+			if (equals(cleanedLocalCommand, cleanedApplicationCommand)) {
 				console.log(
 					chalk.green(
 						`Application command for ${chalk.cyan(command.name)} matches!`
