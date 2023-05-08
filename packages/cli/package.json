@@ -1,7 +1,7 @@
 {
   "name": "@ferod/create",
   "description": "Create CLI for Ferod",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "author": "Evan <evanrayweigel@outlook.com>",
   "repository": "https://github.com/ferotiq/ferod",
   "bugs": {
