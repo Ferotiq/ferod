@@ -17,7 +17,6 @@ export interface ClientOptions extends DiscordClientOptions {
 	devGuildId: Snowflake;
 	commandsPath: string;
 	eventListenersPath: string;
-	commandLoadedMessage?: boolean;
 	deleteUnusedApplicationCommands?: boolean;
 	editApplicationCommands?: boolean;
 }
