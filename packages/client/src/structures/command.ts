@@ -264,9 +264,9 @@ export class Command<
 	}
 
 	/**
-	 * Outputs a string representation of how to use this command
+	 * A string representation of how to use this command
 	 */
-	public getUsage(): string {
+	public get usage(): string {
 		const type = ApplicationCommandOptionType.Subcommand;
 		const groupType = ApplicationCommandOptionType.SubcommandGroup;
 
@@ -292,9 +292,9 @@ export class Command<
 	}
 
 	/**
-	 * Outputs a string representation of the arguments this command has
+	 * A string representation of the arguments this command has
 	 */
-	public getArguments(): string {
+	public get arguments(): string {
 		const lines: string[] = [];
 
 		for (const options of this.optionsTree) {

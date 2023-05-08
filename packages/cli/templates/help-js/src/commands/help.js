@@ -77,8 +77,8 @@ export default new Command()
 					}
 				);
 
-			const usage = command.getUsage();
-			const args = command.getArguments();
+			const usage = command.usage;
+			const args = command.arguments;
 			if (usage && args) {
 				embed.addFields(
 					{
