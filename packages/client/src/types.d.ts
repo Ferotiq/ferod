@@ -21,29 +21,29 @@ export interface ClientOptions extends DiscordClientOptions {
 	editApplicationCommands?: boolean;
 }
 
-type Interaction<T extends ApplicationCommandType> =
-	T extends ApplicationCommandType.ChatInput
+type Interaction<TType extends ApplicationCommandType> =
+	TType extends ApplicationCommandType.ChatInput
 		? ChatInputCommandInteraction
-		: T extends ApplicationCommandType.Message
+		: TType extends ApplicationCommandType.Message
 		? MessageContextMenuCommandInteraction
 		: UserContextMenuCommandInteraction;
 
 export interface CommandFunction<
-	T extends ApplicationCommandType = ApplicationCommandType
+	TType extends ApplicationCommandType = ApplicationCommandType
 > {
-	(client: Client<true>, interaction: Interaction<T>): void;
+	(client: Client<true>, interaction: Interaction<TType>): void;
 }
 
 export interface CommandOptions<
-	T extends ApplicationCommandType = ApplicationCommandType.ChatInput
+	TType extends ApplicationCommandType = ApplicationCommandType.ChatInput
 > {
 	name: string;
 	description: string;
 	category: string;
 	options?: ApplicationCommandOptionData[];
 	permissions?: PermissionResolvable[];
-	type: T;
-	executor: CommandFunction<T>;
+	type: TType;
+	executor: CommandFunction<TType>;
 }
 
 export interface Option {
@@ -53,11 +53,11 @@ export interface Option {
 	optional: boolean;
 }
 
-export interface EventListenerHandler<Event extends keyof ClientEvents> {
-	(client: Client<true>, ...eventArgs: ClientEvents[Event]): void;
+export interface EventListenerHandler<TEvent extends keyof ClientEvents> {
+	(client: Client<true>, ...eventArgs: ClientEvents[TEvent]): void;
 }
 
-export interface EventListenerOptions<Event extends keyof ClientEvents> {
-	event: Event;
-	handler: EventListenerHandler<Event>;
+export interface EventListenerOptions<TEvent extends keyof ClientEvents> {
+	event: TEvent;
+	handler: EventListenerHandler<TEvent>;
 }

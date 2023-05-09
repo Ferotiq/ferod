@@ -18,21 +18,21 @@ import { Client } from "./client";
  * A class to easily create commands that interop with Ferod
  */
 export class Command<
-	Type extends ApplicationCommandType = ApplicationCommandType.ChatInput
+	TType extends ApplicationCommandType = ApplicationCommandType.ChatInput
 > {
 	private _name?: string;
 	private _description?: string;
 	private _category?: string;
 	private _options?: ApplicationCommandOptionData[];
 	private _permissions?: PermissionResolvable[];
-	private _type?: Type;
-	private _executor?: CommandFunction<Type>;
+	private _type?: TType;
+	private _executor?: CommandFunction<TType>;
 
 	/**
 	 * Creates a new command
 	 * @param options The options for the command
 	 */
-	public constructor(options?: CommandOptions<Type>) {
+	public constructor(options?: CommandOptions<TType>) {
 		if (options !== undefined) {
 			this._name = options.name;
 			this._description = options.description;
@@ -107,14 +107,14 @@ export class Command<
 	/**
 	 * The type of the command
 	 */
-	public get type(): Type {
-		return this._type ?? (ApplicationCommandType.ChatInput as Type);
+	public get type(): TType {
+		return this._type ?? (ApplicationCommandType.ChatInput as TType);
 	}
 
 	/**
 	 * The executor function of the command
 	 */
-	public get executor(): CommandFunction<Type> {
+	public get executor(): CommandFunction<TType> {
 		if (this._executor === undefined) {
 			throw new Error(chalk.red("Missing required property: executor"));
 		}
@@ -199,7 +199,7 @@ export class Command<
 	public setType<Type2 extends ApplicationCommandType>(
 		type: Type2
 	): Command<Type2> {
-		this._type = type as unknown as Type;
+		this._type = type as unknown as TType;
 
 		return this as unknown as Command<Type2>;
 	}
@@ -208,7 +208,7 @@ export class Command<
 	 * Sets the executor function
 	 * @param executor The function to run when the command is executed
 	 */
-	public setExecutor(executor: CommandFunction<Type>): this {
+	public setExecutor(executor: CommandFunction<TType>): this {
 		this._executor = executor;
 
 		return this;
