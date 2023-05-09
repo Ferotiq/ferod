@@ -119,13 +119,13 @@ async function getAnswers(
 			default: true,
 			when: () => !options.flags.yes
 		},
-		{
-			name: "dashboard",
-			type: "confirm",
-			message: "Add a dashboard?",
-			default: true,
-			when: () => !options.flags.yes
-		},
+		// {
+		// 	name: "dashboard",
+		// 	type: "confirm",
+		// 	message: "Add a dashboard?",
+		// 	default: true,
+		// 	when: () => !options.flags.yes
+		// },
 		{
 			name: "eslintAndPrettier",
 			type: "confirm",
