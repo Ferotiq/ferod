@@ -172,8 +172,6 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		templates.add("eslint-prettier");
 	}
 
-	console.log(`Using ${options.packageManager} to scaffold the project`);
-
 	// make project directory
 	if (fse.existsSync(options.projectDirectory)) {
 		if (fse.readdirSync(options.projectDirectory).length > 0) {
@@ -298,6 +296,8 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 
 	// install dependencies
 	if (options.install) {
+		console.log(`Using ${options.packageManager} to install dependencies...`);
+
 		exec(
 			`cd "${options.projectDirectory}" && ${options.packageManager} install --ignore-workspace`,
 			(_, stdout) => console.log(stdout)
