@@ -206,17 +206,15 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 			resolve(options.projectDirectory, "example.env")
 		);
 
-		fse.copySync(
-			resolve(templatesDirectory, "prisma"),
-			options.projectDirectory
-		);
+		fse.ensureDirSync(resolve(options.projectDirectory, "src/db"));
 
-		if (!options.typescript) {
-			fse.moveSync(
-				resolve(options.projectDirectory, "src/db/index.ts"),
-				resolve(options.projectDirectory, "src/db/index.js")
-			);
-		}
+		fse.copyFileSync(
+			resolve(templatesDirectory, "prisma/src/db/index.ts"),
+			resolve(
+				options.projectDirectory,
+				`src/db/index.${options.typescript ? "ts" : "js"}`
+			)
+		);
 	}
 
 	// copy example.env to .env
