@@ -4,7 +4,6 @@ import {
 	ApplicationCommandType,
 	Collection,
 	EmbedBuilder,
-	PermissionFlagsBits,
 	type EmbedField
 } from "discord.js";
 
@@ -25,7 +24,6 @@ export default new Command()
 	.setName("help")
 	.setDescription("Shows a help embed")
 	.setCategory("Utility")
-	.setPermissions(PermissionFlagsBits.SendMessages)
 	.setOptions({
 		name: "command",
 		description: "The command to receive help for",

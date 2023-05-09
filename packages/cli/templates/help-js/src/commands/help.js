@@ -2,8 +2,7 @@ import { Command } from "@ferod/client";
 import {
 	ApplicationCommandOptionType,
 	Collection,
-	EmbedBuilder,
-	PermissionFlagsBits
+	EmbedBuilder
 } from "discord.js";
 
 /**
@@ -23,7 +22,6 @@ export default new Command()
 	.setName("help")
 	.setDescription("Shows a help embed")
 	.setCategory("Utility")
-	.setPermissions(PermissionFlagsBits.SendMessages)
 	.setOptions({
 		name: "command",
 		description: "The command to receive help for",
