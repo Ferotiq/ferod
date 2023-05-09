@@ -56,7 +56,7 @@ async function getAnswers(
 			databaseUri: `mongodb://localhost:27017/${options.name ?? "my-app"}`,
 			typescript: true,
 			helpCommand: true,
-			dashboard: true,
+			// dashboard: true,
 			eslintAndPrettier: true
 		};
 	}
@@ -250,13 +250,13 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		);
 	}
 
-	// copy dashboard files
-	if (options.dashboard) {
-		fse.copySync(
-			resolve(templatesDirectory, "dashboard"),
-			options.projectDirectory
-		);
-	}
+	// // copy dashboard files
+	// if (options.dashboard) {
+	// 	fse.copySync(
+	// 		resolve(templatesDirectory, "dashboard"),
+	// 		options.projectDirectory
+	// 	);
+	// }
 
 	// copy help command files
 	if (options.helpCommand) {
@@ -299,12 +299,12 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 			(_, stdout) => console.log(stdout)
 		);
 
-		if (options.dashboard) {
-			exec(
-				`cd ${options.projectDirectory}/dashboard && ${options.packageManager} install --ignore-workspace`,
-				(_, stdout) => console.log(stdout)
-			);
-		}
+		// if (options.dashboard) {
+		// 	exec(
+		// 		`cd ${options.projectDirectory}/dashboard && ${options.packageManager} install --ignore-workspace`,
+		// 		(_, stdout) => console.log(stdout)
+		// 	);
+		// }
 	}
 }
 

@@ -37,7 +37,7 @@ export interface CreateAppAnswers {
 	databaseUri?: string;
 	typescript: boolean;
 	helpCommand: boolean;
-	dashboard: boolean;
+	// dashboard: boolean;
 	eslintAndPrettier: boolean;
 }
 
