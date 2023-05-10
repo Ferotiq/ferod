@@ -192,28 +192,23 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 
 	// copy prisma files
 	if (options.prisma) {
-		fse.mkdirSync(resolve(options.projectDirectory, "prisma"));
-
 		const databaseType = options.databaseType?.toLowerCase() ?? "mongodb";
 
-		fse.copyFileSync(
-			resolve(templatesDirectory, `prisma/${databaseType}.prisma`),
-			resolve(options.projectDirectory, "prisma/schema.prisma")
+		fse.copySync(
+			resolve(templatesDirectory, "prisma"),
+			options.projectDirectory
 		);
 
-		fse.copyFileSync(
-			resolve(templatesDirectory, "prisma/example.env"),
-			resolve(options.projectDirectory, "example.env")
-		);
-
-		fse.ensureDirSync(resolve(options.projectDirectory, "src/db"));
-
-		fse.copyFileSync(
-			resolve(templatesDirectory, "prisma/src/db/index.ts"),
-			resolve(
-				options.projectDirectory,
-				`src/db/index.${options.typescript ? "ts" : "js"}`
+		const schema = fse
+			.readFileSync(
+				resolve(options.projectDirectory, "prisma/schema.prisma"),
+				"utf-8"
 			)
+			.replace("mongodb", databaseType);
+
+		fse.writeFileSync(
+			resolve(options.projectDirectory, "prisma/schema.prisma"),
+			schema
 		);
 	}
 
