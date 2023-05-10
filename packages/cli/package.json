@@ -31,8 +31,8 @@
     "dev": "ts-node-dev src/index.ts",
     "test": "cd test && npx ferod",
     "test-yes": "cd test && npx ferod --yes",
-    "pretty": "prettier --check \"src/**/*.{ts,tsx,scss}\"",
-    "pretty-fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
+    "pretty": "prettier --check \"{src,templates}/**/*.{ts,tsx,scss}\"",
+    "pretty-fix": "prettier --write \"{src,templates}/**/*.{ts,tsx,scss}\"",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint-fix": "eslint --fix \"src/**/*.{ts,tsx}\"",
     "prepare": "pnpm build && pnpm lint && pnpm pretty"
