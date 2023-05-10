@@ -11,7 +11,7 @@
   "license": "MIT",
   "engines": {
     "node": "18.16.0",
-    "pnpm": "8.4.0"
+    "pnpm": "8.5.0"
   },
   "engineStrict": true,
   "type": "module",
