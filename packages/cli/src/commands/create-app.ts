@@ -151,19 +151,6 @@ function getUserPackageManager(): PackageManager {
  * Scaffold a new Ferod app
  */
 async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
-	const templates = new Set([
-		"base",
-		options.typescript ? "base-ts" : "base-js"
-	]);
-
-	if (options.prisma) {
-		templates.add("prisma");
-	}
-
-	if (options.eslintAndPrettier) {
-		templates.add("eslint-prettier");
-	}
-
 	// make project directory
 	fse.ensureDirSync(options.projectDirectory);
 	if (fse.readdirSync(options.projectDirectory).length > 0) {
@@ -174,13 +161,17 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		return;
 	}
 
-	// copy base files
 	const basePath = options.typescript ? "base-ts" : "base-js";
+	const templates = new Set(["base", basePath]);
+
+	// copy base files
 	fse.copySync(resolve(templatesDirectory, "base"), options.projectDirectory);
 	fse.copySync(resolve(templatesDirectory, basePath), options.projectDirectory);
 
 	// copy prisma files
 	if (options.prisma) {
+		templates.add("prisma");
+
 		const databaseType = options.databaseType?.toLowerCase() ?? "mongodb";
 
 		fse.copySync(
@@ -203,6 +194,8 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 
 	// copy eslint and prettier files
 	if (options.eslintAndPrettier) {
+		templates.add("eslint-prettier");
+
 		fse.copySync(
 			resolve(templatesDirectory, "eslint-prettier"),
 			options.projectDirectory
