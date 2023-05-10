@@ -53,7 +53,6 @@ async function getAnswers(
 			install: options.flags.noInstall === undefined,
 			prisma: true,
 			databaseType: "MongoDB",
-			databaseUri: `mongodb://localhost:27017/${options.name ?? "my-app"}`,
 			typescript: true,
 			helpCommand: true,
 			// dashboard: true,
@@ -96,13 +95,6 @@ async function getAnswers(
 			message: "What database do you want to use?",
 			choices: databases,
 			default: "MongoDB",
-			when: (answers) => !options.flags.yes && answers.prisma
-		},
-		{
-			name: "databaseUri",
-			type: "input",
-			message: "What is the database URI?",
-			default: `mongodb://localhost:27017/${options.name ?? "my-app"}`,
 			when: (answers) => !options.flags.yes && answers.prisma
 		},
 		{
@@ -223,19 +215,6 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		resolve(options.projectDirectory, "src/config/config-example.json"),
 		resolve(options.projectDirectory, "src/config/config.json")
 	);
-
-	// edit .env
-	if (options.prisma) {
-		const databaseUri =
-			options.databaseUri ??
-			`mongodb://localhost:27017/${options.name ?? "my-app"}`;
-
-		const env = fse
-			.readFileSync(resolve(options.projectDirectory, ".env"), "utf-8")
-			.replace("database url", databaseUri);
-
-		fse.writeFileSync(resolve(options.projectDirectory, ".env"), env);
-	}
 
 	// copy eslint and prettier files
 	if (options.eslintAndPrettier) {

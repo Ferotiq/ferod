@@ -34,7 +34,6 @@ export interface CreateAppAnswers {
 	install: boolean;
 	prisma: boolean;
 	databaseType?: DatabaseType;
-	databaseUri?: string;
 	typescript: boolean;
 	helpCommand: boolean;
 	// dashboard: boolean;
