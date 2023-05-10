@@ -32,18 +32,18 @@ jobs:
         with:
           version: 8.4.0
           run_install: false
-      - name: PNPM Store Directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm config get store)" >> $GITHUB_OUTPUT
-      - name: Setup PNPM Cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+      # - name: PNPM Store Directory
+      #   id: pnpm-cache
+      #   shell: bash
+      #   run: |
+      #     echo "STORE_PATH=$(pnpm config get store)" >> $GITHUB_OUTPUT
+      # - name: Setup PNPM Cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+      #     key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-pnpm-store-
 
       - name: Install Dependencies
         run: pnpm install
