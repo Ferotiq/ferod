@@ -201,18 +201,6 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		);
 	}
 
-	// copy example.env to .env
-	fse.copyFileSync(
-		resolve(options.projectDirectory, "example.env"),
-		resolve(options.projectDirectory, ".env")
-	);
-
-	// copy config-example.json to config.json
-	fse.copyFileSync(
-		resolve(options.projectDirectory, "src/config/config-example.json"),
-		resolve(options.projectDirectory, "src/config/config.json")
-	);
-
 	// copy eslint and prettier files
 	if (options.eslintAndPrettier) {
 		fse.copySync(
@@ -231,11 +219,24 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 
 	// copy help command files
 	if (options.helpCommand) {
-		fse.copySync(
-			resolve(templatesDirectory, options.typescript ? "help-ts" : "help-js"),
-			options.projectDirectory
+		const path = `src/commands/help.${options.typescript ? "ts" : "js"}`;
+		fse.copyFileSync(
+			resolve(templatesDirectory, `help/${path}`),
+			resolve(options.projectDirectory, path)
 		);
 	}
+
+	// copy example.env to .env
+	fse.copyFileSync(
+		resolve(options.projectDirectory, "example.env"),
+		resolve(options.projectDirectory, ".env")
+	);
+
+	// copy config-example.json to config.json
+	fse.copyFileSync(
+		resolve(options.projectDirectory, "src/config/config-example.json"),
+		resolve(options.projectDirectory, "src/config/config.json")
+	);
 
 	// initialize git repository
 	if (options.gitRepo) {
