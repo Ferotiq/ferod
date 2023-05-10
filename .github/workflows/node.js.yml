@@ -50,7 +50,7 @@ jobs:
       - name: Build
         run: pnpm build
       - name: Format Check
-        run: pnpm pretty
+        run: pnpm -r pretty
       - name: Lint
-        run: pnpm lint
+        run: pnpm -r lint
 #     - run: pnpm test
