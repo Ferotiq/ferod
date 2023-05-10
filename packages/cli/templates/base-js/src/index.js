@@ -1,12 +1,11 @@
 import { Client } from "@ferod/client";
-
-import options from "./config/config.json" assert { type: "json" };
-
 import { config } from "dotenv";
-config();
-
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import options from "./config/config.json" assert { type: "json" };
+
+config();
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const client = new Client(options, __dirname);
