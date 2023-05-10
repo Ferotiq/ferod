@@ -165,16 +165,13 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 	}
 
 	// make project directory
-	if (fse.existsSync(options.projectDirectory)) {
-		if (fse.readdirSync(options.projectDirectory).length > 0) {
-			console.log(
-				`The directory ${options.projectDirectory} is not empty. Please try again.`
-			);
+	fse.ensureDirSync(options.projectDirectory);
+	if (fse.readdirSync(options.projectDirectory).length > 0) {
+		console.log(
+			`The directory ${options.projectDirectory} is not empty. Please try again.`
+		);
 
-			return;
-		}
-	} else {
-		fse.mkdirSync(options.projectDirectory);
+		return;
 	}
 
 	// copy base files
