@@ -72,12 +72,6 @@ importers:
         specifier: 1.14.0
         version: 1.14.0
     devDependencies:
-      '@types/node':
-        specifier: 20.1.1
-        version: 20.1.1
-      dotenv:
-        specifier: 16.0.3
-        version: 16.0.3
       ts-node:
         specifier: 10.9.1
         version: 10.9.1(@types/node@20.1.1)(typescript@5.0.4)
@@ -1018,11 +1012,6 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       esutils: 2.0.3
-    dev: true
-
-  /dotenv@16.0.3:
-    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
-    engines: {node: '>=12'}
     dev: true
 
   /eastasianwidth@0.2.0:
