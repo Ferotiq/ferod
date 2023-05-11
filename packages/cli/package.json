@@ -33,7 +33,7 @@
     "test-yes": "cd test && npx ferod --yes",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint-fix": "eslint --fix \"src/**/*.{ts,tsx}\"",
-    "prepare": "pnpm build && pnpm lint && pnpm pretty"
+    "prepare": "pnpm build && pnpm lint"
   },
   "dependencies": {
     "commander": "10.0.1",
