@@ -24,8 +24,7 @@ export type Features =
 	| "typescript"
 	| "helpCommand"
 	// | "dashboard"
-	| "eslint"
-	| "prettier";
+	| "eslint";
 
 export interface CreateAppAnswers {
 	name: string;

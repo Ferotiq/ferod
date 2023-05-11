@@ -57,7 +57,6 @@ async function getAnswers(
 				"helpCommand",
 				// "dashboard",
 				"eslint",
-				"prettier",
 			],
 			databaseType: "MongoDB",
 		};
@@ -115,11 +114,6 @@ async function getAnswers(
 					value: "eslint",
 					checked: true,
 				},
-				{
-					name: "Formatter (Prettier)",
-					value: "prettier",
-					checked: true,
-				},
 			],
 			when: () => !options.flags.yes,
 		},
@@ -165,7 +159,6 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 	const helpCommand = options.features.includes("helpCommand");
 	// const dashboard = options.features.includes("dashboard");
 	const eslint = options.features.includes("eslint");
-	const prettier = options.features.includes("prettier");
 
 	const basePath = typescript ? "base-ts" : "base-js";
 	const templates = new Set(["base", basePath]);
@@ -198,20 +191,9 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		);
 	}
 
-	// copy prettier files
-	if (prettier) {
-		templates.add("prettier");
-
-		fse.copySync(
-			resolve(templatesDirectory, "prettier"),
-			options.projectDirectory,
-		);
-	}
-
 	// copy eslint files
 	if (eslint) {
-		const templatePart = prettier ? "eslint-prettier" : "eslint";
-		const template = typescript ? `${templatePart}-ts` : `${templatePart}-js`;
+		const template = typescript ? "eslint-ts" : "eslint-js";
 		templates.add(template);
 
 		fse.copySync(
