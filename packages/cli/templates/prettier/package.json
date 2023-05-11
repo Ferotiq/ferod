@@ -1,8 +1,8 @@
 {
 	"type": "module",
 	"scripts": {
-		"pretty": "prettier --check \"src/**/*.{ts,js,tsx,scss,css}\"",
-		"pretty-fix": "prettier --write \"src/**/*.{ts,js,tsx,scss,css}\""
+		"pretty": "prettier --check \"src/**/*.{ts,js}\"",
+		"pretty-fix": "prettier --write \"src/**/*.{ts,js}\""
 	},
 	"devDependencies": {
 		"prettier": "^2.8.8"
