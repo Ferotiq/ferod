@@ -323,11 +323,18 @@ function createPackageJson(
 		resolve(directories[0], "package.json"),
 	);
 
+	const sortedDependencies = [...dependencies.entries()].sort(([a], [b]) =>
+		a.localeCompare(b),
+	);
+	const sortedDevDependencies = [...devDependencies.entries()].sort(([a], [b]) =>
+		a.localeCompare(b),
+	);
+
 	return {
 		...basePackageJson,
 		name: projectName,
 		scripts: Object.fromEntries(scripts),
-		dependencies: Object.fromEntries(dependencies),
-		devDependencies: Object.fromEntries(devDependencies),
+		dependencies: Object.fromEntries(sortedDependencies),
+		devDependencies: Object.fromEntries(sortedDevDependencies),
 	};
 }
