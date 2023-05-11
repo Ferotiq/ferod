@@ -4,7 +4,7 @@ import {
 	ApplicationCommandType,
 	Collection,
 	Client as DiscordClient,
-	IntentsBitField
+	IntentsBitField,
 } from "discord.js";
 import * as fs from "fs";
 import path from "path";
@@ -247,14 +247,14 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 				type: applicationCommand.type,
 				defaultMemberPermissions:
 					applicationCommand.defaultMemberPermissions?.valueOf(),
-				options: applicationCommand.options
+				options: applicationCommand.options,
 			});
 			const cleanedLocalCommand = quickClean({
 				name: command.name,
 				description,
 				type,
 				defaultMemberPermissions: command.permissions.valueOf(),
-				options: command.options
+				options: command.options,
 			});
 
 			if (equals(cleanedLocalCommand, cleanedApplicationCommand)) {
@@ -340,7 +340,7 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 		return this.application?.commands.fetch({
 			cache: true,
 			force: true,
-			guildId
+			guildId,
 		});
 	}
 }

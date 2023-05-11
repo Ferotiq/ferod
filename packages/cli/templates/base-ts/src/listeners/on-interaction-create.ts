@@ -21,14 +21,14 @@ export default new EventListener()
 			await interaction
 				.reply({
 					content: "There was an error while executing this command!",
-					ephemeral: true
+					ephemeral: true,
 				})
 				.catch((error) => {
 					console.error(chalk.red(error));
 
 					return interaction.followUp({
 						content: "There was an error while executing this command!",
-						ephemeral: true
+						ephemeral: true,
 					});
 				})
 				.catch((error) => console.log(chalk.red(error)));

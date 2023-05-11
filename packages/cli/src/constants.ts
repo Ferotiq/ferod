@@ -4,7 +4,7 @@ export const databases = [
 	"SQLite",
 	"PostgreSQL",
 	"SQLServer",
-	"CockroachDB"
+	"CockroachDB",
 ] as const;
 
 export const packageManagers = ["npm", "yarn", "pnpm"] as const;

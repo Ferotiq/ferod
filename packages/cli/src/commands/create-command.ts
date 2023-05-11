@@ -105,29 +105,29 @@ async function getAnswers(
 			name: "name",
 			type: "input",
 			message: "What is the name of the command?",
-			when: () => options.name === undefined
+			when: () => options.name === undefined,
 		},
 		{
 			name: "description",
 			type: "input",
-			message: "What is the description of the command?"
+			message: "What is the description of the command?",
 		},
 		{
 			name: "category",
 			type: "input",
-			message: "What is the category of the command?"
+			message: "What is the category of the command?",
 		},
 		{
 			name: "defaultPermissions",
 			type: "checkbox",
 			message: "What are the default permissions of the command?",
-			choices: permissions
+			choices: permissions,
 		},
 		{
 			name: "type",
 			type: "list",
 			message: "What type of command do you want to create?",
-			choices: applicationCommandTypes
-		}
+			choices: applicationCommandTypes,
+		},
 	]);
 }

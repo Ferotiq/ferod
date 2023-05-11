@@ -21,7 +21,7 @@ export function stringify<T>(obj: T): string {
 		if (typeof value === "bigint") {
 			return {
 				__type: "bigint",
-				value: value.toString()
+				value: value.toString(),
 			};
 		}
 

@@ -9,7 +9,7 @@ import {
 	type ApplicationCommandOptionData,
 	type ApplicationCommandSubCommand,
 	type ApplicationCommandSubGroup,
-	type PermissionResolvable
+	type PermissionResolvable,
 } from "discord.js";
 import type { CommandFunction, CommandOptions, Option } from "../types.js";
 import { Client } from "./client.js";
@@ -53,7 +53,7 @@ export class Command<
 			description: this.description,
 			options: this.options,
 			type: this.type,
-			defaultMemberPermissions: this.permissions
+			defaultMemberPermissions: this.permissions,
 		};
 	}
 
@@ -376,22 +376,22 @@ export class Command<
 							name: subCommandGroup.name,
 							description: subCommandGroup.description,
 							type: subCommandGroup.type,
-							optional: true
+							optional: true,
 						},
 						{
 							name: subCommand.name,
 							description: subCommand.description,
 							type: subCommand.type,
-							optional: true
+							optional: true,
 						},
 						...subCommand.options.map(
 							({ name, description, type, required }) => ({
 								name,
 								description,
 								type,
-								optional: !required
+								optional: !required,
 							})
-						)
+						),
 					]);
 				}
 			}
@@ -406,16 +406,16 @@ export class Command<
 						name: subCommand.name,
 						description: subCommand.description,
 						type: subCommand.type,
-						optional: true
+						optional: true,
 					},
 					...subCommand.options.map(
 						({ name, description, type, required }) => ({
 							name,
 							description,
 							type,
-							optional: !required
+							optional: !required,
 						})
-					)
+					),
 				]);
 			}
 		} else {
@@ -430,8 +430,8 @@ export class Command<
 						name,
 						description,
 						type,
-						optional: !required
-					}
+						optional: !required,
+					},
 				])
 			);
 		}

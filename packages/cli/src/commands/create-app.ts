@@ -7,7 +7,7 @@ import type {
 	CreateAppAnswers,
 	CreateAppOptions,
 	PackageManager,
-	ScaffoldOptions
+	ScaffoldOptions,
 } from "../types.js";
 import { getTemplatesDirectory } from "../utils/file.js";
 
@@ -34,7 +34,7 @@ export async function createFerodApp(options: CreateAppOptions): Promise<void> {
 	await scaffoldProject({
 		...answers,
 		packageManager,
-		projectDirectory
+		projectDirectory,
 	});
 }
 
@@ -57,9 +57,9 @@ async function getAnswers(
 				"helpCommand",
 				// "dashboard",
 				"eslint",
-				"prettier"
+				"prettier",
 			],
-			databaseType: "MongoDB"
+			databaseType: "MongoDB",
 		};
 	}
 
@@ -69,21 +69,21 @@ async function getAnswers(
 			type: "input",
 			message: "What is the name of your app?",
 			default: "my-app",
-			when: () => options.name === undefined
+			when: () => options.name === undefined,
 		},
 		{
 			name: "gitRepo",
 			type: "confirm",
 			message: "Initialize a git repository?",
 			default: true,
-			when: () => !options.flags.yes && options.flags.noGit === undefined
+			when: () => !options.flags.yes && options.flags.noGit === undefined,
 		},
 		{
 			name: "install",
 			type: "confirm",
 			message: "Install dependencies?",
 			default: true,
-			when: () => !options.flags.yes && options.flags.noInstall === undefined
+			when: () => !options.flags.yes && options.flags.noInstall === undefined,
 		},
 		{
 			name: "features",
@@ -93,17 +93,17 @@ async function getAnswers(
 				{
 					name: "TypeScript",
 					value: "typescript",
-					checked: true
+					checked: true,
 				},
 				{
 					name: "Prisma",
 					value: "prisma",
-					checked: true
+					checked: true,
 				},
 				{
 					name: "Help command",
 					value: "helpCommand",
-					checked: true
+					checked: true,
 				},
 				// {
 				// 	name: "Dashboard",
@@ -113,15 +113,15 @@ async function getAnswers(
 				{
 					name: "ESLint",
 					value: "eslint",
-					checked: true
+					checked: true,
 				},
 				{
 					name: "Prettier",
 					value: "prettier",
-					checked: true
-				}
+					checked: true,
+				},
 			],
-			when: () => !options.flags.yes
+			when: () => !options.flags.yes,
 		},
 		{
 			name: "databaseType",
@@ -130,8 +130,8 @@ async function getAnswers(
 			choices: databases,
 			default: "MongoDB",
 			when: (answers: CreateAppAnswers) =>
-				!options.flags.yes && answers.features.includes("prisma")
-		}
+				!options.flags.yes && answers.features.includes("prisma"),
+		},
 	]);
 }
 
@@ -271,7 +271,7 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		resolve(options.projectDirectory, "package.json"),
 		packageJson,
 		{
-			spaces: "\t"
+			spaces: "\t",
 		}
 	);
 
@@ -347,6 +347,6 @@ function createPackageJson(
 		name: projectName,
 		scripts: Object.fromEntries(scripts),
 		dependencies: Object.fromEntries(dependencies),
-		devDependencies: Object.fromEntries(devDependencies)
+		devDependencies: Object.fromEntries(devDependencies),
 	};
 }

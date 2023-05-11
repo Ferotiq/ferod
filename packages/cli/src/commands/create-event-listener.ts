@@ -4,7 +4,7 @@ import inquirer from "inquirer";
 import { resolve } from "path";
 import type {
 	CreateEventListenerAnswers,
-	CreateEventListenerOptions
+	CreateEventListenerOptions,
 } from "../types.js";
 import { getTemplatesDirectory } from "../utils/file.js";
 
@@ -79,14 +79,14 @@ async function getAnswers(
 			name: "name",
 			type: "input",
 			message: "What is the name of the listener?",
-			when: () => options.name === undefined
+			when: () => options.name === undefined,
 		},
 		{
 			name: "event",
 			type: "list",
 			message: "What event do you want to listen to?",
-			choices: events
-		}
+			choices: events,
+		},
 	]);
 
 	return answers;

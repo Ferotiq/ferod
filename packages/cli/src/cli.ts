@@ -8,7 +8,7 @@ import type {
 	CLIFlags,
 	CreateAppOptions,
 	CreateCommandOptions,
-	CreateEventListenerOptions
+	CreateEventListenerOptions,
 } from "./types.js";
 
 const program = new Command("ferod")
@@ -34,7 +34,7 @@ switch (command ?? "create") {
 			case "app": {
 				const options: CreateAppOptions = {
 					name,
-					flags: program.opts<CLIFlags>()
+					flags: program.opts<CLIFlags>(),
 				};
 
 				createFerodApp(options);
@@ -43,7 +43,7 @@ switch (command ?? "create") {
 
 			case "command": {
 				const options: CreateCommandOptions = {
-					name
+					name,
 				};
 
 				createFerodCommand(options);
@@ -55,7 +55,7 @@ switch (command ?? "create") {
 			case "listener":
 			case "event": {
 				const options: CreateEventListenerOptions = {
-					name
+					name,
 				};
 
 				createFerodEventListener(options);

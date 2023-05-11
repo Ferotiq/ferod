@@ -8,7 +8,7 @@ import type {
 	MessageContextMenuCommandInteraction,
 	PermissionResolvable,
 	Snowflake,
-	UserContextMenuCommandInteraction
+	UserContextMenuCommandInteraction,
 } from "discord.js";
 import type { Client } from "./structures/client";
 

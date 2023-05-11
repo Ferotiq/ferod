@@ -1,7 +1,7 @@
 import type {
 	ApplicationCommandType,
 	Events,
-	PermissionFlagsBits
+	PermissionFlagsBits,
 } from "discord.js";
 import type { databases, packageManagers } from "./constants.ts";
 
