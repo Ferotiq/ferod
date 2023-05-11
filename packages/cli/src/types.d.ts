@@ -28,7 +28,8 @@ export interface CreateAppAnswers {
 	typescript: boolean;
 	helpCommand: boolean;
 	// dashboard: boolean;
-	eslintAndPrettier: boolean;
+	eslint: boolean;
+	prettier: boolean;
 }
 
 export interface ScaffoldOptions extends CreateAppAnswers {

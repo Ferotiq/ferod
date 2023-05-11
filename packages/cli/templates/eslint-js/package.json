@@ -1,0 +1,10 @@
+{
+	"type": "module",
+	"scripts": {
+		"lint": "eslint \"src/**/*.js\"",
+		"lint-fix": "eslint --fix \"src/**/*.js\""
+	},
+	"devDependencies": {
+		"eslint": "^8.40.0"
+	}
+}

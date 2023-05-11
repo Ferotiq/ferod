@@ -56,7 +56,8 @@ async function getAnswers(
 			typescript: true,
 			helpCommand: true,
 			// dashboard: true,
-			eslintAndPrettier: true
+			eslint: true,
+			prettier: true
 		};
 	}
 
@@ -119,11 +120,17 @@ async function getAnswers(
 		// 	when: () => !options.flags.yes
 		// },
 		{
-			name: "eslintAndPrettier",
+			name: "eslint",
 			type: "confirm",
-			message: "Use ESLint and Prettier?",
+			message: "Use ESLint?",
 			default: true,
 			when: () => !options.flags.yes
+		},
+		{
+			name: "prettier",
+			type: "confirm",
+			message: "Use Prettier?",
+			default: true
 		}
 	]);
 }
@@ -184,12 +191,24 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		);
 	}
 
-	// copy eslint and prettier files
-	if (options.eslintAndPrettier) {
-		templates.add("eslint-prettier");
+	// copy prettier files
+	if (options.prettier) {
+		templates.add("prettier");
 
 		fse.copySync(
-			resolve(templatesDirectory, "eslint-prettier"),
+			resolve(templatesDirectory, "prettier"),
+			options.projectDirectory
+		);
+	}
+
+	// copy eslint files
+	if (options.eslint) {
+		const prettier = options.prettier ? "eslint-prettier" : "eslint";
+		const template = options.typescript ? `${prettier}-ts` : `${prettier}-js`;
+		templates.add(template);
+
+		fse.copySync(
+			resolve(templatesDirectory, template),
 			options.projectDirectory
 		);
 	}

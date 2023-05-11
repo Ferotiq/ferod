@@ -1,0 +1,12 @@
+{
+	"type": "module",
+	"scripts": {
+		"lint": "eslint \"src/**/*.js\"",
+		"lint-fix": "eslint --fix \"src/**/*.js\""
+	},
+	"devDependencies": {
+		"eslint": "^8.40.0",
+		"eslint-config-prettier": "^8.8.0",
+		"eslint-plugin-prettier": "^4.2.1"
+	}
+}
