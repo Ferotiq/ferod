@@ -1,6 +1,6 @@
 {
 	"type": "module",
 	"scripts": {
-		"start": "node src --enable-source-maps"
+		"start": "node src --no-warnings --enable-source-maps"
 	}
 }
