@@ -1,5 +1,5 @@
 import { Events } from "discord.js";
-import { EventListener } from "../../src";
+import { EventListener } from "../../src/index.js";
 
 export default new EventListener()
 	.setEvent(Events.ClientReady)

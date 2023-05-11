@@ -1,4 +1,4 @@
-import { Command } from "../../src";
+import { Command } from "../../src/index.js";
 
 export default new Command()
 	.setName("test")

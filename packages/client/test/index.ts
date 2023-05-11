@@ -3,7 +3,7 @@ console.clear();
 import { config } from "dotenv";
 config({ path: "./test/.env" });
 
-import { Client, type ClientOptions } from "../src";
+import { Client, type ClientOptions } from "../src/index.js";
 
 import { dirname } from "path";
 import { fileURLToPath } from "url";
