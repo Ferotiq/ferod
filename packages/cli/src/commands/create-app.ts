@@ -253,9 +253,7 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 	fse.writeJSONSync(
 		resolve(options.projectDirectory, "package.json"),
 		packageJson,
-		{
-			spaces: "\t",
-		},
+		{ spaces: "\t" },
 	);
 
 	// install dependencies

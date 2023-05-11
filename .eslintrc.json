@@ -35,7 +35,9 @@
 		"no-shadow": ["error", { "allow": ["err", "resolve", "reject"] }],
 		"no-trailing-spaces": ["error"],
 		"no-var": "error",
+		"object-curly-newline": ["error", { "multiline": true, "consistent": true }],
 		"object-curly-spacing": ["error", "always"],
+		"object-property-newline": ["error", { "allowAllPropertiesOnSameLine": true }],
 		"prefer-const": "error",
 		"quotes": ["error", "double"],
 		"require-jsdoc": [
