@@ -96,27 +96,27 @@ async function getAnswers(
 					checked: true,
 				},
 				{
-					name: "Prisma",
+					name: "Database (Prisma ORM)",
 					value: "prisma",
 					checked: true,
 				},
 				{
-					name: "Help command",
+					name: "Help Command",
 					value: "helpCommand",
 					checked: true,
 				},
 				// {
-				// 	name: "Dashboard",
+				// 	name: "Dashboard (SolidStart)",
 				// 	value: "dashboard",
 				// 	checked: true
 				// },
 				{
-					name: "ESLint",
+					name: "Linter (ESLint)",
 					value: "eslint",
 					checked: true,
 				},
 				{
-					name: "Prettier",
+					name: "Formatter (Prettier)",
 					value: "prettier",
 					checked: true,
 				},
