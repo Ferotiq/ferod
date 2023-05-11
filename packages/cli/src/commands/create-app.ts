@@ -2,12 +2,12 @@ import { exec } from "child_process";
 import fse from "fs-extra";
 import inquirer from "inquirer";
 import { resolve } from "path";
-import {
-	databases,
-	type CreateAppAnswers,
-	type CreateAppOptions,
-	type PackageManager,
-	type ScaffoldOptions
+import { databases } from "../constants.js";
+import type {
+	CreateAppAnswers,
+	CreateAppOptions,
+	PackageManager,
+	ScaffoldOptions
 } from "../types.js";
 import { getTemplatesDirectory } from "../utils/file.js";
 

@@ -3,6 +3,7 @@ import type {
 	Events,
 	PermissionFlagsBits
 } from "discord.js";
+import type { databases } from "./constants.js";
 
 export type PackageManager = "npm" | "yarn" | "pnpm";
 
@@ -16,15 +17,6 @@ export interface CreateAppOptions {
 	name?: string;
 	flags: CLIFlags;
 }
-
-export const databases = [
-	"MySQL",
-	"MongoDB",
-	"SQLite",
-	"PostgreSQL",
-	"SQLServer",
-	"CockroachDB"
-] as const;
 
 export type DatabaseType = (typeof databases)[number];
 
