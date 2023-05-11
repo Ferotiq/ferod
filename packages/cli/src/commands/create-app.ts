@@ -242,8 +242,7 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 			resolve(templatesDirectory, "git/gitignore.example"),
 			resolve(options.projectDirectory, ".gitignore"),
 		);
-	}
-	else {
+	} else {
 		fse.removeSync(resolve(options.projectDirectory, "example.env"));
 		fse.removeSync(
 			resolve(options.projectDirectory, "src/config/config-example.json"),

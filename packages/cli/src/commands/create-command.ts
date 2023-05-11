@@ -70,8 +70,7 @@ export async function createFerodCommand(
 	const indexJSExists = fse.existsSync(indexJSPath);
 	if (!indexTSExists && !indexJSExists) {
 		throw new Error("No index.ts or index.js file found.");
-	}
-	else if (indexTSExists && indexJSExists) {
+	} else if (indexTSExists && indexJSExists) {
 		throw new Error("Both index.ts and index.js files found.");
 	}
 	const fileExtension = indexTSExists ? "ts" : "js";

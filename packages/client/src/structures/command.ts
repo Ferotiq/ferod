@@ -330,8 +330,7 @@ export class Command<
 						`\`${option1.name} ${option2.name} ${option.name} (${type}${optional})\`: ${description}`,
 					);
 				}
-			}
-			else if (option1.type === ApplicationCommandOptionType.Subcommand) {
+			} else if (option1.type === ApplicationCommandOptionType.Subcommand) {
 				for (const option of [option2, ...rest]) {
 					const type = ApplicationCommandOptionType[option.type];
 					const optional = option.optional ? "?" : "";
@@ -396,8 +395,7 @@ export class Command<
 					]);
 				}
 			}
-		}
-		else if (subCommands.length > 0) {
+		} else if (subCommands.length > 0) {
 			for (const subCommand of subCommands) {
 				if (!subCommand.options) {
 					continue;
@@ -420,8 +418,7 @@ export class Command<
 					),
 				]);
 			}
-		}
-		else {
+		} else {
 			tree.push(
 				...(
 					options as Exclude<

@@ -11,7 +11,7 @@
 	},
 	"rules": {
 		"arrow-spacing": ["warn", { "before": true, "after": true }],
-		"brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
+		"brace-style": ["error", "1tbs"],
 		"comma-dangle": ["error", "always-multiline"],
 		"comma-spacing": "error",
 		"comma-style": "error",
@@ -69,6 +69,12 @@
 		"yoda": "error"
 	},
 	"overrides": [
+		{
+			"files": ["packages/cli/templates/**/*.{js,ts,jsx,tsx}"],
+			"rules": {
+				"require-jsdoc": "off"
+			}
+		},
 		{
 			"files": ["*.ts", "*.tsx"],
 			"parser": "@typescript-eslint/parser",
