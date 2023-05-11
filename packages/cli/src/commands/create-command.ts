@@ -2,8 +2,8 @@ import { ApplicationCommandType, PermissionFlagsBits } from "discord.js";
 import fse from "fs-extra";
 import inquirer from "inquirer";
 import { resolve } from "path";
-import type { CreateCommandAnswers, CreateCommandOptions } from "../types";
-import { getTemplatesDirectory } from "../utils/file";
+import type { CreateCommandAnswers, CreateCommandOptions } from "../types.js";
+import { getTemplatesDirectory } from "../utils/file.js";
 
 const applicationCommandTypes = Object.keys(ApplicationCommandType).filter(
 	(key) => isNaN(parseInt(key))

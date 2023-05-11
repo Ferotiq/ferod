@@ -1,15 +1,15 @@
 #!/usr/bin/env node --experimental-modules --no-warnings
 import { Command } from "commander";
 import { version } from "../package.json";
-import { createFerodApp } from "./commands/create-app";
-import { createFerodCommand } from "./commands/create-command";
-import { createFerodEventListener } from "./commands/create-event-listener";
+import { createFerodApp } from "./commands/create-app.js";
+import { createFerodCommand } from "./commands/create-command.js";
+import { createFerodEventListener } from "./commands/create-event-listener.js";
 import type {
 	CLIFlags,
 	CreateAppOptions,
 	CreateCommandOptions,
 	CreateEventListenerOptions
-} from "./types";
+} from "./types.js";
 
 const program = new Command("ferod")
 	.description("Create a new Ferod app/command/event.")

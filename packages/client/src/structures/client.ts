@@ -9,10 +9,10 @@ import {
 import * as fs from "fs";
 import path from "path";
 import { equals } from "remeda";
-import type { ClientOptions } from "../types";
-import { importFiles, quickClean } from "../utils/misc";
-import { Command } from "./command";
-import { EventListener } from "./event-listener";
+import type { ClientOptions } from "../types.js";
+import { importFiles, quickClean } from "../utils/misc.js";
+import { Command } from "./command.js";
+import { EventListener } from "./event-listener.js";
 
 /**
  * A simple yet powerful Discord.JS client that automates many features for you

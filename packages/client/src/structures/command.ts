@@ -11,8 +11,8 @@ import {
 	type ApplicationCommandSubGroup,
 	type PermissionResolvable
 } from "discord.js";
-import type { CommandFunction, CommandOptions, Option } from "../types";
-import { Client } from "./client";
+import type { CommandFunction, CommandOptions, Option } from "../types.js";
+import { Client } from "./client.js";
 
 /**
  * A class to easily create commands that interop with Ferod

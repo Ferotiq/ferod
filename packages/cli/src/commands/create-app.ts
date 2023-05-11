@@ -8,8 +8,8 @@ import {
 	type CreateAppOptions,
 	type PackageManager,
 	type ScaffoldOptions
-} from "../types";
-import { getTemplatesDirectory } from "../utils/file";
+} from "../types.js";
+import { getTemplatesDirectory } from "../utils/file.js";
 
 const templatesDirectory = getTemplatesDirectory(import.meta.url);
 

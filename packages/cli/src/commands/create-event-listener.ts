@@ -5,8 +5,8 @@ import { resolve } from "path";
 import type {
 	CreateEventListenerAnswers,
 	CreateEventListenerOptions
-} from "../types";
-import { getTemplatesDirectory } from "../utils/file";
+} from "../types.js";
+import { getTemplatesDirectory } from "../utils/file.js";
 
 const events = Object.keys(Events) as (keyof typeof Events)[];
 

@@ -1,5 +1,5 @@
 import type { ClientEvents } from "discord.js";
-import type { EventListenerHandler, EventListenerOptions } from "../types";
+import type { EventListenerHandler, EventListenerOptions } from "../types.js";
 
 /**
  * A class to easily create events that interop with Ferod
