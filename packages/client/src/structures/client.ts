@@ -35,7 +35,7 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 		this.options.commandsPath = path.resolve(dirname, options.commandsPath);
 		this.options.eventListenersPath = path.resolve(
 			dirname,
-			options.eventListenersPath
+			options.eventListenersPath,
 		);
 
 		if (options.dev && !options.devGuildId) {
@@ -50,24 +50,24 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 		// commands
 		if (!fs.existsSync(this.options.commandsPath)) {
 			console.log(
-				chalk.yellow("The commands directory does not exist. Creating...")
+				chalk.yellow("The commands directory does not exist. Creating..."),
 			);
 			fs.mkdirSync(this.options.commandsPath, { recursive: true });
 			console.log(
-				chalk.green("The commands directory has been created successfully!")
+				chalk.green("The commands directory has been created successfully!"),
 			);
 		}
 
 		// events
 		if (!fs.existsSync(this.options.eventListenersPath)) {
 			console.log(
-				chalk.yellow("The events directory does not exist. Creating...")
+				chalk.yellow("The events directory does not exist. Creating..."),
 			);
 			fs.mkdirSync(this.options.eventListenersPath, { recursive: true });
 			console.log(
 				chalk.green(
-					"The event listeners directory has been created successfully!"
-				)
+					"The event listeners directory has been created successfully!",
+				),
 			);
 		}
 	}
@@ -84,7 +84,7 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 		console.log(chalk.yellow("Loading events..."));
 		const eventListenerCount = await this.loadEventListeners();
 		console.log(
-			chalk.green(`Loaded ${chalk.magenta(eventListenerCount)} events!`)
+			chalk.green(`Loaded ${chalk.magenta(eventListenerCount)} events!`),
 		);
 
 		console.log(chalk.yellow("Logging in..."));
@@ -104,23 +104,23 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 		console.log(
 			chalk.yellow(
 				`Loading files from ${chalk.magenta(
-					this.options.eventListenersPath
-				)}...`
-			)
+					this.options.eventListenersPath,
+				)}...`,
+			),
 		);
 		const listeners = await importFiles<EventListener>(
 			path.resolve(this.options.eventListenersPath, "**", "*.{ts,js}"),
-			EventListener
+			EventListener,
 		);
 		console.log(
-			chalk.green(`Loaded ${chalk.magenta(listeners.length)} files!`)
+			chalk.green(`Loaded ${chalk.magenta(listeners.length)} files!`),
 		);
 
 		for (const listener of listeners) {
 			console.log(
 				chalk.yellow(
-					`Registering event listener for ${chalk.magenta(listener.event)}...`
-				)
+					`Registering event listener for ${chalk.magenta(listener.event)}...`,
+				),
 			);
 			// TODO: Fix this
 			// This only shows an error in Visual Studio Code, but it works fine.
@@ -128,12 +128,12 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 			// @ts-ignore
 			this.on(
 				listener.event,
-				listener.handler.bind(null, this as Client<true>)
+				listener.handler.bind(null, this as Client<true>),
 			);
 			console.log(
 				chalk.green(
-					`Registered event listener for ${chalk.magenta(listener.event)}!`
-				)
+					`Registered event listener for ${chalk.magenta(listener.event)}!`,
+				),
 			);
 		}
 
@@ -146,18 +146,18 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 	public async loadCommands(): Promise<number> {
 		console.log(
 			chalk.yellow(
-				`Loading files from ${chalk.cyan(this.options.commandsPath)}`
-			)
+				`Loading files from ${chalk.cyan(this.options.commandsPath)}`,
+			),
 		);
 		const commands = await importFiles<Command>(
 			path.resolve(this.options.commandsPath, "**", "*.{ts,js}"),
-			Command
+			Command,
 		);
 		console.log(chalk.green(`Loaded ${chalk.cyan(commands.length)} files!`));
 
 		for (const command of commands) {
 			console.log(
-				chalk.yellow(`Loading command ${chalk.cyan(command.name)}...`)
+				chalk.yellow(`Loading command ${chalk.cyan(command.name)}...`),
 			);
 			this.commands.set(command.name, command);
 			this.categories.add(command.category);
@@ -178,43 +178,43 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 		for (const command of this.commands.values()) {
 			console.log(
 				chalk.yellow(
-					`Fetching application command for ${chalk.cyan(command.name)}...`
-				)
+					`Fetching application command for ${chalk.cyan(command.name)}...`,
+				),
 			);
 			const applicationCommand = applicationCommands.find(
-				(applicationCommand) => applicationCommand.name === command.name
+				(appCommand) => appCommand.name === command.name,
 			);
 
 			if (applicationCommand === undefined) {
 				console.log(
 					chalk.yellow(
 						`Application command for ${chalk.cyan(
-							command.name
-						)} not found! Creating...`
-					)
+							command.name,
+						)} not found! Creating...`,
+					),
 				);
 				const createdApplicationCommand = await command.create(
-					this as Client<true>
+					this as Client<true>,
 				);
 				if (createdApplicationCommand === undefined) {
 					console.error(
 						chalk.red(
 							`Failed to create application command for ${chalk.cyan(
-								command.name
-							)}!`
-						)
+								command.name,
+							)}!`,
+						),
 					);
 
 					continue;
 				}
 				applicationCommands.set(
 					createdApplicationCommand.id,
-					createdApplicationCommand
+					createdApplicationCommand,
 				);
 				console.log(
 					chalk.green(
-						`Created application command for ${chalk.cyan(command.name)}!`
-					)
+						`Created application command for ${chalk.cyan(command.name)}!`,
+					),
 				);
 
 				continue;
@@ -222,8 +222,8 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 
 			console.log(
 				chalk.green(
-					`Found application command for ${chalk.cyan(command.name)}!`
-				)
+					`Found application command for ${chalk.cyan(command.name)}!`,
+				),
 			);
 			if (!this.options.editApplicationCommands) {
 				continue;
@@ -231,9 +231,9 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 			console.log(
 				chalk.yellow(
 					`Checking if application command for ${chalk.cyan(
-						command.name
-					)} matches...`
-				)
+						command.name,
+					)} matches...`,
+				),
 			);
 
 			const type = command.type ?? ApplicationCommandType.ChatInput;
@@ -260,8 +260,8 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 			if (equals(cleanedLocalCommand, cleanedApplicationCommand)) {
 				console.log(
 					chalk.green(
-						`Application command for ${chalk.cyan(command.name)} matches!`
-					)
+						`Application command for ${chalk.cyan(command.name)} matches!`,
+					),
 				);
 
 				continue;
@@ -270,21 +270,21 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 			console.log(
 				chalk.yellow(
 					`Application command for ${chalk.cyan(
-						command.name
-					)} does not match ${chalk.cyan(command.name)}! Editing...`
-				)
+						command.name,
+					)} does not match ${chalk.cyan(command.name)}! Editing...`,
+				),
 			);
 			const editedApplicationCommand = await applicationCommand.edit(
-				cleanedLocalCommand
+				cleanedLocalCommand,
 			);
 			applicationCommands.set(
 				editedApplicationCommand.id,
-				editedApplicationCommand
+				editedApplicationCommand,
 			);
 			console.log(
 				chalk.green(
-					`Edited application command for ${chalk.cyan(command.name)}!`
-				)
+					`Edited application command for ${chalk.cyan(command.name)}!`,
+				),
 			);
 		}
 
@@ -292,7 +292,7 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 		if (this.options.deleteUnusedApplicationCommands) {
 			console.log(chalk.yellow("Finding unused application commands..."));
 			const toDelete = applicationCommands.filter(
-				(applicationCommand) => !this.commands.has(applicationCommand.name)
+				(applicationCommand) => !this.commands.has(applicationCommand.name),
 			);
 
 			if (toDelete.size === 0) {
@@ -303,26 +303,26 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 
 			console.log(
 				chalk.yellow(
-					`Found ${chalk.cyan(toDelete.size)} unused application commands!`
-				)
+					`Found ${chalk.cyan(toDelete.size)} unused application commands!`,
+				),
 			);
 
 			for (const applicationCommand of toDelete.values()) {
 				console.log(
 					chalk.yellow(
 						`Deleting application command ${chalk.cyan(
-							applicationCommand.name
-						)}...`
-					)
+							applicationCommand.name,
+						)}...`,
+					),
 				);
 				const deletedApplicationCommand = await applicationCommand.delete();
 				applicationCommands.delete(deletedApplicationCommand.id);
 				console.log(
 					chalk.green(
 						`Deleted application command ${chalk.cyan(
-							applicationCommand.name
-						)}!`
-					)
+							applicationCommand.name,
+						)}!`,
+					),
 				);
 			}
 		}
@@ -335,7 +335,7 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 	 * @param guildId The guild to fetch from
 	 */
 	public async fetchApplicationCommands(
-		guildId?: string
+		guildId?: string,
 	): Promise<Collection<string, ApplicationCommand> | undefined> {
 		return this.application?.commands.fetch({
 			cache: true,

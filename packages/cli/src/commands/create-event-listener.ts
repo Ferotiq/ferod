@@ -16,7 +16,7 @@ const templatesDirectory = getTemplatesDirectory(import.meta.url);
  * Create a new Ferod event listener.
  */
 export async function createFerodEventListener(
-	options: CreateEventListenerOptions
+	options: CreateEventListenerOptions,
 ): Promise<void> {
 	const answers = await getAnswers(options);
 
@@ -41,7 +41,8 @@ export async function createFerodEventListener(
 	const indexJSExists = fse.existsSync(indexJSPath);
 	if (!indexTSExists && !indexJSExists) {
 		throw new Error("No index.ts or index.js file found.");
-	} else if (indexTSExists && indexJSExists) {
+	}
+	else if (indexTSExists && indexJSExists) {
 		throw new Error("Both index.ts and index.js files found.");
 	}
 	const fileExtension = indexTSExists ? "ts" : "js";
@@ -51,12 +52,12 @@ export async function createFerodEventListener(
 	const eventListenersDirectory = resolve(
 		projectDirectory,
 		"src",
-		config.eventListenersPath
+		config.eventListenersPath,
 	);
 
 	const eventListenerPath = resolve(
 		eventListenersDirectory,
-		`${name}.${fileExtension}`
+		`${name}.${fileExtension}`,
 	);
 
 	if (fse.existsSync(eventListenerPath)) {
@@ -72,7 +73,7 @@ export async function createFerodEventListener(
  * @returns The answers to the questions
  */
 async function getAnswers(
-	options: CreateEventListenerOptions
+	options: CreateEventListenerOptions,
 ): Promise<CreateEventListenerAnswers> {
 	const answers = await inquirer.prompt<CreateEventListenerAnswers>([
 		{

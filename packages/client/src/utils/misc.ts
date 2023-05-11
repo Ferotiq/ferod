@@ -53,16 +53,16 @@ export function parse<T>(str: string): T {
  */
 export async function importFiles<T>(
 	filePath: string,
-	expectedClass?: new (...args: never[]) => T
+	expectedClass?: new (...args: never[]) => T,
 ): Promise<T[]> {
 	const normalizedFilePath = filePath.split(path.sep).join("/");
 
 	const filePaths = (await glob(normalizedFilePath)).map((fileName) =>
-		useUrlIfNecessary(fileName)
+		useUrlIfNecessary(fileName),
 	);
 
 	const importedFiles = await Promise.all(
-		filePaths.map((fileName) => import(fileName))
+		filePaths.map((fileName) => import(fileName)),
 	);
 
 	const objects: T[] = importedFiles.map((file) => file.default ?? file);
@@ -73,8 +73,8 @@ export async function importFiles<T>(
 	) {
 		throw new Error(
 			chalk.red(
-				`Event listener "${normalizedFilePath}" does not export ${expectedClass.name}`
-			)
+				`Event listener "${normalizedFilePath}" does not export ${expectedClass.name}`,
+			),
 		);
 	}
 

@@ -6,11 +6,11 @@ import type { CreateCommandAnswers, CreateCommandOptions } from "../types.js";
 import { getTemplatesDirectory } from "../utils/file.js";
 
 const applicationCommandTypes = Object.keys(ApplicationCommandType).filter(
-	(key) => isNaN(parseInt(key))
+	(key) => isNaN(parseInt(key)),
 ) as (keyof typeof ApplicationCommandType)[];
 
 const permissions = Object.keys(PermissionFlagsBits).filter((key) =>
-	isNaN(parseInt(key))
+	isNaN(parseInt(key)),
 ) as (keyof typeof PermissionFlagsBits)[];
 
 const templatesDirectory = getTemplatesDirectory(import.meta.url);
@@ -19,7 +19,7 @@ const templatesDirectory = getTemplatesDirectory(import.meta.url);
  * Create a new Ferod command.
  */
 export async function createFerodCommand(
-	options: CreateCommandOptions
+	options: CreateCommandOptions,
 ): Promise<void> {
 	const answers = await getAnswers(options);
 
@@ -35,7 +35,7 @@ export async function createFerodCommand(
 	}
 
 	const defaultPermissions = answers.defaultPermissions.map(
-		(permission) => `PermissionFlagsBits.${permission}`
+		(permission) => `PermissionFlagsBits.${permission}`,
 	);
 
 	const name = options.name ?? answers.name.replace(/\.[^/.]+$/, "");
@@ -58,7 +58,7 @@ export async function createFerodCommand(
 
 	if (command.includes(".setPermissions()")) {
 		command = command
-			.replace('\nimport { PermissionFlagsBits } from "discord.js";', "")
+			.replace("\nimport { PermissionFlagsBits } from \"discord.js\";", "")
 			.replace(", PermissionFlagsBits", "")
 			.replace(/\s+\.setPermissions\(\)/, "");
 	}
@@ -70,7 +70,8 @@ export async function createFerodCommand(
 	const indexJSExists = fse.existsSync(indexJSPath);
 	if (!indexTSExists && !indexJSExists) {
 		throw new Error("No index.ts or index.js file found.");
-	} else if (indexTSExists && indexJSExists) {
+	}
+	else if (indexTSExists && indexJSExists) {
 		throw new Error("Both index.ts and index.js files found.");
 	}
 	const fileExtension = indexTSExists ? "ts" : "js";
@@ -80,7 +81,7 @@ export async function createFerodCommand(
 	const commandsDirectory = resolve(
 		projectDirectory,
 		"src",
-		config.commandsPath
+		config.commandsPath,
 	);
 
 	const commandPath = resolve(commandsDirectory, `${name}.${fileExtension}`);
@@ -98,7 +99,7 @@ export async function createFerodCommand(
  * @returns The answers to the questions
  */
 async function getAnswers(
-	options: CreateCommandOptions
+	options: CreateCommandOptions,
 ): Promise<CreateCommandAnswers> {
 	return await inquirer.prompt<CreateCommandAnswers>([
 		{

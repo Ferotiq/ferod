@@ -17,7 +17,7 @@ const program = new Command("ferod")
 	.argument(
 		"[app|command|event-listener]",
 		"The type of Ferod app/command/event to create.",
-		"app"
+		"app",
 	)
 	.argument("[name]", "The name of the Ferod app/command/event to create.")
 	.option("--no-install, --noInstall", "Do not install dependencies.")
@@ -29,52 +29,52 @@ const program = new Command("ferod")
 const [command, subcommand, name] = program.args;
 
 switch (command ?? "create") {
-	case "create": {
-		switch (subcommand ?? "app") {
-			case "app": {
-				const options: CreateAppOptions = {
-					name,
-					flags: program.opts<CLIFlags>(),
-				};
+case "create": {
+	switch (subcommand ?? "app") {
+	case "app": {
+		const options: CreateAppOptions = {
+			name,
+			flags: program.opts<CLIFlags>(),
+		};
 
-				createFerodApp(options);
-				break;
-			}
+		createFerodApp(options);
+		break;
+	}
 
-			case "command": {
-				const options: CreateCommandOptions = {
-					name,
-				};
+	case "command": {
+		const options: CreateCommandOptions = {
+			name,
+		};
 
-				createFerodCommand(options);
-
-				break;
-			}
-
-			case "event-listener":
-			case "listener":
-			case "event": {
-				const options: CreateEventListenerOptions = {
-					name,
-				};
-
-				createFerodEventListener(options);
-
-				break;
-			}
-
-			default:
-				program.help();
-		}
+		createFerodCommand(options);
 
 		break;
 	}
 
-	case "test":
-		console.log("Test command");
+	case "event-listener":
+	case "listener":
+	case "event": {
+		const options: CreateEventListenerOptions = {
+			name,
+		};
+
+		createFerodEventListener(options);
 
 		break;
+	}
 
 	default:
 		program.help();
+	}
+
+	break;
+}
+
+case "test":
+	console.log("Test command");
+
+	break;
+
+default:
+	program.help();
 }

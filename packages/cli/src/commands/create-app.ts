@@ -44,7 +44,7 @@ export async function createFerodApp(options: CreateAppOptions): Promise<void> {
  * @returns The answers to the questions
  */
 async function getAnswers(
-	options: CreateAppOptions
+	options: CreateAppOptions,
 ): Promise<CreateAppAnswers> {
 	if (options.flags.yes) {
 		return {
@@ -154,7 +154,7 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 	fse.ensureDirSync(options.projectDirectory);
 	if (fse.readdirSync(options.projectDirectory).length > 0) {
 		console.log(
-			`The directory ${options.projectDirectory} is not empty. Please try again.`
+			`The directory ${options.projectDirectory} is not empty. Please try again.`,
 		);
 
 		return;
@@ -182,19 +182,19 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 
 		fse.copySync(
 			resolve(templatesDirectory, "prisma"),
-			options.projectDirectory
+			options.projectDirectory,
 		);
 
 		const schema = fse
 			.readFileSync(
 				resolve(options.projectDirectory, "prisma/schema.prisma"),
-				"utf-8"
+				"utf-8",
 			)
 			.replace("mongodb", databaseType);
 
 		fse.writeFileSync(
 			resolve(options.projectDirectory, "prisma/schema.prisma"),
-			schema
+			schema,
 		);
 	}
 
@@ -204,7 +204,7 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 
 		fse.copySync(
 			resolve(templatesDirectory, "prettier"),
-			options.projectDirectory
+			options.projectDirectory,
 		);
 	}
 
@@ -216,7 +216,7 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 
 		fse.copySync(
 			resolve(templatesDirectory, template),
-			options.projectDirectory
+			options.projectDirectory,
 		);
 	}
 
@@ -233,35 +233,36 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		const path = `src/commands/help.${typescript ? "ts" : "js"}`;
 		fse.copyFileSync(
 			resolve(templatesDirectory, `help/${path}`),
-			resolve(options.projectDirectory, path)
+			resolve(options.projectDirectory, path),
 		);
 	}
 
 	// copy example.env to .env
 	fse.copyFileSync(
 		resolve(options.projectDirectory, "example.env"),
-		resolve(options.projectDirectory, ".env")
+		resolve(options.projectDirectory, ".env"),
 	);
 
 	// copy config-example.json to config.json
 	fse.copyFileSync(
 		resolve(options.projectDirectory, "src/config/config-example.json"),
-		resolve(options.projectDirectory, "src/config/config.json")
+		resolve(options.projectDirectory, "src/config/config.json"),
 	);
 
 	// initialize git repository
 	if (options.gitRepo) {
 		exec(`cd "${options.projectDirectory}" && git init`, (_, stdout) =>
-			console.log(stdout)
+			console.log(stdout),
 		);
 		fse.copyFileSync(
 			resolve(templatesDirectory, "git/gitignore.example"),
-			resolve(options.projectDirectory, ".gitignore")
+			resolve(options.projectDirectory, ".gitignore"),
 		);
-	} else {
+	}
+	else {
 		fse.removeSync(resolve(options.projectDirectory, "example.env"));
 		fse.removeSync(
-			resolve(options.projectDirectory, "src/config/config-example.json")
+			resolve(options.projectDirectory, "src/config/config-example.json"),
 		);
 	}
 
@@ -272,7 +273,7 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		packageJson,
 		{
 			spaces: "\t",
-		}
+		},
 	);
 
 	// install dependencies
@@ -281,7 +282,7 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 
 		exec(
 			`cd "${options.projectDirectory}" && ${options.packageManager} install --ignore-workspace`,
-			(_, stdout) => console.log(stdout)
+			(_, stdout) => console.log(stdout),
 		);
 
 		// if (options.dashboard) {
@@ -305,7 +306,7 @@ function createPackageJson(
 	type PackageJsonFieldEntries = [string, string][];
 
 	const directories = templates.map((template) =>
-		resolve(templatesDirectory, template)
+		resolve(templatesDirectory, template),
 	);
 
 	const dependencies = new Map<string, string>();
@@ -316,13 +317,13 @@ function createPackageJson(
 		const packageJson = fse.readJSONSync(resolve(directory, "package.json"));
 
 		const dependenciesEntries = Object.entries(
-			packageJson.dependencies ?? {}
+			packageJson.dependencies ?? {},
 		) as PackageJsonFieldEntries;
 		const devDependenciesEntries = Object.entries(
-			packageJson.devDependencies ?? {}
+			packageJson.devDependencies ?? {},
 		) as PackageJsonFieldEntries;
 		const scriptsEntries = Object.entries(
-			packageJson.scripts ?? {}
+			packageJson.scripts ?? {},
 		) as PackageJsonFieldEntries;
 
 		for (const [name, version] of dependenciesEntries) {
@@ -339,7 +340,7 @@ function createPackageJson(
 	}
 
 	const basePackageJson = fse.readJSONSync(
-		resolve(directories[0], "package.json")
+		resolve(directories[0], "package.json"),
 	);
 
 	return {

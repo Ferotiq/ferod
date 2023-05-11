@@ -197,7 +197,7 @@ export class Command<
 	 * @param type The type of the command
 	 */
 	public setType<Type2 extends ApplicationCommandType>(
-		type: Type2
+		type: Type2,
 	): Command<Type2> {
 		this._type = type as unknown as TType;
 
@@ -219,13 +219,13 @@ export class Command<
 	 * @param client The client to create the command on
 	 */
 	public async create(
-		client: Client<true>
+		client: Client<true>,
 	): Promise<ApplicationCommand | undefined> {
 		let applicationCommand = await this.fetch(client);
 		applicationCommand ??= await client.application.commands
 			.create(
 				this.data,
-				client.options.dev ? client.options.devGuildId : undefined
+				client.options.dev ? client.options.devGuildId : undefined,
 			)
 			.catch(() => undefined);
 
@@ -238,7 +238,7 @@ export class Command<
 	 */
 	public async fetch(client: Client): Promise<ApplicationCommand | undefined> {
 		const applicationCommands = await client.fetchApplicationCommands(
-			client.options.dev ? client.options.devGuildId : undefined
+			client.options.dev ? client.options.devGuildId : undefined,
 		);
 
 		return applicationCommands?.find((appCmd) => appCmd.name === this.name);
@@ -302,23 +302,23 @@ export class Command<
 		for (const options of this.optionsTree) {
 			const [option1, option2, ...rest] = options;
 
-			const type = ApplicationCommandOptionType[option1.type];
-			const optional = option1.optional ? "?" : "";
-			const description = option1.description;
+			const type1 = ApplicationCommandOptionType[option1.type];
+			const optional1 = option1.optional ? "?" : "";
+			const description1 = option1.description;
 
-			const line = `\`${option1.name} (${type}${optional})\`: ${description}`;
+			const line = `\`${option1.name} (${type1}${optional1})\`: ${description1}`;
 
 			if (!lines.includes(line)) {
 				lines.push("", line);
 			}
 
 			if (option1.type === ApplicationCommandOptionType.SubcommandGroup) {
-				const type = ApplicationCommandOptionType[option2.type];
-				const optional = option2.optional ? "?" : "";
-				const description = option2.description;
+				const type2 = ApplicationCommandOptionType[option2.type];
+				const optional2 = option2.optional ? "?" : "";
+				const description2 = option2.description;
 
 				lines.push(
-					`\`${option1.name} ${option2.name} (${type}${optional})\`: ${description}`
+					`\`${option1.name} ${option2.name} (${type2}${optional2})\`: ${description2}`,
 				);
 
 				for (const option of rest) {
@@ -327,17 +327,18 @@ export class Command<
 					const description = option.description;
 
 					lines.push(
-						`\`${option1.name} ${option2.name} ${option.name} (${type}${optional})\`: ${description}`
+						`\`${option1.name} ${option2.name} ${option.name} (${type}${optional})\`: ${description}`,
 					);
 				}
-			} else if (option1.type === ApplicationCommandOptionType.Subcommand) {
+			}
+			else if (option1.type === ApplicationCommandOptionType.Subcommand) {
 				for (const option of [option2, ...rest]) {
 					const type = ApplicationCommandOptionType[option.type];
 					const optional = option.optional ? "?" : "";
 					const description = option.description;
 
 					lines.push(
-						`\`${option1.name} ${option.name} (${type}${optional})\`: ${description}`
+						`\`${option1.name} ${option.name} (${type}${optional})\`: ${description}`,
 					);
 				}
 			}
@@ -355,18 +356,18 @@ export class Command<
 		const tree: Option[][] = [];
 
 		const subCommandGroups = options.filter(
-			(option) => option.type === ApplicationCommandOptionType.SubcommandGroup
+			(option) => option.type === ApplicationCommandOptionType.SubcommandGroup,
 		) as ApplicationCommandSubGroup[];
 
 		const subCommands = options.filter(
-			(option) => option.type === ApplicationCommandOptionType.Subcommand
+			(option) => option.type === ApplicationCommandOptionType.Subcommand,
 		) as ApplicationCommandSubCommand[];
 
 		if (subCommandGroups.length > 0) {
 			for (const subCommandGroup of subCommandGroups) {
-				const subCommands = subCommandGroup.options ?? [];
+				const subCommandsFromGroup = subCommandGroup.options ?? [];
 
-				for (const subCommand of subCommands) {
+				for (const subCommand of subCommandsFromGroup) {
 					if (!subCommand.options) {
 						continue;
 					}
@@ -390,12 +391,13 @@ export class Command<
 								description,
 								type,
 								optional: !required,
-							})
+							}),
 						),
 					]);
 				}
 			}
-		} else if (subCommands.length > 0) {
+		}
+		else if (subCommands.length > 0) {
 			for (const subCommand of subCommands) {
 				if (!subCommand.options) {
 					continue;
@@ -414,11 +416,12 @@ export class Command<
 							description,
 							type,
 							optional: !required,
-						})
+						}),
 					),
 				]);
 			}
-		} else {
+		}
+		else {
 			tree.push(
 				...(
 					options as Exclude<
@@ -432,7 +435,7 @@ export class Command<
 						type,
 						optional: !required,
 					},
-				])
+				]),
 			);
 		}
 
