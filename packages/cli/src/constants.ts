@@ -6,3 +6,5 @@ export const databases = [
 	"SQLServer",
 	"CockroachDB"
 ] as const;
+
+export const packageManagers = ["npm", "yarn", "pnpm"] as const;

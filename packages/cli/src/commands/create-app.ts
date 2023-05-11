@@ -2,7 +2,7 @@ import { exec } from "child_process";
 import fse from "fs-extra";
 import inquirer from "inquirer";
 import { resolve } from "path";
-import { databases } from "../constants.js";
+import { databases, packageManagers } from "../constants.js";
 import type {
 	CreateAppAnswers,
 	CreateAppOptions,
@@ -133,18 +133,10 @@ async function getAnswers(
  */
 function getUserPackageManager(): PackageManager {
 	// This environment variable is set by npm and yarn but pnpm seems less consistent
-	const userAgent = process.env.npm_config_user_agent;
-	if (userAgent === undefined) {
-		return "npm";
-	}
-
-	if (userAgent.includes("yarn")) {
-		return "yarn";
-	} else if (userAgent.includes("pnpm")) {
-		return "pnpm";
-	}
-
-	return "npm";
+	const userAgent = process.env.npm_config_user_agent ?? "npm";
+	return (
+		packageManagers.find((manager) => userAgent.includes(manager)) ?? "npm"
+	);
 }
 
 /**

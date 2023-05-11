@@ -3,9 +3,9 @@ import type {
 	Events,
 	PermissionFlagsBits
 } from "discord.js";
-import type { databases } from "./constants.js";
+import type { databases, packageManagers } from "./constants.ts";
 
-export type PackageManager = "npm" | "yarn" | "pnpm";
+export type PackageManager = (typeof packageManagers)[number];
 
 export interface CLIFlags {
 	noGit?: boolean;
