@@ -37,6 +37,19 @@
 		"no-var": "error",
 		"object-curly-spacing": ["error", "always"],
 		"prefer-const": "error",
+		"quotes": ["error", "double"],
+		"require-jsdoc": [
+			"error",
+			{
+				"require": {
+					"FunctionDeclaration": true,
+					"MethodDefinition": true,
+					"ClassDeclaration": true,
+					"ArrowFunctionExpression": false,
+					"FunctionExpression": false
+				}
+			}
+		],
 		"semi": ["error", "always"],
 		"space-before-blocks": "error",
 		"space-before-function-paren": [
@@ -51,20 +64,7 @@
 		"space-infix-ops": "error",
 		"space-unary-ops": "error",
 		"spaced-comment": "error",
-		"yoda": "error",
-		"quotes": ["error", "double"],
-		"require-jsdoc": [
-			"error",
-			{
-				"require": {
-					"FunctionDeclaration": true,
-					"MethodDefinition": true,
-					"ClassDeclaration": true,
-					"ArrowFunctionExpression": false,
-					"FunctionExpression": false
-				}
-			}
-		]
+		"yoda": "error"
 	},
 	"overrides": [
 		{
@@ -72,15 +72,6 @@
 			"parser": "@typescript-eslint/parser",
 			"extends": ["plugin:@typescript-eslint/recommended"],
 			"rules": {
-				"no-redeclare": "off",
-				"@typescript-eslint/no-redeclare": "error",
-				"no-unused-vars": "off",
-				"@typescript-eslint/no-unused-vars": [
-					"error",
-					{
-						"argsIgnorePattern": "^_"
-					}
-				],
 				"@typescript-eslint/explicit-function-return-type": [
 					"error",
 					{
@@ -89,7 +80,16 @@
 						"allowHigherOrderFunctions": true
 					}
 				],
-				"@typescript-eslint/no-import-type-side-effects": "error"
+				"@typescript-eslint/no-import-type-side-effects": "error",
+				"no-redeclare": "off",
+				"@typescript-eslint/no-redeclare": "error",
+				"no-unused-vars": "off",
+				"@typescript-eslint/no-unused-vars": [
+					"error",
+					{
+						"argsIgnorePattern": "^_"
+					}
+				]
 			}
 		}
 	]
