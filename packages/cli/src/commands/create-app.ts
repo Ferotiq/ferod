@@ -51,13 +51,15 @@ async function getAnswers(
 			name: options.name ?? "my-app",
 			gitRepo: options.flags.noGit === undefined,
 			install: options.flags.noInstall === undefined,
-			prisma: true,
-			databaseType: "MongoDB",
-			typescript: true,
-			helpCommand: true,
-			// dashboard: true,
-			eslint: true,
-			prettier: true
+			features: [
+				"typescript",
+				"prisma",
+				"helpCommand",
+				// "dashboard",
+				"eslint",
+				"prettier"
+			],
+			databaseType: "MongoDB"
 		};
 	}
 
@@ -84,10 +86,41 @@ async function getAnswers(
 			when: () => !options.flags.yes && options.flags.noInstall === undefined
 		},
 		{
-			name: "prisma",
-			type: "confirm",
-			message: "Use Prisma?",
-			default: true,
+			name: "features",
+			type: "checkbox",
+			message: "What features do you want to use?",
+			choices: [
+				{
+					name: "TypeScript",
+					value: "typescript",
+					checked: true
+				},
+				{
+					name: "Prisma",
+					value: "prisma",
+					checked: true
+				},
+				{
+					name: "Help command",
+					value: "helpCommand",
+					checked: true
+				},
+				// {
+				// 	name: "Dashboard",
+				// 	value: "dashboard",
+				// 	checked: true
+				// },
+				{
+					name: "ESLint",
+					value: "eslint",
+					checked: true
+				},
+				{
+					name: "Prettier",
+					value: "prettier",
+					checked: true
+				}
+			],
 			when: () => !options.flags.yes
 		},
 		{
@@ -96,41 +129,8 @@ async function getAnswers(
 			message: "What database do you want to use?",
 			choices: databases,
 			default: "MongoDB",
-			when: (answers) => !options.flags.yes && answers.prisma
-		},
-		{
-			name: "typescript",
-			type: "confirm",
-			message: "Use TypeScript?",
-			default: true,
-			when: () => !options.flags.yes
-		},
-		{
-			name: "helpCommand",
-			type: "confirm",
-			message: "Add a help command?",
-			default: true,
-			when: () => !options.flags.yes
-		},
-		// {
-		// 	name: "dashboard",
-		// 	type: "confirm",
-		// 	message: "Add a dashboard?",
-		// 	default: true,
-		// 	when: () => !options.flags.yes
-		// },
-		{
-			name: "eslint",
-			type: "confirm",
-			message: "Use ESLint?",
-			default: true,
-			when: () => !options.flags.yes
-		},
-		{
-			name: "prettier",
-			type: "confirm",
-			message: "Use Prettier?",
-			default: true
+			when: (answers: CreateAppAnswers) =>
+				!options.flags.yes && answers.features.includes("prisma")
 		}
 	]);
 }
@@ -160,7 +160,14 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 		return;
 	}
 
-	const basePath = options.typescript ? "base-ts" : "base-js";
+	const typescript = options.features.includes("typescript");
+	const prisma = options.features.includes("prisma");
+	const helpCommand = options.features.includes("helpCommand");
+	// const dashboard = options.features.includes("dashboard");
+	const eslint = options.features.includes("eslint");
+	const prettier = options.features.includes("prettier");
+
+	const basePath = typescript ? "base-ts" : "base-js";
 	const templates = new Set(["base", basePath]);
 
 	// copy base files
@@ -168,7 +175,7 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 	fse.copySync(resolve(templatesDirectory, basePath), options.projectDirectory);
 
 	// copy prisma files
-	if (options.prisma) {
+	if (prisma) {
 		templates.add("prisma");
 
 		const databaseType = options.databaseType?.toLowerCase() ?? "mongodb";
@@ -192,7 +199,7 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 	}
 
 	// copy prettier files
-	if (options.prettier) {
+	if (prettier) {
 		templates.add("prettier");
 
 		fse.copySync(
@@ -202,9 +209,9 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 	}
 
 	// copy eslint files
-	if (options.eslint) {
-		const prettier = options.prettier ? "eslint-prettier" : "eslint";
-		const template = options.typescript ? `${prettier}-ts` : `${prettier}-js`;
+	if (eslint) {
+		const templatePart = prettier ? "eslint-prettier" : "eslint";
+		const template = typescript ? `${templatePart}-ts` : `${templatePart}-js`;
 		templates.add(template);
 
 		fse.copySync(
@@ -214,7 +221,7 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 	}
 
 	// // copy dashboard files
-	// if (options.dashboard) {
+	// if (dashboard) {
 	// 	fse.copySync(
 	// 		resolve(templatesDirectory, "dashboard"),
 	// 		options.projectDirectory
@@ -222,8 +229,8 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 	// }
 
 	// copy help command files
-	if (options.helpCommand) {
-		const path = `src/commands/help.${options.typescript ? "ts" : "js"}`;
+	if (helpCommand) {
+		const path = `src/commands/help.${typescript ? "ts" : "js"}`;
 		fse.copyFileSync(
 			resolve(templatesDirectory, `help/${path}`),
 			resolve(options.projectDirectory, path)

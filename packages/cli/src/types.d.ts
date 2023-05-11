@@ -19,17 +19,20 @@ export interface CreateAppOptions {
 	flags: CLIFlags;
 }
 
+export type Features =
+	| "prisma"
+	| "typescript"
+	| "helpCommand"
+	// | "dashboard"
+	| "eslint"
+	| "prettier";
+
 export interface CreateAppAnswers {
 	name: string;
 	gitRepo: boolean;
 	install: boolean;
-	prisma: boolean;
+	features: Features[];
 	databaseType?: DatabaseType;
-	typescript: boolean;
-	helpCommand: boolean;
-	// dashboard: boolean;
-	eslint: boolean;
-	prettier: boolean;
 }
 
 export interface ScaffoldOptions extends CreateAppAnswers {
