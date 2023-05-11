@@ -3,5 +3,5 @@
 		"src/"
 	],
 	"ext": "js,json",
-	"exec": "node src --enable-source-maps"
+	"exec": "node src --no-warnings --enable-source-maps"
 }

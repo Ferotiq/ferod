@@ -57,7 +57,7 @@ export default new Command()
 		if (command !== null) {
 			embed
 				.setDescription(
-					`Here are all the properties for the ${command.name} command!`
+					`Here are all the properties for the ${command.name} command!`,
 				)
 				.addFields(
 					{
@@ -74,7 +74,7 @@ export default new Command()
 						name: "Command Category",
 						value: toPascalCase(command.category),
 						inline: true,
-					}
+					},
 				);
 
 			const usage = command.usage;
@@ -88,7 +88,7 @@ export default new Command()
 					{
 						name: "Command Arguments",
 						value: args,
-					}
+					},
 				);
 			}
 		} else {
@@ -108,9 +108,9 @@ export default new Command()
 					const name = `${category}${
 						category.endsWith("Commands") ? "" : " Commands"
 					}`;
-					const value = commands.map((command) => command.name).join("\n");
+					const value = commands.map((cmd) => cmd.name).join("\n");
 					return { name, value, inline: true };
-				}
+				},
 			);
 
 			embed

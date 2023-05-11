@@ -7,4 +7,4 @@ export const databases = [
 	"CockroachDB",
 ] as const;
 
-export const packageManagers = ["npm", "yarn", "pnpm"] as const;
+export const packageManagers = ["pnpm", "npm", "yarn"] as const;

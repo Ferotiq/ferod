@@ -7,6 +7,6 @@ export default new Command()
 	.setCategory("CATEGORY")
 	.setPermissions(PermissionFlagsBits.SendMessages)
 	.setType(ApplicationCommandType.ChatInput)
-	.setExecutor(async (client, interaction) => {
+	.setExecutor(async (_client, _interaction) => {
 		// code goes here
 	});

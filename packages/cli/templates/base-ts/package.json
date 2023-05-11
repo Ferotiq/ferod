@@ -2,7 +2,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "tsc",
-		"start": "node dist --enable-source-maps"
+		"start": "node dist --no-warnings --enable-source-maps"
 	},
 	"devDependencies": {
 		"@types/node": "^20.1.1",

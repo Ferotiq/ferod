@@ -23,14 +23,14 @@ export default new EventListener()
 					content: "There was an error while executing this command!",
 					ephemeral: true,
 				})
-				.catch((error) => {
-					console.error(chalk.red(error));
+				.catch((replyError) => {
+					console.error(chalk.red(replyError));
 
 					return interaction.followUp({
 						content: "There was an error while executing this command!",
 						ephemeral: true,
 					});
 				})
-				.catch((error) => console.log(chalk.red(error)));
+				.catch((followUpError) => console.log(chalk.red(followUpError)));
 		}
 	});

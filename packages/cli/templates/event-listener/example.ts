@@ -3,6 +3,6 @@ import { Events } from "discord.js";
 
 export default new EventListener()
 	.setEvent(Events.InteractionCreate)
-	.setHandler((client) => {
+	.setHandler((_client) => {
 		// code goes here
 	});

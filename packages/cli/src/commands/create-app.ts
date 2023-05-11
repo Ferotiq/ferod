@@ -136,7 +136,9 @@ function getUserPackageManager(): PackageManager {
 	// This environment variable is set by npm and yarn but pnpm seems less consistent
 	const userAgent = process.env.npm_config_user_agent ?? "npm";
 	return (
-		packageManagers.find((manager) => userAgent.includes(manager)) ?? "npm"
+		packageManagers.find(
+			(manager) => userAgent.toLowerCase().includes(manager),
+		) ?? "npm"
 	);
 }
 
@@ -240,8 +242,7 @@ async function scaffoldProject(options: ScaffoldOptions): Promise<void> {
 			resolve(templatesDirectory, "git/gitignore.example"),
 			resolve(options.projectDirectory, ".gitignore"),
 		);
-	}
-	else {
+	} else {
 		fse.removeSync(resolve(options.projectDirectory, "example.env"));
 		fse.removeSync(
 			resolve(options.projectDirectory, "src/config/config-example.json"),
