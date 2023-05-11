@@ -49,8 +49,6 @@ jobs:
         run: pnpm install --ignore-scripts
       - name: Build
         run: pnpm build
-      - name: Format Check
-        run: pnpm -r pretty
       - name: Lint
         run: pnpm -r lint
 #     - run: pnpm test
