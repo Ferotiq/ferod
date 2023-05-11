@@ -32,8 +32,6 @@
   "scripts": {
     "build": "tsup",
     "test": "ts-node-esm ./test/index.ts",
-    "pretty": "prettier --check \"src/**/*.{ts,tsx,scss}\"",
-    "pretty-fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint-fix": "eslint --fix \"src/**/*.{ts,tsx}\"",
     "prepare": "pnpm build && pnpm lint && pnpm pretty"
