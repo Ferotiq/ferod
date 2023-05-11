@@ -5,6 +5,7 @@ import type {
 } from "discord.js";
 import type { databases, packageManagers } from "./constants.ts";
 
+export type DatabaseType = (typeof databases)[number];
 export type PackageManager = (typeof packageManagers)[number];
 
 export interface CLIFlags {
@@ -17,8 +18,6 @@ export interface CreateAppOptions {
 	name?: string;
 	flags: CLIFlags;
 }
-
-export type DatabaseType = (typeof databases)[number];
 
 export interface CreateAppAnswers {
 	name: string;
