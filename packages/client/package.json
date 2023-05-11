@@ -31,7 +31,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsup",
-    "test": "ts-node-esm --experimental-specifier-resolution=node ./test/index.ts",
+    "test": "ts-node-esm ./test/index.ts",
     "pretty": "prettier --check \"src/**/*.{ts,tsx,scss}\"",
     "pretty-fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",

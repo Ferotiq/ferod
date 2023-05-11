@@ -3,5 +3,5 @@
 		"src/"
 	],
 	"ext": "js,json",
-	"exec": "node --experimental-specifier-resolution=node src --enable-source-maps"
+	"exec": "node src --enable-source-maps"
 }
