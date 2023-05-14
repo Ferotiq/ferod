@@ -1,7 +1,7 @@
 {
   "name": "@ferod/client",
   "description": "An extension on Discord.JS that makes it simpler and safer to create Discord bots.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Evan <evanrayweigel@outlook.com>",
   "repository": "https://github.com/ferotiq/ferod",
   "bugs": {
