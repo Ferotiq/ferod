@@ -72,11 +72,12 @@ export class Command<
 	 * The description of the command
 	 */
 	public get description(): string {
-		if (this._description === undefined) {
+		// TODO: Do this on the type level
+		if (this._description === undefined && this.type === ApplicationCommandType.ChatInput) {
 			throw new Error(chalk.red("Missing required property: description"));
 		}
 
-		return this._description;
+		return this._description ?? "";
 	}
 
 	/**
@@ -137,6 +138,15 @@ export class Command<
 	 * @param description The description of the command
 	 */
 	public setDescription(description: string): this {
+		// TODO: Do this on the type level
+		if (this.type !== ApplicationCommandType.ChatInput) {
+			throw new Error(
+				chalk.red(
+					"Only commands of type ChatInput may have a description",
+				),
+			);
+		}
+
 		this._description = description;
 
 		return this;

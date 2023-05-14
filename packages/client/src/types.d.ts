@@ -34,11 +34,14 @@ export interface CommandFunction<
 	(client: Client<true>, interaction: Interaction<TType>): void;
 }
 
+type CommandDescription<TType extends ApplicationCommandType> =
+	TType extends ApplicationCommandType.ChatInput ? string : undefined;
+
 export interface CommandOptions<
 	TType extends ApplicationCommandType = ApplicationCommandType.ChatInput
 > {
 	name: string;
-	description: string;
+	description: CommandDescription<TType>;
 	category: string;
 	options?: ApplicationCommandOptionData[];
 	permissions?: PermissionResolvable[];
