@@ -146,7 +146,7 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 	public async loadCommands(): Promise<number> {
 		console.log(
 			chalk.yellow(
-				`Loading files from ${chalk.cyan(this.options.commandsPath)}`,
+				`Loading files from ${chalk.cyan(this.options.commandsPath)}...`,
 			),
 		);
 		const commands = await importFiles<Command>(
@@ -303,7 +303,7 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 
 			console.log(
 				chalk.yellow(
-					`Found ${chalk.cyan(toDelete.size)} unused application commands!`,
+					`Found ${chalk.cyan(toDelete.size)} unused application commands! Deleting...`,
 				),
 			);
 
