@@ -236,23 +236,18 @@ export class Client<T extends boolean = boolean> extends DiscordClient<T> {
 				),
 			);
 
-			const type = command.type ?? ApplicationCommandType.ChatInput;
-
-			const description =
-				type === ApplicationCommandType.ChatInput ? command.description : "";
-
 			const cleanedApplicationCommand = quickClean({
 				name: applicationCommand.name,
 				description: applicationCommand.description,
 				type: applicationCommand.type,
 				defaultMemberPermissions:
-					applicationCommand.defaultMemberPermissions?.valueOf(),
+					applicationCommand.defaultMemberPermissions?.valueOf() ?? 0n,
 				options: applicationCommand.options,
 			});
 			const cleanedLocalCommand = quickClean({
 				name: command.name,
-				description,
-				type,
+				description: command.description,
+				type: command.type,
 				defaultMemberPermissions: command.permissions.valueOf(),
 				options: command.options,
 			});
