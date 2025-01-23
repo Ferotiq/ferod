@@ -11,7 +11,7 @@
   "license": "MIT",
   "engines": {
     "node": "18.16.0",
-    "pnpm": "8.5.0"
+    "bun": "1.2.0"
   },
   "engineStrict": true,
   "type": "module",
@@ -33,7 +33,7 @@
     "test-yes": "cd test && npx ferod --yes",
     "lint": "eslint \"{src,templates}/**/*.{ts,tsx}\"",
     "lint-fix": "eslint --fix \"{src,templates}/**/*.{ts,tsx}\"",
-    "prepare": "pnpm build && pnpm lint"
+    "prepare": "bun run build && bun run lint"
   },
   "dependencies": {
     "commander": "10.0.1",
