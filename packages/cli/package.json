@@ -36,13 +36,17 @@
     "prepare": "bun run build && bun run lint"
   },
   "dependencies": {
+    "chalk": "5.6.2",
     "commander": "14.0.1",
-    "discord.js": "14.22.1",
+    "discord.js": "catalog:",
     "fs-extra": "11.3.2",
-    "inquirer": "12.9.6"
+    "glob": "11.0.3",
+    "inquirer": "12.9.6",
+    "remeda": "2.32.0"
   },
   "devDependencies": {
     "@types/fs-extra": "11.0.4",
-    "@types/inquirer": "9.0.9"
+    "@types/inquirer": "9.0.9",
+    "ts-node": "catalog:"
   }
 }

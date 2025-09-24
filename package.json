@@ -23,6 +23,10 @@
     "publish-all": "bun -r publish",
     "publish-all-dev": "bun -r publish --tag dev"
   },
+  "catalog": {
+    "discord.js": "14.22.1",
+    "ts-node": "10.9.2"
+  },
   "devDependencies": {
     "@types/node": "24.5.2",
     "@typescript-eslint/eslint-plugin": "8.44.1",
