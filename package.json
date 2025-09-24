@@ -4,6 +4,9 @@
   "version": "0.2.1",
   "author": "Evan <evanrayweigel@outlook.com>",
   "repository": "https://github.com/ferotiq/ferod",
+  "workspaces": [
+    "packages/*"
+  ],
   "bugs": {
     "url": "https://github.com/ferotiq/ferod/issues"
   },

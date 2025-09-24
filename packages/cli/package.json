@@ -36,13 +36,13 @@
     "prepare": "bun run build && bun run lint"
   },
   "dependencies": {
-    "commander": "10.0.1",
-    "discord.js": "14.11.0",
-    "fs-extra": "11.1.1",
-    "inquirer": "9.2.2"
+    "commander": "14.0.1",
+    "discord.js": "14.22.1",
+    "fs-extra": "11.3.2",
+    "inquirer": "12.9.6"
   },
   "devDependencies": {
-    "@types/fs-extra": "11.0.1",
-    "@types/inquirer": "9.0.3"
+    "@types/fs-extra": "11.0.4",
+    "@types/inquirer": "9.0.9"
   }
 }
